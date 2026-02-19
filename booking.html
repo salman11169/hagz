@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجز موعد - نظام فرز المواعيد الذكي</title>
+
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Google Fonts - Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        * { font-family: 'Cairo', sans-serif; }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0ea5e9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+        }
+
+        body { background: var(--light-color); overflow-x: hidden; }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .navbar-brand {
+            font-weight: 700; font-size: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-link {
+            font-weight: 600; color: var(--dark-color) !important;
+            margin: 0 0.5rem; transition: all 0.3s ease; position: relative;
+        }
+        .nav-link:hover { color: var(--primary-color) !important; }
+        .nav-link::after {
+            content:''; position:absolute; bottom:-5px; right:0;
+            width:0; height:2px; background:var(--gradient-primary); transition:width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .btn-primary-custom {
+            background: var(--gradient-primary); border: none;
+            padding: 0.6rem 2rem; border-radius: 50px;
+            font-weight: 600; color: white;
+            transition: all 0.3s; box-shadow: 0 4px 15px rgba(37,99,235,0.3);
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4); color: white;
+        }
+
+        /* ── PAGE HERO ── */
+        .page-hero {
+            background: var(--gradient-1);
+            padding: 5rem 0 7rem;
+            position: relative; overflow: hidden;
+        }
+        .page-hero::before {
+            content:''; position:absolute;
+            width:400px; height:400px;
+            background:rgba(255,255,255,0.08); border-radius:50%;
+            top:-150px; left:-150px; animation:float 6s ease-in-out infinite;
+        }
+        .page-hero::after {
+            content:''; position:absolute;
+            width:300px; height:300px;
+            background:rgba(255,255,255,0.08); border-radius:50%;
+            bottom:-100px; right:-100px; animation:float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,100%{transform:translateY(0) scale(1);}
+            50%{transform:translateY(-20px) scale(1.05);}
+        }
+        .page-hero-content { position:relative; z-index:2; color:white; text-align:center; }
+        .page-hero-content h1 { font-size:3rem; font-weight:900; margin-bottom:1rem; }
+        .page-hero-content p  { font-size:1.2rem; opacity:0.95; }
+
+        /* ── STEPS BAR ── */
+        .steps-wrapper {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-radius: 20px;
+            margin-top: -40px;
+            position: relative; z-index: 10;
+        }
+        .step-progress { display:flex; justify-content:center; align-items:center; }
+        .step-item { display:flex; flex-direction:column; align-items:center; gap:0.4rem; }
+        .step-circle {
+            width:46px; height:46px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.2rem; font-weight:700;
+            border:3px solid #e2e8f0;
+            background:white; color:#94a3b8;
+            transition:all 0.4s;
+        }
+        .step-item.active .step-circle {
+            background:var(--gradient-primary);
+            border-color:var(--primary-color); color:white;
+            box-shadow:0 4px 15px rgba(37,99,235,0.4);
+        }
+        .step-item.done .step-circle {
+            background:var(--success-color);
+            border-color:var(--success-color); color:white;
+        }
+        .step-label { font-size:0.82rem; font-weight:600; color:#94a3b8; }
+        .step-item.active .step-label,
+        .step-item.done .step-label { color:var(--dark-color); }
+        .step-line {
+            flex:1; height:3px; background:#e2e8f0;
+            margin: 0 0.5rem; margin-bottom:22px; transition:background 0.4s;
+        }
+        .step-line.active { background:var(--gradient-primary); }
+
+        /* ── SECTION CARD ── */
+        .section-card {
+            background:white; border-radius:20px; padding:2.5rem;
+            box-shadow:0 10px 30px rgba(0,0,0,0.06);
+            margin-bottom:2rem; border:2px solid #f1f5f9;
+            transition:border-color 0.3s;
+        }
+        .section-card:hover { border-color:rgba(37,99,235,0.15); }
+        .section-card-title {
+            font-size:1.4rem; font-weight:700; color:var(--dark-color);
+            margin-bottom:1.5rem; display:flex; align-items:center; gap:0.8rem;
+        }
+        .title-icon {
+            width:42px; height:42px; border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.3rem; color:white; background:var(--gradient-primary);
+        }
+
+        /* ── FORM ── */
+        .form-label { font-weight:600; color:var(--dark-color); margin-bottom:0.5rem; }
+        .form-control, .form-select {
+            border:2px solid #e2e8f0; border-radius:12px;
+            padding:0.75rem 1rem; font-family:'Cairo',sans-serif;
+            font-size:0.95rem; transition:all 0.3s; background:#fafbff;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color:var(--primary-color);
+            box-shadow:0 0 0 4px rgba(37,99,235,0.1); background:white;
+        }
+        .form-control::placeholder { color:#b0bec5; }
+        .input-group-text {
+            border:2px solid #e2e8f0; background:white;
+            border-radius:12px 0 0 12px;
+        }
+        .input-group .form-control {
+            border-radius:0 12px 12px 0;
+            border-right:none;
+        }
+
+        /* ── SERVICE CARDS ── */
+        .service-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
+            gap:1rem;
+        }
+        .service-card {
+            border:2px solid #e2e8f0; border-radius:16px;
+            padding:1.5rem 1rem; text-align:center;
+            cursor:pointer; transition:all 0.3s; background:white; position:relative;
+        }
+        .service-card:hover {
+            border-color:var(--primary-color);
+            transform:translateY(-4px);
+            box-shadow:0 10px 25px rgba(37,99,235,0.12);
+        }
+        .service-card.selected {
+            border-color:var(--primary-color);
+            background:linear-gradient(135deg,rgba(37,99,235,0.05),rgba(14,165,233,0.05));
+        }
+        .check-badge {
+            position:absolute; top:-10px; left:-10px;
+            width:26px; height:26px; background:var(--primary-color);
+            border-radius:50%; display:none; align-items:center;
+            justify-content:center; color:white; font-size:0.8rem;
+        }
+        .service-card.selected .check-badge { display:flex; }
+        .service-card-icon {
+            width:60px; height:60px; border-radius:15px;
+            margin:0 auto 0.8rem; display:flex;
+            align-items:center; justify-content:center;
+            font-size:1.8rem; color:white; transition:transform 0.3s;
+        }
+        .service-card:hover .service-card-icon { transform:scale(1.1); }
+        .s-blue   { background:var(--gradient-primary); }
+        .s-purple { background:var(--gradient-1); }
+        .s-pink   { background:var(--gradient-2); }
+        .s-cyan   { background:var(--gradient-3); }
+        .s-green  { background:linear-gradient(135deg,#10b981,#059669); }
+        .s-orange { background:linear-gradient(135deg,#f59e0b,#d97706); }
+        .service-card-label { font-weight:600; font-size:0.9rem; color:var(--dark-color); }
+
+        /* ── PRIORITY ── */
+        .priority-selector { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+        .priority-opt {
+            border:3px solid #e2e8f0; border-radius:16px;
+            padding:1.5rem; text-align:center; cursor:pointer; transition:all 0.3s;
+        }
+        .priority-opt:hover { transform:translateY(-4px); }
+        .priority-opt.sel-normal    { border-color:var(--success-color); background:rgba(16,185,129,0.05); }
+        .priority-opt.sel-urgent    { border-color:var(--warning-color); background:rgba(245,158,11,0.05); }
+        .priority-opt.sel-emergency { border-color:var(--danger-color);  background:rgba(239,68,68,0.05); }
+        .priority-opt-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+        .poi-normal    { color:var(--success-color); }
+        .poi-urgent    { color:var(--warning-color); }
+        .poi-emergency { color:var(--danger-color); animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.08);} }
+        .priority-opt-label { font-weight:700; font-size:1rem; }
+        .pol-normal    { color:var(--success-color); }
+        .pol-urgent    { color:var(--warning-color); }
+        .pol-emergency { color:var(--danger-color); }
+        .priority-opt-desc { font-size:0.8rem; color:#64748b; margin-top:0.3rem; }
+
+        /* ── DOCTORS ── */
+        .doctor-card {
+            border:2px solid #e2e8f0; border-radius:16px; padding:1.2rem;
+            cursor:pointer; transition:all 0.3s;
+            display:flex; align-items:center; gap:1rem;
+        }
+        .doctor-card:hover { border-color:var(--primary-color); box-shadow:0 8px 20px rgba(37,99,235,0.1); }
+        .doctor-card.selected {
+            border-color:var(--primary-color);
+            background:linear-gradient(135deg,rgba(37,99,235,0.05),rgba(14,165,233,0.05));
+        }
+        .doctor-avatar {
+            width:56px; height:56px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.5rem; color:white; flex-shrink:0;
+        }
+        .da1{background:var(--gradient-primary);}
+        .da2{background:var(--gradient-1);}
+        .da3{background:var(--gradient-2);}
+        .da4{background:var(--gradient-3);}
+        .doctor-info { flex:1; }
+        .doctor-name { font-weight:700; color:var(--dark-color); font-size:0.95rem; }
+        .doctor-spec { font-size:0.8rem; color:#64748b; }
+        .doctor-rating { color:#f59e0b; font-size:0.8rem; }
+        .avail-badge {
+            display:inline-block; padding:2px 10px;
+            border-radius:20px; font-size:0.75rem; font-weight:600;
+        }
+        .avail-badge.available { background:rgba(16,185,129,0.12); color:var(--success-color); }
+        .avail-badge.limited   { background:rgba(245,158,11,0.12);  color:var(--warning-color); }
+
+        /* ── TIME SLOTS ── */
+        .time-slots-grid {
+            display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:0.8rem;
+        }
+        .time-slot {
+            border:2px solid #e2e8f0; border-radius:12px;
+            padding:0.8rem; text-align:center; cursor:pointer;
+            transition:all 0.3s; background:white;
+            font-weight:600; font-size:0.9rem; color:var(--dark-color);
+        }
+        .time-slot:hover:not(.busy) {
+            border-color:var(--primary-color); color:var(--primary-color); transform:translateY(-2px);
+        }
+        .time-slot.selected {
+            background:var(--gradient-primary);
+            border-color:var(--primary-color); color:white;
+            box-shadow:0 4px 15px rgba(37,99,235,0.3);
+        }
+        .time-slot.busy {
+            background:#f1f5f9; color:#b0bec5; cursor:not-allowed; text-decoration:line-through;
+        }
+        .time-slot-sub { font-size:0.72rem; font-weight:400; opacity:0.75; margin-top:2px; }
+        .legend { display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:1rem; }
+        .legend-item { display:flex; align-items:center; gap:0.4rem; font-size:0.83rem; color:#64748b; }
+        .legend-dot { width:12px; height:12px; border-radius:50%; }
+        .ld-available{background:var(--primary-color);}
+        .ld-selected {background:linear-gradient(135deg,#2563eb,#0ea5e9);}
+        .ld-busy     {background:#cbd5e1;}
+
+        /* ── SUMMARY ── */
+        .summary-card {
+            background:white; border-radius:20px; padding:2rem;
+            box-shadow:0 10px 30px rgba(0,0,0,0.08);
+            border:2px solid #f1f5f9;
+            position:sticky; top:100px;
+        }
+        .summary-card h4 {
+            font-weight:700; color:var(--dark-color);
+            margin-bottom:1.5rem; font-size:1.2rem;
+            padding-bottom:1rem; border-bottom:2px solid #f1f5f9;
+        }
+        .summary-row {
+            display:flex; justify-content:space-between; align-items:flex-start;
+            padding:0.7rem 0; border-bottom:1px solid #f8fafc; gap:0.5rem;
+        }
+        .summary-row:last-of-type { border-bottom:none; }
+        .summary-key { font-size:0.85rem; color:#64748b; font-weight:600; flex-shrink:0; }
+        .summary-val { font-size:0.9rem; font-weight:700; color:var(--dark-color); text-align:left; }
+        .priority-pill {
+            display:inline-block; padding:3px 14px;
+            border-radius:20px; font-size:0.8rem; font-weight:700;
+        }
+        .pp-normal    {background:rgba(16,185,129,0.15);color:var(--success-color);}
+        .pp-urgent    {background:rgba(245,158,11,0.15); color:var(--warning-color);}
+        .pp-emergency {background:rgba(239,68,68,0.15);  color:var(--danger-color);}
+
+        .estimated-time {
+            background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(14,165,233,0.08));
+            border-radius:12px; padding:1rem; margin-top:1rem; text-align:center;
+        }
+        .et-label { font-size:0.8rem; color:#64748b; }
+        .et-value { font-size:1.4rem; font-weight:800; color:var(--primary-color); }
+
+        .btn-submit {
+            background:var(--gradient-primary); border:none;
+            width:100%; padding:1rem; border-radius:14px;
+            font-weight:700; font-size:1.1rem; color:white;
+            transition:all 0.3s;
+            box-shadow:0 4px 15px rgba(37,99,235,0.3);
+            margin-top:1.5rem;
+        }
+        .btn-submit:hover {
+            transform:translateY(-3px); color:white;
+            box-shadow:0 8px 25px rgba(37,99,235,0.45);
+        }
+
+        /* ── SUCCESS ── */
+        .success-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(30,41,59,0.5); z-index:9999;
+            justify-content:center; align-items:center;
+            backdrop-filter:blur(4px);
+        }
+        .success-overlay.show { display:flex; }
+        .success-box {
+            background:white; border-radius:24px; padding:3rem;
+            max-width:480px; width:90%; text-align:center;
+            animation:bounceIn 0.5s ease;
+        }
+        @keyframes bounceIn {
+            0%  {transform:scale(0.7);opacity:0;}
+            80% {transform:scale(1.05);}
+            100%{transform:scale(1); opacity:1;}
+        }
+        .success-icon-wrap {
+            width:90px; height:90px;
+            background:linear-gradient(135deg,#10b981,#059669);
+            border-radius:50%; margin:0 auto 1.5rem;
+            display:flex; align-items:center; justify-content:center;
+            font-size:3rem; color:white;
+            box-shadow:0 10px 30px rgba(16,185,129,0.4);
+        }
+        .success-box h2 { font-weight:800; color:var(--dark-color); font-size:1.8rem; margin-bottom:0.5rem; }
+        .success-box p  { color:#64748b; margin-bottom:1.5rem; }
+        .booking-ref {
+            background:var(--light-color); border-radius:12px;
+            padding:1rem; font-size:1.4rem; font-weight:900;
+            color:var(--primary-color); letter-spacing:3px; margin-bottom:1.5rem;
+        }
+        .btn-done {
+            background:var(--gradient-primary); border:none;
+            padding:0.9rem 3rem; border-radius:50px;
+            font-weight:700; font-size:1rem; color:white; transition:all 0.3s;
+        }
+        .btn-done:hover { transform:translateY(-2px); color:white; }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:768px){
+            .page-hero-content h1{font-size:2rem;}
+            .priority-selector{grid-template-columns:1fr;}
+            .service-grid{grid-template-columns:repeat(2,1fr);}
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <i class='bx bx-health'></i> نظام فرز المواعيد الذكي
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html#features">المميزات</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#how-it-works">كيف يعمل</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#priority">مستويات الأولوية</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#contact">تواصل معنا</a></li>
+            </ul>
+            <div class="d-flex gap-2">
+                <a href="admin.html" class="btn btn-outline-primary">
+                    <i class='bx bx-user-circle'></i> لوحة التحكم
+                </a>
+                <a href="booking.html" class="btn btn-primary-custom">
+                    <i class='bx bx-calendar-plus'></i> احجز الآن
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <div class="container">
+        <div class="page-hero-content">
+            <h1><i class='bx bx-calendar-plus'></i> احجز موعدك الآن</h1>
+            <p>أكمل الخطوات أدناه وسيتكفل نظامنا بتحديد أفضل موعد بناءً على حالتك الصحية</p>
+        </div>
+    </div>
+</section>
+
+<!-- STEPS BAR -->
+<div class="container">
+    <div class="steps-wrapper mt-n5">
+        <div class="step-progress">
+            <div class="step-item active" id="s1">
+                <div class="step-circle"><i class='bx bx-user'></i></div>
+                <span class="step-label">بياناتك</span>
+            </div>
+            <div class="step-line" id="c1"></div>
+            <div class="step-item" id="s2">
+                <div class="step-circle"><i class='bx bx-clipboard'></i></div>
+                <span class="step-label">الخدمة</span>
+            </div>
+            <div class="step-line" id="c2"></div>
+            <div class="step-item" id="s3">
+                <div class="step-circle"><i class='bx bx-calendar'></i></div>
+                <span class="step-label">الموعد</span>
+            </div>
+            <div class="step-line" id="c3"></div>
+            <div class="step-item" id="s4">
+                <div class="step-circle"><i class='bx bx-check'></i></div>
+                <span class="step-label">التأكيد</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BODY -->
+<section style="background:var(--light-color); padding:3rem 0 5rem;">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- LEFT FORM -->
+            <div class="col-lg-8">
+
+                <!-- STEP 1: Personal Info -->
+                <div class="section-card">
+                    <div class="section-card-title">
+                        <span class="title-icon"><i class='bx bx-user'></i></span>
+                        البيانات الشخصية
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">الاسم الكامل <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class='bx bx-user text-primary'></i></span>
+                                <input type="text" class="form-control" id="fullName" placeholder="محمد أحمد العلي">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">رقم الجوال <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class='bx bx-phone text-primary'></i></span>
+                                <input type="tel" class="form-control" id="phone" placeholder="05xxxxxxxx">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">البريد الإلكتروني</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class='bx bx-envelope text-primary'></i></span>
+                                <input type="email" class="form-control" id="email" placeholder="example@email.com">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">رقم الهوية / الإقامة <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class='bx bx-id-card text-primary'></i></span>
+                                <input type="text" class="form-control" id="idNumber" placeholder="1xxxxxxxxx">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">العمر <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="age" placeholder="25" min="1" max="120">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">الجنس <span class="text-danger">*</span></label>
+                            <select class="form-select" id="gender">
+                                <option value="">اختر الجنس</option>
+                                <option>ذكر</option>
+                                <option>أنثى</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">فصيلة الدم</label>
+                            <select class="form-select" id="bloodType">
+                                <option value="">غير معروف</option>
+                                <option>A+</option><option>A-</option>
+                                <option>B+</option><option>B-</option>
+                                <option>O+</option><option>O-</option>
+                                <option>AB+</option><option>AB-</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Service & Priority -->
+                <div class="section-card">
+                    <div class="section-card-title">
+                        <span class="title-icon"><i class='bx bx-clipboard'></i></span>
+                        نوع الخدمة الطبية
+                    </div>
+                    <div class="service-grid">
+                        <div class="service-card" data-service="فحص عام" onclick="selectService(this)">
+                            <span class="check-badge"><i class='bx bx-check'></i></span>
+                            <div class="service-card-icon s-blue"><i class='bx bx-search-alt'></i></div>
+                            <div class="service-card-label">فحص عام</div>
+                        </div>
+                        <div class="service-card" data-service="استشارة طبية" onclick="selectService(this)">
+                            <span class="check-badge"><i class='bx bx-check'></i></span>
+                            <div class="service-card-icon s-purple"><i class='bx bx-chat'></i></div>
+                            <div class="service-card-label">استشارة طبية</div>
+                        </div>
+                        <div class="service-card" data-service="تحاليل مخبرية" onclick="selectService(this)">
+                            <span class="check-badge"><i class='bx bx-check'></i></span>
+                            <div class="service-card-icon s-cyan"><i class='bx bx-test-tube'></i></div>
+                            <div class="service-card-label">تحاليل مخبرية</div>
+                        </div>
+                        <div class="service-card" data-service="أشعة وتصوير" onclick="selectService(this)">
+                            <span class="check-badge"><i class='bx bx-check'></i></span>
+                            <div class="service-card-icon s-orange"><i class='bx bx-scan'></i></div>
+                            <div class="service-card-label">أشعة وتصوير</div>
+                        </div>
+                        <div class="service-card" data-service="تقييم الطوارئ" onclick="selectService(this)">
+                            <span class="check-badge"><i class='bx bx-check'></i></span>
+                            <div class="service-card-icon s-pink"><i class='bx bx-first-aid'></i></div>
+                            <div class="service-card-label">تقييم الطوارئ</div>
+                        </div>
+                        <div class="service-card" data-service="متابعة دورية" onclick="selectService(this)">
+                            <span class="check-badge"><i class='bx bx-check'></i></span>
+                            <div class="service-card-icon s-green"><i class='bx bx-repeat'></i></div>
+                            <div class="service-card-label">متابعة دورية</div>
+                        </div>
+                    </div>
+
+                    <!-- Priority -->
+                    <div class="mt-4">
+                        <label class="form-label">مستوى الأولوية الطبية <span class="text-danger">*</span></label>
+                        <div class="priority-selector">
+                            <div class="priority-opt" data-priority="مستقرة" onclick="selectPriority(this,'normal')">
+                                <div class="priority-opt-icon poi-normal"><i class='bx bx-check-circle'></i></div>
+                                <div class="priority-opt-label pol-normal">حالة مستقرة</div>
+                                <div class="priority-opt-desc">أعراض خفيفة لا تستدعي تدخلاً عاجلاً</div>
+                            </div>
+                            <div class="priority-opt" data-priority="عاجلة" onclick="selectPriority(this,'urgent')">
+                                <div class="priority-opt-icon poi-urgent"><i class='bx bx-error-circle'></i></div>
+                                <div class="priority-opt-label pol-urgent">حالة عاجلة</div>
+                                <div class="priority-opt-desc">أعراض متوسطة تحتاج متابعة سريعة</div>
+                            </div>
+                            <div class="priority-opt" data-priority="حرجة" onclick="selectPriority(this,'emergency')">
+                                <div class="priority-opt-icon poi-emergency"><i class='bx bx-error'></i></div>
+                                <div class="priority-opt-label pol-emergency">حالة حرجة</div>
+                                <div class="priority-opt-desc">أعراض خطيرة تستلزم تدخلاً فورياً</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Symptoms -->
+                    <div class="mt-4">
+                        <label class="form-label">وصف الأعراض</label>
+                        <textarea class="form-control" id="symptoms" rows="3"
+                                  placeholder="اشرح أعراضك بالتفصيل لمساعدتنا في تحديد الأولوية بدقة..."></textarea>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Date & Doctor -->
+                <div class="section-card">
+                    <div class="section-card-title">
+                        <span class="title-icon"><i class='bx bx-calendar'></i></span>
+                        التاريخ والطبيب
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">التاريخ المفضل <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="apptDate" onchange="updateSlots(); syncSummary();">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">التخصص المطلوب</label>
+                            <select class="form-select" id="specialty">
+                                <option value="">جميع التخصصات</option>
+                                <option>طب عام</option>
+                                <option>طب طوارئ</option>
+                                <option>طب باطني</option>
+                                <option>جراحة عامة</option>
+                                <option>أطفال</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Doctors -->
+                    <label class="form-label mb-3">اختر الطبيب</label>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="doctor-card selected" data-doctor="د. عبدالعزيز الصالح" onclick="selectDoctor(this)">
+                                <div class="doctor-avatar da1"><i class='bx bx-user'></i></div>
+                                <div class="doctor-info">
+                                    <div class="doctor-name">د. عبدالعزيز الصالح</div>
+                                    <div class="doctor-spec">طب عام · طب طوارئ</div>
+                                    <div class="doctor-rating">★★★★★ <small class="text-muted">(124)</small></div>
+                                </div>
+                                <span class="avail-badge available">متاح</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doctor-card" data-doctor="د. نورة العتيبي" onclick="selectDoctor(this)">
+                                <div class="doctor-avatar da2"><i class='bx bx-user'></i></div>
+                                <div class="doctor-info">
+                                    <div class="doctor-name">د. نورة العتيبي</div>
+                                    <div class="doctor-spec">طب باطني · أمراض مزمنة</div>
+                                    <div class="doctor-rating">★★★★☆ <small class="text-muted">(87)</small></div>
+                                </div>
+                                <span class="avail-badge available">متاح</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doctor-card" data-doctor="د. فيصل الحربي" onclick="selectDoctor(this)">
+                                <div class="doctor-avatar da3"><i class='bx bx-user'></i></div>
+                                <div class="doctor-info">
+                                    <div class="doctor-name">د. فيصل الحربي</div>
+                                    <div class="doctor-spec">جراحة عامة · طوارئ</div>
+                                    <div class="doctor-rating">★★★★★ <small class="text-muted">(201)</small></div>
+                                </div>
+                                <span class="avail-badge limited">مواعيد محدودة</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="doctor-card" data-doctor="د. منى الزهراني" onclick="selectDoctor(this)">
+                                <div class="doctor-avatar da4"><i class='bx bx-user'></i></div>
+                                <div class="doctor-info">
+                                    <div class="doctor-name">د. منى الزهراني</div>
+                                    <div class="doctor-spec">طب أطفال · طب عام</div>
+                                    <div class="doctor-rating">★★★★☆ <small class="text-muted">(59)</small></div>
+                                </div>
+                                <span class="avail-badge available">متاح</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Slots -->
+                    <label class="form-label">الوقت المفضل <span class="text-danger">*</span></label>
+                    <div class="time-slots-grid" id="timeSlotsGrid"></div>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-dot ld-available"></span> متاح</div>
+                        <div class="legend-item"><span class="legend-dot ld-selected"></span> محدد</div>
+                        <div class="legend-item"><span class="legend-dot ld-busy"></span> محجوز</div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Notes -->
+                <div class="section-card">
+                    <div class="section-card-title">
+                        <span class="title-icon"><i class='bx bx-note'></i></span>
+                        ملاحظات إضافية
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">حساسية من أدوية؟</label>
+                            <select class="form-select" id="allergy">
+                                <option value="">لا يوجد</option>
+                                <option>بنسلين</option>
+                                <option>سلفا</option>
+                                <option>مسكنات</option>
+                                <option>أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">هل تتناول أدوية حالياً؟</label>
+                            <select class="form-select" id="currentMeds">
+                                <option value="">لا</option>
+                                <option>نعم – أدوية ضغط</option>
+                                <option>نعم – أدوية سكر</option>
+                                <option>نعم – أدوية أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">ملاحظات للطبيب</label>
+                            <textarea class="form-control" id="notes" rows="3"
+                                      placeholder="أي معلومات إضافية تود مشاركتها مع الطبيب..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /col-lg-8 -->
+
+            <!-- RIGHT SUMMARY -->
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h4><i class='bx bx-receipt'></i> ملخص الحجز</h4>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-user'></i> المريض</span>
+                        <span class="summary-val" id="sum-name">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-phone'></i> الجوال</span>
+                        <span class="summary-val" id="sum-phone">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-clipboard'></i> الخدمة</span>
+                        <span class="summary-val" id="sum-service">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-shield'></i> الأولوية</span>
+                        <span class="summary-val" id="sum-priority">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-user-pin'></i> الطبيب</span>
+                        <span class="summary-val" id="sum-doctor">د. عبدالعزيز الصالح</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-calendar'></i> التاريخ</span>
+                        <span class="summary-val" id="sum-date">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-key"><i class='bx bx-time'></i> الوقت</span>
+                        <span class="summary-val" id="sum-time">—</span>
+                    </div>
+
+                    <div class="estimated-time">
+                        <div class="et-label">وقت الانتظار التقديري</div>
+                        <div class="et-value" id="sum-wait">—</div>
+                    </div>
+
+                    <button class="btn btn-submit" onclick="submitBooking()">
+                        <i class='bx bx-calendar-check'></i> تأكيد الحجز
+                    </button>
+                    <div class="text-center mt-3">
+                        <small class="text-muted"><i class='bx bx-lock-alt'></i> بياناتك محمية وآمنة</small>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /row -->
+    </div>
+</section>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+    <div class="success-box">
+        <div class="success-icon-wrap"><i class='bx bx-check-double'></i></div>
+        <h2>تم تأكيد حجزك! 🎉</h2>
+        <p>سيتم التواصل معك على رقم جوالك لتأكيد الموعد</p>
+        <div class="booking-ref" id="bookingRef">—</div>
+        <div class="d-flex flex-column gap-2">
+            <button class="btn btn-done" onclick="window.location.href='patient-dashboard.html'">
+                <i class='bx bx-layout'></i> عرض مواعيدي
+            </button>
+            <button class="btn btn-outline-secondary mt-1" onclick="window.location.href='index.html'">
+                العودة للرئيسية
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ── GLOBALS ── */
+let selService = '', selPriority = '', selPriorityKey = '',
+    selDoctor = 'د. عبدالعزيز الصالح', selTime = '';
+
+const WAIT_TIMES = { normal:'~45 دقيقة', urgent:'~15 دقيقة', emergency:'فوري' };
+const TIMES = [
+    {t:'08:00',l:'08:00 ص'},{t:'09:00',l:'09:00 ص'},{t:'10:00',l:'10:00 ص'},
+    {t:'11:00',l:'11:00 ص'},{t:'12:00',l:'12:00 م'},{t:'13:00',l:'01:00 م'},
+    {t:'14:00',l:'02:00 م'},{t:'15:00',l:'03:00 م'},{t:'16:00',l:'04:00 م'},
+    {t:'17:00',l:'05:00 م'},
+];
+
+/* Min date */
+document.getElementById('apptDate').min = new Date().toISOString().split('T')[0];
+
+/* ── RENDER TIME SLOTS ── */
+function updateSlots() {
+    const busySet = new Set();
+    while (busySet.size < 3) busySet.add(Math.floor(Math.random() * TIMES.length));
+    document.getElementById('timeSlotsGrid').innerHTML = TIMES.map((t,i) => {
+        const busy = busySet.has(i);
+        return `<div class="time-slot ${busy?'busy':''}" data-time="${t.t}" onclick="selectTime(this)">
+            ${t.l}<div class="time-slot-sub">${busy?'محجوز':'30 د'}</div></div>`;
+    }).join('');
+    selTime = '';
+}
+updateSlots();
+
+/* ── SELECTIONS ── */
+function selectService(el) {
+    document.querySelectorAll('.service-card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    selService = el.dataset.service;
+    syncSummary();
+}
+function selectPriority(el, key) {
+    document.querySelectorAll('.priority-opt').forEach(p=>
+        p.classList.remove('sel-normal','sel-urgent','sel-emergency'));
+    el.classList.add(`sel-${key}`);
+    selPriority = el.dataset.priority;
+    selPriorityKey = key;
+    syncSummary();
+}
+function selectDoctor(el) {
+    document.querySelectorAll('.doctor-card').forEach(d=>d.classList.remove('selected'));
+    el.classList.add('selected');
+    selDoctor = el.dataset.doctor;
+    syncSummary();
+}
+function selectTime(el) {
+    if (el.classList.contains('busy')) return;
+    document.querySelectorAll('.time-slot').forEach(s=>s.classList.remove('selected'));
+    el.classList.add('selected');
+    selTime = el.dataset.time;
+    syncSummary();
+}
+
+/* ── LIVE SUMMARY ── */
+function syncSummary() {
+    const name  = document.getElementById('fullName').value || '—';
+    const phone = document.getElementById('phone').value    || '—';
+    const date  = document.getElementById('apptDate').value;
+    const dateF = date
+        ? new Date(date).toLocaleDateString('ar-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+        : '—';
+
+    document.getElementById('sum-name').textContent    = name;
+    document.getElementById('sum-phone').textContent   = phone;
+    document.getElementById('sum-service').textContent = selService || '—';
+    document.getElementById('sum-doctor').textContent  = selDoctor  || '—';
+    document.getElementById('sum-date').textContent    = dateF;
+    document.getElementById('sum-time').textContent    = selTime    || '—';
+    document.getElementById('sum-wait').textContent    = WAIT_TIMES[selPriorityKey] || '—';
+
+    const pEl = document.getElementById('sum-priority');
+    pEl.innerHTML = selPriority
+        ? `<span class="priority-pill pp-${selPriorityKey}">${selPriority}</span>`
+        : '—';
+
+    /* Steps */
+    const d1 = name !== '—' && phone !== '—';
+    const d2 = selService && selPriority;
+    const d3 = date && selTime;
+    setStep('s1','c1', d1, true);
+    setStep('s2','c2', d2, d1);
+    setStep('s3','c3', d3, d2);
+    setStep('s4', null, false, d3);
+}
+
+function setStep(sid, cid, done, active) {
+    const s = document.getElementById(sid);
+    s.classList.remove('active','done');
+    if (done)        s.classList.add('done');
+    else if (active) s.classList.add('active');
+    if (cid) document.getElementById(cid).classList.toggle('active', done || active);
+}
+
+/* Live listeners */
+['fullName','phone','email','apptDate'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', syncSummary);
+});
+
+/* ── SUBMIT ── */
+function submitBooking() {
+    const name   = document.getElementById('fullName').value.trim();
+    const phone  = document.getElementById('phone').value.trim();
+    const idNum  = document.getElementById('idNumber').value.trim();
+    const age    = document.getElementById('age').value;
+    const gender = document.getElementById('gender').value;
+    const date   = document.getElementById('apptDate').value;
+
+    if (!name||!phone||!idNum||!age||!gender)
+        return alert('⚠️ يرجى إكمال البيانات الشخصية (الاسم، الجوال، الهوية، العمر، الجنس)');
+    if (!selService)   return alert('⚠️ يرجى اختيار نوع الخدمة');
+    if (!selPriority)  return alert('⚠️ يرجى تحديد مستوى الأولوية');
+    if (!date)         return alert('⚠️ يرجى اختيار تاريخ الموعد');
+    if (!selTime)      return alert('⚠️ يرجى اختيار الوقت');
+
+    const ref = 'APT-' + Date.now().toString().slice(-6);
+    const booking = {
+        id: ref, name, phone, idNumber: idNum, age, gender,
+        bloodType  : document.getElementById('bloodType').value,
+        service    : selService,
+        priority   : selPriority,
+        priorityKey: selPriorityKey,
+        doctor     : selDoctor,
+        date, time : selTime,
+        allergy    : document.getElementById('allergy').value,
+        currentMeds: document.getElementById('currentMeds').value,
+        symptoms   : document.getElementById('symptoms').value,
+        notes      : document.getElementById('notes').value,
+        status     : selPriorityKey === 'emergency' ? 'حرجة' : 'قيد الانتظار',
+        createdAt  : new Date().toISOString()
+    };
+
+    const list = JSON.parse(localStorage.getItem('appointments') || '[]');
+    list.push(booking);
+    localStorage.setItem('appointments', JSON.stringify(list));
+
+    document.getElementById('bookingRef').textContent = ref;
+    document.getElementById('successOverlay').classList.add('show');
+}
+</script>
+</body>
+</html>

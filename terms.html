@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الشروط والأحكام - نظام فرز المواعيد الذكي</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Cairo',sans-serif;box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#2563eb;--secondary:#0ea5e9;
+  --success:#10b981;--dark:#1e293b;--muted:#64748b;
+  --gp:linear-gradient(135deg,#2563eb,#0ea5e9);
+}
+body{background:#f8fafc;overflow-x:hidden;}
+
+.navbar{
+  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  box-shadow:0 2px 20px rgba(0,0,0,.06);padding:1rem 0;
+  position:sticky;top:0;z-index:1000;
+}
+.navbar-brand{
+  font-weight:800;font-size:1.4rem;
+  background:var(--gp);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-link{font-weight:600;color:var(--dark)!important;transition:color .3s;}
+.nav-link:hover{color:var(--primary)!important;}
+.btn-nav{
+  background:var(--gp);border:none;padding:.6rem 1.6rem;
+  border-radius:50px;font-weight:700;color:#fff;
+  transition:all .3s;box-shadow:0 4px 15px rgba(37,99,235,.3);
+}
+.btn-nav:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.45);color:#fff;}
+
+.hero{
+  background:linear-gradient(135deg,#10b981,#059669);
+  padding:3.5rem 0;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;width:350px;height:350px;
+  background:rgba(255,255,255,.08);border-radius:50%;
+  top:-120px;left:-120px;animation:float 8s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translate(0,0);}50%{transform:translate(12px,-12px);}}
+.hero-content{position:relative;z-index:2;color:#fff;text-align:center;}
+.hero-content h1{font-size:2.5rem;font-weight:900;margin-bottom:.5rem;}
+.hero-content p{font-size:1rem;opacity:.9;}
+
+.content-section{padding:4rem 0;}
+.terms-container{
+  max-width:900px;margin:0 auto;
+  background:#fff;border-radius:24px;padding:3rem;
+  box-shadow:0 8px 30px rgba(37,99,235,.08);
+  border:2px solid #f1f5f9;
+}
+.last-updated{
+  background:rgba(16,185,129,.08);border-radius:12px;
+  padding:1rem 1.5rem;margin-bottom:2.5rem;
+  border:2px solid rgba(16,185,129,.15);
+}
+.last-updated i{color:var(--success);font-size:1.2rem;margin-left:.5rem;}
+.last-updated strong{color:var(--dark);}
+
+.section-title{
+  font-weight:900;font-size:1.5rem;color:var(--dark);
+  margin:2.5rem 0 1.2rem;padding-bottom:.8rem;
+  border-bottom:3px solid var(--success);
+  display:flex;align-items:center;gap:.7rem;
+}
+.section-title i{color:var(--success);font-size:1.7rem;}
+.section-title:first-of-type{margin-top:0;}
+
+.terms-text{
+  color:#475569;font-size:1rem;line-height:1.9;
+  margin-bottom:1.3rem;
+}
+.terms-text strong{color:var(--dark);font-weight:700;}
+
+.terms-list{
+  list-style:none;padding:0;margin:1.3rem 0;
+}
+.terms-list li{
+  padding:.7rem 0 .7rem 2.5rem;
+  position:relative;color:#475569;line-height:1.8;
+}
+.terms-list li::before{
+  content:'';position:absolute;right:0;top:.9rem;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--success);
+}
+
+.warning-box{
+  background:rgba(245,158,11,.08);border-radius:16px;
+  padding:1.5rem 2rem;margin:1.5rem 0;
+  border-right:4px solid #f59e0b;
+}
+.warning-box i{font-size:1.8rem;color:#f59e0b;margin-bottom:.8rem;}
+.warning-box h4{font-weight:800;color:var(--dark);margin-bottom:.7rem;font-size:1.1rem;}
+.warning-box p{color:#475569;line-height:1.8;margin:0;}
+
+.info-box{
+  background:rgba(37,99,235,.05);border-radius:16px;
+  padding:1.5rem 2rem;margin:1.5rem 0;
+  border-right:4px solid var(--primary);
+}
+.info-box i{font-size:1.8rem;color:var(--primary);margin-bottom:.8rem;}
+.info-box h4{font-weight:800;color:var(--dark);margin-bottom:.7rem;font-size:1.1rem;}
+.info-box p{color:#475569;line-height:1.8;margin:0;}
+
+.contact-cta{
+  background:linear-gradient(135deg,#f0f7ff,#e8f4fd);
+  border-radius:18px;padding:2rem;text-align:center;
+  margin-top:3rem;border:2px solid rgba(37,99,235,.1);
+}
+.contact-cta h3{font-weight:900;color:var(--dark);margin-bottom:.8rem;font-size:1.3rem;}
+.contact-cta p{color:var(--muted);margin-bottom:1.5rem;}
+.contact-cta a{
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:var(--gp);color:#fff;padding:.8rem 2rem;
+  border-radius:50px;text-decoration:none;font-weight:700;
+  transition:all .3s;box-shadow:0 4px 14px rgba(37,99,235,.3);
+}
+.contact-cta a:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.45);}
+
+.footer{
+  background:var(--dark);color:#fff;padding:3rem 0 1rem;
+}
+.footer h5{font-weight:800;margin-bottom:1rem;}
+.footer-links{list-style:none;padding:0;}
+.footer-links li{margin-bottom:.7rem;}
+.footer-links a{color:#94a3b8;text-decoration:none;transition:color .3s;}
+.footer-links a:hover{color:#fff;}
+
+@media(max-width:768px){
+  .hero-content h1{font-size:2rem;}
+  .terms-container{padding:2rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <i class='bx bx-health'></i> نظام فرز المواعيد الذكي
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html">من نحن</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html">اتصل بنا</a></li>
+        <li class="nav-item"><a class="nav-link" href="faq.html">الأسئلة الشائعة</a></li>
+      </ul>
+      <a href="booking.html" class="btn btn-nav"><i class='bx bx-calendar-plus'></i> احجز الآن</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-content">
+    <h1>الشروط والأحكام</h1>
+    <p>يرجى قراءة هذه الشروط بعناية قبل استخدام خدماتنا</p>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="content-section">
+  <div class="container">
+    <div class="terms-container">
+
+      <div class="last-updated">
+        <i class='bx bx-calendar'></i>
+        <strong>آخر تحديث:</strong> 19 فبراير 2025
+      </div>
+
+      <p class="terms-text">
+        مرحباً بك في <strong>نظام فرز المواعيد الذكي</strong>. باستخدامك لخدماتنا، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على أي من هذه الشروط، يرجى عدم استخدام خدماتنا.
+      </p>
+
+      <div class="warning-box">
+        <i class='bx bx-error'></i>
+        <h4>إخلاء مسؤولية طبية مهم</h4>
+        <p>
+          نظامنا يساعد في تنظيم المواعيد وتحديد الأولويات، لكنه <strong>لا يقدم استشارات طبية</strong>. التشخيص والعلاج النهائي يتم من قبل الطبيب المختص فقط. في حالات الطوارئ الطبية الحقيقية، اتصل فوراً بخدمات الطوارئ (997).
+        </p>
+      </div>
+
+      <h2 class="section-title">
+        <i class='bx bx-user-check'></i>
+        قبول الشروط
+      </h2>
+      <p class="terms-text">
+        باستخدامك لموقعنا أو تطبيقاتنا أو خدماتنا، فإنك:
+      </p>
+      <ul class="terms-list">
+        <li>توافق على الالتزام بهذه الشروط والأحكام</li>
+        <li>تؤكد أنك تبلغ من العمر 18 عاماً أو أكثر، أو لديك موافقة ولي الأمر</li>
+        <li>تقر بأنك مسؤول عن دقة المعلومات التي تقدمها</li>
+        <li>توافق على تلقي الإشعارات والتذكيرات المتعلقة بمواعيدك</li>
+      </ul>
+
+      <h2 class="section-title">
+        <i class='bx bx-shield-alt-2'></i>
+        الخدمات المقدمة
+      </h2>
+      <p class="terms-text">
+        نحن نقدم منصة إلكترونية لحجز المواعيد الطبية تشمل:
+      </p>
+      <ul class="terms-list">
+        <li>نظام فرز ذكي يحدد الأولوية الطبية بناءً على الأعراض والحالة</li>
+        <li>حجز وإدارة المواعيد مع الأطباء والعيادات المشاركة</li>
+        <li>إشعارات وتذكيرات بمواعيدك</li>
+        <li>الوصول إلى سجلك الطبي وتاريخ مواعيدك</li>
+        <li>إمكانية إلغاء أو تعديل المواعيد</li>
+      </ul>
+
+      <h2 class="section-title">
+        <i class='bx bx-user-circle'></i>
+        حسابك ومسؤولياتك
+      </h2>
+      <p class="terms-text">
+        عند إنشاء حساب في نظامنا، فإنك توافق على:
+      </p>
+      <ul class="terms-list">
+        <li><strong>الدقة:</strong> تقديم معلومات صحيحة ودقيقة وكاملة</li>
+        <li><strong>التحديث:</strong> تحديث معلوماتك في حال حدوث أي تغيير</li>
+        <li><strong>السرية:</strong> الحفاظ على سرية كلمة المرور وعدم مشاركتها</li>
+        <li><strong>المسؤولية:</strong> تتحمل مسؤولية جميع الأنشطة التي تتم عبر حسابك</li>
+        <li><strong>الإبلاغ:</strong> إبلاغنا فوراً في حال الاشتباه بأي استخدام غير مصرح به</li>
+      </ul>
+
+      <div class="info-box">
+        <i class='bx bx-info-circle'></i>
+        <h4>حماية حسابك</h4>
+        <p>
+          استخدم كلمة مرور قوية وفريدة. لا تشارك بيانات دخولك مع أي شخص. قم بتسجيل الخروج من الأجهزة العامة. إذا نسيت كلمة المرور، استخدم خاصية "نسيت كلمة المرور" لإعادة تعيينها بأمان.
+        </p>
+      </div>
+
+      <h2 class="section-title">
+        <i class='bx bx-calendar-check'></i>
+        سياسة الحجز والإلغاء
+      </h2>
+      <p class="terms-text">
+        عند حجز موعد طبي:
+      </p>
+      <ul class="terms-list">
+        <li><strong>التأكيد:</strong> يجب تأكيد الموعد من قبل العيادة أو الطبيب</li>
+        <li><strong>الإلغاء المسبق:</strong> يُفضل الإلغاء قبل 24 ساعة على الأقل من الموعد</li>
+        <li><strong>التأخير:</strong> التأخر عن الموعد أكثر من 15 دقيقة قد يؤدي إلى إلغائه</li>
+        <li><strong>عدم الحضور:</strong> عدم الحضور المتكرر قد يؤدي إلى تعليق الحساب</li>
+        <li><strong>الرسوم:</strong> الخدمة مجانية، لكن رسوم الكشف الطبي حسب تعرفة العيادة</li>
+      </ul>
+
+      <h2 class="section-title">
+        <i class='bx bx-shield-x'></i>
+        إخلاء المسؤولية
+      </h2>
+      <p class="terms-text">
+        نظامنا هو أداة مساعدة فقط، وبالتالي:
+      </p>
+      <ul class="terms-list">
+        <li>نحن <strong>لا نقدم استشارات طبية</strong> أو تشخيصات أو علاجات</li>
+        <li>تحديد الأولوية هو <strong>إرشادي فقط</strong> والقرار النهائي للطبيب</li>
+        <li>لا نتحمل مسؤولية أي قرارات طبية تتخذها بناءً على النظام</li>
+        <li>نحن <strong>لسنا مسؤولين</strong> عن جودة الخدمات الطبية المقدمة من الأطباء</li>
+        <li>في حالات الطوارئ، اتصل بخدمات الطوارئ مباشرة (997)</li>
+      </ul>
+
+      <div class="warning-box">
+        <i class='bx bxs-error-alt'></i>
+        <h4>⚠️ تحذير هام — حالات الطوارئ</h4>
+        <p>
+          إذا كنت تعاني من أعراض حادة وخطيرة مثل: ألم شديد في الصدر، صعوبة تنفس حادة، فقدان وعي، نزيف غزير، أو أي حالة تهدد الحياة — <strong>لا تنتظر الموعد</strong> واتصل فوراً بخدمات الطوارئ (997) أو توجه إلى أقرب قسم طوارئ.
+        </p>
+      </div>
+
+      <h2 class="section-title">
+        <i class='bx bx-x-circle'></i>
+        الاستخدام المحظور
+      </h2>
+      <p class="terms-text">
+        يُحظر عليك استخدام خدماتنا للأغراض التالية:
+      </p>
+      <ul class="terms-list">
+        <li>تقديم معلومات كاذبة أو مضللة عمداً</li>
+        <li>انتحال شخصية شخص آخر</li>
+        <li>إساءة استخدام النظام أو محاولة اختراقه</li>
+        <li>حجز مواعيد وهمية أو متكررة دون نية للحضور</li>
+        <li>استخدام برامج آلية (bots) للتفاعل مع النظام</li>
+        <li>التحايل على نظام الأولويات</li>
+      </ul>
+
+      <h2 class="section-title">
+        <i class='bx bx-lock-open-alt'></i>
+        الملكية الفكرية
+      </h2>
+      <p class="terms-text">
+        جميع المحتويات والتصاميم والشعارات والبرمجيات الخاصة بالنظام محمية بحقوق الملكية الفكرية ومملوكة لنا. لا يجوز نسخها أو توزيعها أو استخدامها تجارياً دون إذن كتابي مسبق.
+      </p>
+
+      <h2 class="section-title">
+        <i class='bx bx-error-circle'></i>
+        حدود المسؤولية
+      </h2>
+      <p class="terms-text">
+        نحن غير مسؤولين عن:
+      </p>
+      <ul class="terms-list">
+        <li>أي أضرار مباشرة أو غير مباشرة ناتجة عن استخدام الخدمة</li>
+        <li>انقطاع الخدمة أو الأخطاء التقنية</li>
+        <li>فقدان البيانات أو المعلومات</li>
+        <li>تصرفات أو إهمال الأطباء أو مقدمي الرعاية الصحية</li>
+        <li>أي قرارات طبية أو علاجية تتخذها</li>
+      </ul>
+
+      <h2 class="section-title">
+        <i class='bx bx-refresh'></i>
+        التعديلات على الشروط
+      </h2>
+      <p class="terms-text">
+        نحتفظ بالحق في تعديل هذه الشروط في أي وقت. سيتم إشعارك بأي تغييرات جوهرية عبر البريد الإلكتروني أو إشعار على الموقع. استمرارك في استخدام الخدمة بعد التعديلات يعني موافقتك على الشروط الجديدة.
+      </p>
+
+      <h2 class="section-title">
+        <i class='bx bx-x-circle'></i>
+        إنهاء الحساب
+      </h2>
+      <p class="terms-text">
+        نحتفظ بالحق في تعليق أو إنهاء حسابك في حال:
+      </p>
+      <ul class="terms-list">
+        <li>انتهاك أي من هذه الشروط والأحكام</li>
+        <li>تقديم معلومات كاذبة أو مضللة</li>
+        <li>إساءة استخدام الخدمة أو التسبب في ضرر للآخرين</li>
+        <li>عدم الحضور المتكرر للمواعيد دون إلغاء مسبق</li>
+      </ul>
+      <p class="terms-text">
+        يمكنك أنت أيضاً حذف حسابك في أي وقت من خلال إعدادات الحساب أو بالتواصل معنا.
+      </p>
+
+      <h2 class="section-title">
+        <i class='bx bx-globe'></i>
+        القانون الحاكم
+      </h2>
+      <p class="terms-text">
+        تخضع هذه الشروط والأحكام لقوانين المملكة العربية السعودية. أي نزاع ينشأ عن استخدام الخدمة يخضع للاختصاص القضائي للمحاكم السعودية.
+      </p>
+
+      <div class="contact-cta">
+        <h3>لديك أسئلة حول الشروط والأحكام؟</h3>
+        <p>فريقنا القانوني مستعد لمساعدتك</p>
+        <a href="contact.html">
+          <i class='bx bx-envelope'></i> تواصل معنا
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <h5>نظام فرز المواعيد الذكي</h5>
+        <p style="color:#94a3b8;font-size:.9rem;">
+          نظام حجز مواعيد طبية متطور يعتمد على الذكاء في تصنيف الحالات لضمان وصول الرعاية الصحية للجميع.
+        </p>
+      </div>
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h5>روابط سريعة</h5>
+        <ul class="footer-links">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="about.html">من نحن</a></li>
+          <li><a href="booking.html">احجز موعد</a></li>
+          <li><a href="faq.html">الأسئلة الشائعة</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5>الدعم</h5>
+        <ul class="footer-links">
+          <li><a href="contact.html">اتصل بنا</a></li>
+          <li><a href="privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms.html">الشروط والأحكام</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5>تواصل معنا</h5>
+        <ul class="footer-links">
+          <li><i class='bx bx-envelope'></i> info@smartbooking.com</li>
+          <li><i class='bx bx-phone'></i> +966 50 123 4567</li>
+          <li><i class='bx bx-map'></i> الرياض، السعودية</li>
+        </ul>
+      </div>
+    </div>
+    <hr style="border-color:rgba(255,255,255,.1);margin:2rem 0 1rem;">
+    <div class="text-center">
+      <p style="color:#94a3b8;margin:0;">&copy; 2025 نظام فرز المواعيد الذكي. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

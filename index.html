@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام فرز المواعيد الذكي - الصفحة الرئيسية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- Google Fonts - Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0ea5e9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+        }
+        
+        body {
+            background: var(--light-color);
+            overflow-x: hidden;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-color) !important;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .btn-primary-custom {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 0.6rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -200px;
+            left: -200px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -150px;
+            right: -150px;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .hero-image {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 5rem 0;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            font-size: 1.2rem;
+            color: #64748b;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid #f1f5f9;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .feature-icon.blue {
+            background: var(--gradient-primary);
+        }
+        
+        .feature-icon.purple {
+            background: var(--gradient-1);
+        }
+        
+        .feature-icon.pink {
+            background: var(--gradient-2);
+        }
+        
+        .feature-icon.cyan {
+            background: var(--gradient-3);
+        }
+        
+        .feature-card h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.8;
+        }
+        
+        /* How it Works Section */
+        .how-it-works {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .step-card h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--dark-color);
+        }
+        
+        .step-card p {
+            color: #64748b;
+            line-height: 1.8;
+        }
+        
+        .step-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* Priority Badges Section */
+        .priority-section {
+            padding: 5rem 0;
+            background: white;
+        }
+        
+        .priority-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 3px solid;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .priority-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .priority-card.normal {
+            border-color: var(--success-color);
+        }
+        
+        .priority-card.urgent {
+            border-color: var(--warning-color);
+        }
+        
+        .priority-card.emergency {
+            border-color: var(--danger-color);
+        }
+        
+        .priority-badge {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .priority-badge.normal {
+            background: var(--success-color);
+        }
+        
+        .priority-badge.urgent {
+            background: var(--warning-color);
+        }
+        
+        .priority-badge.emergency {
+            background: var(--danger-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .priority-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .priority-card.normal h3 {
+            color: var(--success-color);
+        }
+        
+        .priority-card.urgent h3 {
+            color: var(--warning-color);
+        }
+        
+        .priority-card.emergency h3 {
+            color: var(--danger-color);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 0;
+            background: var(--gradient-1);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+        
+        .btn-white-custom {
+            background: white;
+            color: var(--primary-color);
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-white-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 1.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class='bx bx-health'></i> نظام فرز المواعيد الذكي
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">المميزات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">كيف يعمل</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#priority">مستويات الأولوية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">تواصل معنا</a>
+                    </li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="admin.html" class="btn btn-outline-primary">
+                        <i class='bx bx-user-circle'></i> لوحة التحكم
+                    </a>
+                    <button class="btn btn-primary-custom">
+                        <i class='bx bx-calendar-plus'></i> احجز الآن
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1>نظام ذكي لحجز المواعيد الطبية</h1>
+                    <p>الأولوية للحالة الطبية، وليس للوقت! نظام فرز تلقائي يضمن وصول الحالات الحرجة للرعاية الطبية بأسرع وقت ممكن.</p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-white-custom">
+                            <i class='bx bx-calendar-check'></i> ابدأ الحجز الآن
+                        </button>
+                        <button class="btn btn-outline-light" style="padding: 1rem 2rem; border-radius: 50px; font-weight: 600;">
+                            <i class='bx bx-play-circle'></i> شاهد الفيديو
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">15K+</span>
+                            <span class="stat-label">مريض راضٍ</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">طبيب مشارك</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">99%</span>
+                            <span class="stat-label">دقة التصنيف</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 hero-image text-center">
+                    <i class='bx bx-heart-circle' style="font-size: 25rem; color: rgba(255,255,255,0.9);"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>لماذا نظامنا مختلف؟</h2>
+                <p>تقنية متطورة لضمان أفضل تجربة للمرضى والأطباء</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon blue">
+                            <i class='bx bx-brain'></i>
+                        </div>
+                        <h4>فرز ذكي تلقائي</h4>
+                        <p>نظام تصنيف متقدم يحلل الأعراض ويحدد مستوى الخطورة تلقائياً بدقة عالية</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon purple">
+                            <i class='bx bx-time-five'></i>
+                        </div>
+                        <h4>توفير الوقت</h4>
+                        <p>لا مزيد من الانتظار الطويل! الحالات الحرجة تحصل على أولوية فورية</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon pink">
+                            <i class='bx bx-bell-plus'></i>
+                        </div>
+                        <h4>إنذارات فورية</h4>
+                        <p>تنبيهات لحظية للطوارئ تصل للأطباء والمستشفيات في الوقت المناسب</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon cyan">
+                            <i class='bx bx-mobile-alt'></i>
+                        </div>
+                        <h4>متوافق مع الجوال</h4>
+                        <p>احجز من أي مكان وأي جهاز بواجهة سهلة وسريعة الاستخدام</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>كيف يعمل النظام؟</h2>
+                <p>عملية بسيطة وسريعة في 4 خطوات فقط</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class='bx bx-user-plus'></i>
+                        </div>
+                        <h4>التسجيل</h4>
+                        <p>أنشئ حسابك الشخصي بسهولة في دقائق معدودة</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class='bx bx-clipboard'></i>
+                        </div>
+                        <h4>املأ الاستبيان</h4>
+                        <p>أجب على أسئلة طبية بسيطة عن حالتك الصحية</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class='bx bx-analyse'></i>
+                        </div>
+                        <h4>التحليل الذكي</h4>
+                        <p>النظام يحلل إجاباتك ويحدد مستوى الأولوية</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class='bx bx-calendar-check'></i>
+                        </div>
+                        <h4>احصل على موعدك</h4>
+                        <p>موعد مناسب بناءً على حالتك الصحية</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Priority Levels Section -->
+    <section class="priority-section" id="priority">
+        <div class="container">
+            <div class="section-title">
+                <h2>مستويات الأولوية الطبية</h2>
+                <p>نظام ذكي يضمن حصول كل مريض على الرعاية المناسبة</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="priority-card normal">
+                        <div class="priority-badge normal">
+                            <i class='bx bx-check-circle'></i>
+                        </div>
+                        <h3>حالة مستقرة</h3>
+                        <p class="text-muted mb-3">Normal Case</p>
+                        <ul class="text-end" style="list-style: none; padding: 0;">
+                            <li class="mb-2"><i class='bx bx-check text-success'></i> أعراض خفيفة</li>
+                            <li class="mb-2"><i class='bx bx-check text-success'></i> لا توجد حالة طارئة</li>
+                            <li class="mb-2"><i class='bx bx-check text-success'></i> مواعيد عادية متاحة</li>
+                            <li class="mb-2"><i class='bx bx-check text-success'></i> متابعة روتينية</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="priority-card urgent">
+                        <div class="priority-badge urgent">
+                            <i class='bx bx-error-circle'></i>
+                        </div>
+                        <h3>حالة عاجلة</h3>
+                        <p class="text-muted mb-3">Urgent Case</p>
+                        <ul class="text-end" style="list-style: none; padding: 0;">
+                            <li class="mb-2"><i class='bx bx-check text-warning'></i> أعراض متوسطة</li>
+                            <li class="mb-2"><i class='bx bx-check text-warning'></i> تحتاج رعاية سريعة</li>
+                            <li class="mb-2"><i class='bx bx-check text-warning'></i> أولوية في المواعيد</li>
+                            <li class="mb-2"><i class='bx bx-check text-warning'></i> تنبيه للطبيب</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="priority-card emergency">
+                        <div class="priority-badge emergency">
+                            <i class='bx bx-error'></i>
+                        </div>
+                        <h3>حالة حرجة</h3>
+                        <p class="text-muted mb-3">Emergency Case</p>
+                        <ul class="text-end" style="list-style: none; padding: 0;">
+                            <li class="mb-2"><i class='bx bx-check text-danger'></i> أعراض خطيرة</li>
+                            <li class="mb-2"><i class='bx bx-check text-danger'></i> تحتاج تدخل فوري</li>
+                            <li class="mb-2"><i class='bx bx-check text-danger'></i> إنذار للطوارئ</li>
+                            <li class="mb-2"><i class='bx bx-check text-danger'></i> توجيه للمستشفى</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>جاهز لتجربة الحجز الذكي؟</h2>
+            <p>انضم لآلاف المرضى الذين اختاروا نظامنا للحصول على رعاية صحية أفضل</p>
+            <button class="btn btn-white-custom">
+                <i class='bx bx-rocket'></i> ابدأ الآن مجاناً
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3">نظام فرز المواعيد الذكي</h4>
+                    <p class="text-muted">نظام حجز مواعيد طبية متطور يعتمد على الذكاء في تصنيف الحالات لضمان وصول الرعاية الصحية للجميع بكفاءة.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class='bx bxl-facebook'></i></a>
+                        <a href="#" class="social-link"><i class='bx bxl-twitter'></i></a>
+                        <a href="#" class="social-link"><i class='bx bxl-instagram'></i></a>
+                        <a href="#" class="social-link"><i class='bx bxl-linkedin'></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">روابط سريعة</h5>
+                    <ul class="footer-links">
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#how-it-works">كيف يعمل</a></li>
+                        <li><a href="#priority">الأولويات</a></li>
+                        <li><a href="#">من نحن</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="mb-3">الدعم</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">مركز المساعدة</a></li>
+                        <li><a href="#">الأسئلة الشائعة</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">الشروط والأحكام</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="mb-3">تواصل معنا</h5>
+                    <ul class="footer-links">
+                        <li><i class='bx bx-envelope'></i> info@smartbooking.com</li>
+                        <li><i class='bx bx-phone'></i> +966 50 123 4567</li>
+                        <li><i class='bx bx-map'></i> الرياض، المملكة العربية السعودية</li>
+                    </ul>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0 1rem;">
+            <div class="text-center">
+                <p class="text-muted mb-0">&copy; 2025 نظام فرز المواعيد الذكي. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
