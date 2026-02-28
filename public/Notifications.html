@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإشعارات - نظام فرز المواعيد الذكي</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/notification.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;width:100%;flex-wrap:wrap;gap:1rem;">
+        <a class="navbar-brand" href="index.html">
+          <i class='bx bx-health'></i> نظام فرز المواعيد الذكي
+        </a>
+        <a href="patient-dashboard.html" class="btn-nav">
+          <i class='bx bx-arrow-back'></i> العودة للوحة التحكم
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container notifications-container">
+
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">
+        <i class='bx bx-bell'></i>
+        الإشعارات
+      </h1>
+      <div class="page-actions">
+        <button class="btn-action btn-primary" onclick="markAllRead()">
+          <i class='bx bx-check-double'></i> تحديد الكل كمقروء
+        </button>
+        <button class="btn-action btn-outline" onclick="deleteAll()">
+          <i class='bx bx-trash'></i> حذف الكل
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-tabs">
+      <button class="filter-tab active" data-filter="all" onclick="filterNotifications('all')">
+        <i class='bx bx-grid-alt'></i> الكل
+        <span class="tab-badge" id="badge-all">0</span>
+      </button>
+      <button class="filter-tab" data-filter="unread" onclick="filterNotifications('unread')">
+        <i class='bx bx-error-circle'></i> غير مقروءة
+        <span class="tab-badge" id="badge-unread">0</span>
+      </button>
+      <button class="filter-tab" data-filter="appointments" onclick="filterNotifications('appointments')">
+        <i class='bx bx-calendar'></i> المواعيد
+        <span class="tab-badge" id="badge-appointments">0</span>
+      </button>
+      <button class="filter-tab" data-filter="urgent" onclick="filterNotifications('urgent')">
+        <i class='bx bx-error'></i> عاجل
+        <span class="tab-badge" id="badge-urgent">0</span>
+      </button>
+      <button class="filter-tab" data-filter="system" onclick="filterNotifications('system')">
+        <i class='bx bx-cog'></i> النظام
+        <span class="tab-badge" id="badge-system">0</span>
+      </button>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="notifications-list" id="notificationsList"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <i class='bx bx-bell-off'></i>
+      <h3>لا توجد إشعارات</h3>
+      <p>ستظهر الإشعارات الجديدة هنا</p>
+    </div>
+
+  </div>
+
+  <script>
+    let notifications = [
+      {
+        id: 1,
+        type: 'danger',
+        category: 'urgent',
+        title: 'حالة طوارئ - تحتاج تدخل فوري',
+        text: 'تم استلام حالة طوارئ جديدة تتطلب تدخلاً طبياً فورياً. المريض: خالد الغامدي',
+        time: 'منذ 5 دقائق',
+        timestamp: Date.now() - 300000,
+        unread: true,
+        icon: 'bx-error'
+      },
+      {
+        id: 2,
+        type: 'warning',
+        category: 'appointments',
+        title: 'تذكير بموعد قادم',
+        text: 'لديك موعد غداً الساعة 10:00 صباحاً مع د. عبدالعزيز الصالح - طب عام',
+        time: 'منذ ساعة',
+        timestamp: Date.now() - 3600000,
+        unread: true,
+        icon: 'bx-calendar-event'
+      },
+      {
+        id: 3,
+        type: 'success',
+        category: 'appointments',
+        title: 'تم تأكيد موعدك',
+        text: 'تم تأكيد موعدك بنجاح. التاريخ: 25 فبراير 2025 - الوقت: 09:00 ص',
+        time: 'منذ 3 ساعات',
+        timestamp: Date.now() - 10800000,
+        unread: false,
+        icon: 'bx-check-circle'
+      },
+      {
+        id: 4,
+        type: 'info',
+        category: 'system',
+        title: 'تحديث النظام',
+        text: 'تم تحديث النظام بنجاح. تم إضافة ميزات جديدة لتحسين تجربتك',
+        time: 'منذ يوم',
+        timestamp: Date.now() - 86400000,
+        unread: false,
+        icon: 'bx-info-circle'
+      },
+      {
+        id: 5,
+        type: 'success',
+        category: 'appointments',
+        title: 'اكتملت زيارتك',
+        text: 'تم إنهاء زيارتك بنجاح. يمكنك تقييم الزيارة والطبيب من لوحة التحكم',
+        time: 'منذ يومين',
+        timestamp: Date.now() - 172800000,
+        unread: false,
+        icon: 'bx-clipboard'
+      }
+    ];
+
+    let currentFilter = 'all';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderNotifications();
+      updateBadges();
+    });
+
+    function renderNotifications() {
+      const filtered = notifications.filter(n => {
+        if (currentFilter === 'all') return true;
+        if (currentFilter === 'unread') return n.unread;
+        return n.category === currentFilter;
+      });
+
+      const list = document.getElementById('notificationsList');
+      const empty = document.getElementById('emptyState');
+
+      if (!filtered.length) {
+        list.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      list.style.display = 'block';
+      empty.style.display = 'none';
+
+      list.innerHTML = filtered.map(n => `
+    <div class="notification-item ${n.unread ? 'unread' : ''}" onclick="markRead(${n.id})">
+      <div class="notification-icon-wrap notif-${n.type}">
+        <i class='bx ${n.icon}'></i>
+      </div>
+      <div class="notification-content">
+        <div class="notification-title">${n.title}</div>
+        <div class="notification-text">${n.text}</div>
+        <div class="notification-meta">
+          <span class="notification-time">
+            <i class='bx bx-time-five'></i> ${n.time}
+          </span>
+          <span class="notification-category">${getCategoryLabel(n.category)}</span>
+        </div>
+      </div>
+      <div class="notification-actions">
+        ${n.unread ? `
+          <button class="notif-action-btn mark" onclick="event.stopPropagation();markRead(${n.id})" title="تحديد كمقروء">
+            <i class='bx bx-check'></i>
+          </button>
+        ` : ''}
+        <button class="notif-action-btn delete" onclick="event.stopPropagation();deleteNotif(${n.id})" title="حذف">
+          <i class='bx bx-trash'></i>
+        </button>
+      </div>
+    </div>
+  `).join('');
+    }
+
+    function getCategoryLabel(cat) {
+      const labels = {
+        urgent: 'عاجل',
+        appointments: 'المواعيد',
+        system: 'النظام'
+      };
+      return labels[cat] || cat;
+    }
+
+    function updateBadges() {
+      document.getElementById('badge-all').textContent = notifications.length;
+      document.getElementById('badge-unread').textContent = notifications.filter(n => n.unread).length;
+      document.getElementById('badge-appointments').textContent = notifications.filter(n => n.category === 'appointments').length;
+      document.getElementById('badge-urgent').textContent = notifications.filter(n => n.category === 'urgent').length;
+      document.getElementById('badge-system').textContent = notifications.filter(n => n.category === 'system').length;
+    }
+
+    function filterNotifications(filter) {
+      currentFilter = filter;
+
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.closest('.filter-tab').classList.add('active');
+
+      renderNotifications();
+    }
+
+    function markRead(id) {
+      const notif = notifications.find(n => n.id === id);
+      if (notif) notif.unread = false;
+      renderNotifications();
+      updateBadges();
+    }
+
+    function deleteNotif(id) {
+      notifications = notifications.filter(n => n.id !== id);
+      renderNotifications();
+      updateBadges();
+    }
+
+    function markAllRead() {
+      notifications.forEach(n => n.unread = false);
+      renderNotifications();
+      updateBadges();
+    }
+
+    function deleteAll() {
+      if (!confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) {
+        return;
+      }
+      notifications = [];
+      renderNotifications();
+      updateBadges();
+    }
+  </script>
+
+</body>
+
+</html>

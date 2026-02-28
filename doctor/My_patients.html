@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرضاي — شفاء+</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/shared-dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="../assets/css/doctor-dashboard.css">
+    <style>
+        .page-hero {
+            background: var(--doc-gp);
+            border-radius: 24px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 55px var(--doc-shadow);
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .page-hero-inner {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-hero h1 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .page-hero p {
+            color: rgba(255, 255, 255, .8);
+            font-size: .9rem;
+            margin-top: .3rem;
+            font-weight: 600;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, .2);
+            border-radius: 14px;
+            padding: .6rem 1.2rem;
+            color: #fff;
+            font-weight: 800;
+            font-size: .88rem;
+            border: 1.5px solid rgba(255, 255, 255, .3);
+        }
+
+        /* Controls */
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            background: #fff;
+            border-radius: 14px;
+            padding: .7rem 1.1rem;
+            border: 1.5px solid var(--doc-border);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+        }
+
+        .search-box i {
+            color: var(--doc-muted);
+            font-size: 1.1rem;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+            font-size: .9rem;
+            width: 100%;
+            background: transparent;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .ft {
+            padding: .5rem 1.1rem;
+            border-radius: 50px;
+            font-family: 'Cairo', sans-serif;
+            font-size: .82rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1.5px solid var(--doc-border);
+            background: #f8fafc;
+            color: var(--doc-muted);
+            transition: var(--doc-transition);
+        }
+
+        .ft:hover {
+            border-color: var(--doc-primary);
+            color: var(--doc-primary);
+        }
+
+        .ft.active {
+            background: var(--doc-gp);
+            color: #fff;
+            border-color: var(--doc-primary);
+        }
+
+        /* Patients grid */
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .patient-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1.5px solid var(--doc-border);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, .04);
+            transition: var(--doc-transition);
+            cursor: pointer;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, .1);
+            border-color: var(--doc-primary);
+        }
+
+        .patient-card-top {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .patient-av {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--doc-gp);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .patient-av.female {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+        }
+
+        .patient-nm {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--doc-dark);
+        }
+
+        .patient-meta {
+            font-size: .78rem;
+            color: var(--doc-muted);
+            font-weight: 700;
+            margin-top: .2rem;
+        }
+
+        .chronic-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+            margin-bottom: .9rem;
+        }
+
+        .cc {
+            font-size: .72rem;
+            font-weight: 800;
+            padding: .25rem .7rem;
+            border-radius: 50px;
+            background: rgba(239, 68, 68, .08);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, .2);
+        }
+
+        .cc.none {
+            background: rgba(16, 185, 129, .08);
+            color: #059669;
+            border-color: rgba(16, 185, 129, .2);
+        }
+
+        .patient-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: .6rem;
+            margin-bottom: 1rem;
+        }
+
+        .ps-item {
+            text-align: center;
+            padding: .5rem;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .ps-num {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--doc-primary);
+        }
+
+        .ps-lbl {
+            font-size: .68rem;
+            color: var(--doc-muted);
+            font-weight: 700;
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: .6rem;
+        }
+
+        .pa-btn {
+            flex: 1;
+            padding: .55rem;
+            border-radius: 10px;
+            border: 1.5px solid var(--doc-border);
+            background: #f8fafc;
+            font-family: 'Cairo', sans-serif;
+            font-size: .8rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .4rem;
+            color: var(--doc-dark);
+            transition: var(--doc-transition);
+        }
+
+        .pa-btn:hover {
+            background: var(--doc-primary-l);
+            color: var(--doc-primary);
+            border-color: var(--doc-primary);
+        }
+
+        .pa-btn.primary {
+            background: var(--doc-gp);
+            color: #fff;
+            border-color: var(--doc-primary);
+        }
+
+        .pa-btn.primary:hover {
+            opacity: .9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--doc-muted);
+            grid-column: 1/-1;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: .4;
+            display: block;
+        }
+
+        /* Patient modal/sheet */
+        .patient-sheet {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: min(480px, 100%);
+            height: 100%;
+            background: #fff;
+            z-index: 2000;
+            box-shadow: -10px 0 40px rgba(15, 23, 42, .15);
+            transition: right .35s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .patient-sheet.open {
+            right: 0;
+        }
+
+        .sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .45);
+            z-index: 1999;
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+
+        .sheet-overlay.show {
+            display: block;
+        }
+
+        .sheet-head {
+            background: var(--doc-gp);
+            padding: 1.5rem 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sheet-head h2 {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 900;
+        }
+
+        .sheet-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .sheet-section {
+            margin-bottom: 1.4rem;
+        }
+
+        .sheet-sec-title {
+            font-size: .8rem;
+            font-weight: 800;
+            color: var(--doc-muted);
+            margin-bottom: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .sheet-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .7rem;
+        }
+
+        .si {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: .7rem .9rem;
+            border: 1.5px solid var(--doc-border);
+        }
+
+        .si-lbl {
+            font-size: .72rem;
+            color: var(--doc-muted);
+            font-weight: 700;
+            margin-bottom: .2rem;
+        }
+
+        .si-val {
+            font-size: .9rem;
+            font-weight: 800;
+            color: var(--doc-dark);
+        }
+
+        .hist-item {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            padding: .7rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1.5px solid var(--doc-border);
+            margin-bottom: .5rem;
+            cursor: pointer;
+            transition: var(--doc-transition);
+        }
+
+        .hist-item:hover {
+            border-color: var(--doc-primary);
+        }
+
+        .hi-date {
+            font-size: .75rem;
+            font-weight: 800;
+            color: var(--doc-muted);
+            min-width: 55px;
+        }
+
+        .hi-info {
+            flex: 1;
+        }
+
+        .hi-spec {
+            font-size: .85rem;
+            font-weight: 900;
+            color: var(--doc-dark);
+        }
+
+        .hi-status {
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--doc-muted);
+        }
+
+        @media (max-width: 600px) {
+            .patients-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-hero h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <button class="icon-btn mobile-toggle" id="mobileToggle"><i class='bx bx-menu'></i></button>
+                <div class="brand-icon"><i class='bx bx-plus-medical'></i></div>
+                <div class="brand-text">شفاء<span>+</span></div>
+            </div>
+            <div class="nav-actions">
+                <button class="icon-btn notif-btn"><i class='bx bx-bell'></i><span class="badge">2</span></button>
+                <div class="user-menu">
+                    <div class="user-avatar"><img
+                            src="https://ui-avatars.com/api/?name=عبدالعزيز+الصالح&background=0d9488&color=fff&font-family=Cairo"
+                            alt=""></div>
+                    <div class="user-info"><span class="user-greeting">مرحباً دكتور،</span><span
+                            class="user-name">عبدالعزيز الصالح</span></div>
+                    <i class='bx bx-chevron-down dropdown-icon'></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu">
+            <a href="Doctor_dashboard.html" class="menu-item"><i class='bx bxs-dashboard'></i><span>الرئيسية</span></a>
+            <a href="My_appointments.html" class="menu-item"><i
+                    class='bx bx-calendar-check'></i><span>مواعيدي</span></a>
+            <a href="My_patients.html" class="menu-item active"><i class='bx bx-group'></i><span>المرضى</span></a>
+            <a href="Doctor_reports.html" class="menu-item"><i class='bx bx-file-blank'></i><span>التقارير</span></a>
+            <a href="Doctor_profile.html" class="menu-item"><i class='bx bx-user-circle'></i><span>ملفي
+                    الشخصي</span></a>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="../public/index.html" class="menu-item logout"><i class='bx bx-log-out'></i><span>تسجيل
+                    الخروج</span></a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <div class="page-hero">
+            <div class="page-hero-inner">
+                <div>
+                    <h1><i class='bx bx-group'></i> مرضاي</h1>
+                    <p>قائمة المرضى الذين راجعوك</p>
+                </div>
+                <div class="hero-stat" id="totalPatientsBadge">8 مرضى</div>
+            </div>
+        </div>
+
+        <div class="controls-bar">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" id="searchInput" placeholder="ابحث باسم المريض أو رقم الجوال..."
+                    oninput="renderPatients()">
+            </div>
+            <div class="filter-tabs">
+                <button class="ft active" onclick="setGender('all',this)">الكل</button>
+                <button class="ft" onclick="setGender('ذكر',this)">ذكور</button>
+                <button class="ft" onclick="setGender('أنثى',this)">إناث</button>
+                <button class="ft" onclick="setGender('chronic',this)">أمراض مزمنة</button>
+            </div>
+        </div>
+
+        <div class="patients-grid" id="patientGrid"></div>
+
+    </main>
+
+    <!-- Slide-in sheet -->
+    <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
+    <div class="patient-sheet" id="patientSheet">
+        <div class="sheet-head">
+            <h2 id="sheetName">تفاصيل المريض</h2>
+            <button onclick="closeSheet()"
+                style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1.1rem;"><i
+                    class='bx bx-x'></i></button>
+        </div>
+        <div class="sheet-body" id="sheetBody"></div>
+    </div>
+
+    <script>
+        const PATIENTS = [
+            { id: 'P001', name: 'محمد عبدالله العتيبي', age: 47, gender: 'ذكر', phone: '0501234567', blood: 'A+', chronic: ['السكري', 'ضغط الدم', 'الدرقية'], visits: 5, lastVisit: '2026-02-28' },
+            { id: 'P002', name: 'سارة خالد الأحمدي', age: 32, gender: 'أنثى', phone: '0509876543', blood: 'O+', chronic: [], visits: 2, lastVisit: '2026-02-28' },
+            { id: 'P003', name: 'أحمد فهد الدوسري', age: 55, gender: 'ذكر', phone: '0505555555', blood: 'B-', chronic: ['القلب'], visits: 8, lastVisit: '2026-02-27' },
+            { id: 'P004', name: 'نورة سعد القحطاني', age: 28, gender: 'أنثى', phone: '0504444444', blood: 'AB+', chronic: [], visits: 1, lastVisit: '2026-03-01' },
+            { id: 'P005', name: 'عبدالرحمن ماجد المطيري', age: 40, gender: 'ذكر', phone: '0503333333', blood: 'A-', chronic: ['الربو'], visits: 3, lastVisit: '2026-03-01' },
+            { id: 'P006', name: 'لطيفة عمر الزهراني', age: 62, gender: 'أنثى', phone: '0502222222', blood: 'O-', chronic: ['السكري', 'هشاشة العظام'], visits: 6, lastVisit: '2026-02-26' },
+            { id: 'P007', name: 'فيصل نايف الشمري', age: 35, gender: 'ذكر', phone: '0501111111', blood: 'B+', chronic: [], visits: 2, lastVisit: '2026-02-27' },
+            { id: 'P008', name: 'ريم عبدالله السلمي', age: 24, gender: 'أنثى', phone: '0508888888', blood: 'A+', chronic: [], visits: 1, lastVisit: '2026-03-02' },
+        ];
+
+        let genderFilter = 'all';
+
+        function setGender(g, el) {
+            genderFilter = g;
+            document.querySelectorAll('.ft').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            renderPatients();
+        }
+
+        function renderPatients() {
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+            let list = PATIENTS.slice();
+            if (genderFilter === 'ذكر') list = list.filter(p => p.gender === 'ذكر');
+            if (genderFilter === 'أنثى') list = list.filter(p => p.gender === 'أنثى');
+            if (genderFilter === 'chronic') list = list.filter(p => p.chronic.length > 0);
+            if (q) list = list.filter(p => p.name.toLowerCase().includes(q) || p.phone.includes(q));
+
+            document.getElementById('totalPatientsBadge').textContent = list.length + ' مرضى';
+            const grid = document.getElementById('patientGrid');
+            if (!list.length) {
+                grid.innerHTML = '<div class="empty-state"><i class=\'bx bx-user-x\'></i>لا يوجد مرضى مطابقون</div>';
+                return;
+            }
+            grid.innerHTML = list.map(p => {
+                const initials = p.name.split(' ').map(w => w[0]).slice(0, 2).join('');
+                const lastFmt = p.lastVisit ? new Date(p.lastVisit).toLocaleDateString('ar-SA', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+                const chronicHtml = p.chronic.length
+                    ? p.chronic.map(c => `<span class="cc">${c}</span>`).join('')
+                    : '<span class="cc none"><i class=\'bx bx-check\'></i> لا توجد أمراض مزمنة</span>';
+                return `
+        <div class="patient-card" onclick="openSheet('${p.id}')">
+          <div class="patient-card-top">
+            <div class="patient-av ${p.gender === 'أنثى' ? 'female' : ''}">${initials}</div>
+            <div>
+              <div class="patient-nm">${p.name}</div>
+              <div class="patient-meta">${p.age} سنة · ${p.gender} · فصيلة ${p.blood}</div>
+            </div>
+          </div>
+          <div class="chronic-chips">${chronicHtml}</div>
+          <div class="patient-stats">
+            <div class="ps-item"><div class="ps-num">${p.visits}</div><div class="ps-lbl">زيارة</div></div>
+            <div class="ps-item"><div class="ps-num">${p.chronic.length || 0}</div><div class="ps-lbl">أمراض مزمنة</div></div>
+            <div class="ps-item"><div class="ps-num" style="font-size:.72rem;">${lastFmt}</div><div class="ps-lbl">آخر زيارة</div></div>
+          </div>
+          <div class="patient-actions" onclick="event.stopPropagation()">
+            <button class="pa-btn primary" onclick="openSheet('${p.id}')"><i class='bx bx-show'></i> الملف</button>
+            <button class="pa-btn" onclick="callPatient('${p.phone}')"><i class='bx bx-phone'></i> اتصال</button>
+          </div>
+        </div>`;
+            }).join('');
+        }
+
+        function openSheet(id) {
+            const p = PATIENTS.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('sheetName').textContent = p.name;
+            const lastFmt = p.lastVisit ? new Date(p.lastVisit).toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' }) : '—';
+            const chronicHtml = p.chronic.length
+                ? p.chronic.map(c => `<span class="cc">${c}</span>`).join('')
+                : '<span class="cc none">لا توجد أمراض مزمنة</span>';
+
+            // history from localStorage
+            const stored = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const hist = stored.filter(a => a.name === p.name).slice(0, 5);
+
+            document.getElementById('sheetBody').innerHTML = `
+      <div class="sheet-section">
+        <div class="sheet-sec-title">البيانات الشخصية</div>
+        <div class="sheet-info-grid">
+          <div class="si"><div class="si-lbl">العمر</div><div class="si-val">${p.age} سنة</div></div>
+          <div class="si"><div class="si-lbl">الجنس</div><div class="si-val">${p.gender}</div></div>
+          <div class="si"><div class="si-lbl">فصيلة الدم</div><div class="si-val">${p.blood}</div></div>
+          <div class="si"><div class="si-lbl">رقم الجوال</div><div class="si-val" dir="ltr">${p.phone}</div></div>
+          <div class="si"><div class="si-lbl">عدد الزيارات</div><div class="si-val">${p.visits}</div></div>
+          <div class="si"><div class="si-lbl">آخر زيارة</div><div class="si-val">${lastFmt}</div></div>
+        </div>
+      </div>
+      <div class="sheet-section">
+        <div class="sheet-sec-title">الأمراض المزمنة</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;">${chronicHtml}</div>
+      </div>
+      <div class="sheet-section">
+        <div class="sheet-sec-title">سجل الزيارات</div>
+        ${hist.length ? hist.map(a => `
+          <div class="hist-item" onclick="location.href='Appointment_details.html?id=${a.id}'">
+            <div class="hi-date">${a.date ? new Date(a.date).toLocaleDateString('ar-SA', { day: 'numeric', month: 'short' }) : '—'}</div>
+            <div class="hi-info"><div class="hi-spec">${a.spec || 'موعد طبي'}</div><div class="hi-status">${a.status || '—'} · ${a.time || ''}</div></div>
+            <i class='bx bx-chevron-left' style="color:var(--doc-muted);"></i>
+          </div>`).join('')
+                    : '<p style="color:var(--doc-muted);font-size:.85rem;font-weight:700;">لا يوجد سجل محفوظ</p>'}
+      </div>`;
+
+            document.getElementById('patientSheet').classList.add('open');
+            document.getElementById('sheetOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSheet() {
+            document.getElementById('patientSheet').classList.remove('open');
+            document.getElementById('sheetOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function callPatient(phone) {
+            alert('الاتصال بـ: ' + phone);
+        }
+
+        function initSidebar() {
+            const toggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+            document.addEventListener('click', e => {
+                if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active'); document.body.style.overflow = '';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSidebar();
+            renderPatients();
+        });
+    </script>
+</body>
+
+</html>

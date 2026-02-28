@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الصلاحيات - نظام فرز المواعيد الذكي</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/shared-dashboard.css">
+  <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Toggle Sidebar">
+          <i class='bx bx-menu'></i>
+        </button>
+        <div class="brand-icon">
+          <i class='bx bx-plus-medical'></i>
+        </div>
+        <div class="brand-text">شفاء<span>+</span></div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="icon-btn notif-btn">
+          <i class='bx bx-bell'></i>
+          <span class="badge">3</span>
+        </button>
+        <div class="user-menu">
+          <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=مدير+النظام&background=2563eb&color=fff&font-family=Cairo"
+              alt="User">
+          </div>
+          <div class="user-info">
+            <span class="user-greeting">مرحباً بك،</span>
+            <span class="user-name">المدير العام</span>
+          </div>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar (Admin) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <a href="admin.html" class="menu-item">
+        <i class='bx bxs-dashboard'></i>
+        <span>لوحة التحكم</span>
+      </a>
+      <a href="Manage_doctors.html" class="menu-item">
+        <i class='bx bx-user-pin'></i>
+        <span>إدارة الأطباء</span>
+      </a>
+      <a href="Manage_patients.html" class="menu-item">
+        <i class='bx bx-group'></i>
+        <span>إدارة المرضى</span>
+      </a>
+      <a href="Reports.html" class="menu-item">
+        <i class='bx bx-chart'></i>
+        <span>التقارير والإحصائيات</span>
+      </a>
+      <a href="System_settings.html" class="menu-item">
+        <i class='bx bx-cog'></i>
+        <span>إعدادات النظام</span>
+      </a>
+      <a href="User_permissions.html" class="menu-item active">
+        <i class='bx bx-shield-quarter'></i>
+        <span>صلاحيات المستخدمين</span>
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <a href="../public/index.html" class="menu-item logout">
+        <i class='bx bx-log-out'></i>
+        <span>تسجيل الخروج</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <div class="dashboard-wrap">
+
+      <!-- Page Header -->
+      <div class="hero-card"
+        style="padding: 2rem; margin-bottom: 2rem; background: linear-gradient(135deg, #4338ca 0%, #312e81 100%);">
+        <div class="hero-content">
+          <div style="display: flex; justify-content: space-between; align-items: start; width: 100%;">
+            <div>
+              <h1 style="font-size: 1.8rem; margin-bottom: 0;"><i class='bx bx-user-check'></i> إدارة صلاحيات النظام
+              </h1>
+              <p style="margin-top: 0.5rem; font-size: 1rem;">تخصيص مستويات الوصول للمستخدمين لضمان الأمان والكفاءة</p>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <button class="btn-glass primary" style="background: rgba(255,255,255,0.2) !important;">
+                <i class='bx bx-plus'></i> دور جديد
+              </button>
+              <button class="btn-glass" style="background: rgba(255,255,255,0.1) !important; color: white !important;">
+                <i class='bx bx-export'></i> تصدير
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="hero-glow"></div>
+      </div>
+
+      <!-- Roles Grid -->
+      <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+
+        <!-- Admin Role -->
+        <div class="content-card" style="position: relative; overflow: hidden;">
+          <div
+            style="position: absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, #ef4444, #dc2626);">
+          </div>
+
+          <div class="card-header border-bottom" style="padding: 1.5rem; border-color: #f1f5f9;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="u-avatar"
+                style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; width: 48px; height: 48px; font-size: 1.5rem;">
+                <i class='bx bx-crown'></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--surface-dark);">المدير العام
+                </h3>
+                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;"><i class='bx bx-user'></i> 3
+                  مستخدمين</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body" style="padding: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-check-circle' style="color: #10b981; font-size: 1.2rem;"></i> إدارة كاملة للنظام
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-group' style="color: #3b82f6; font-size: 1.2rem;"></i> إدارة المستخدمين
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-cog' style="color: #8b5cf6; font-size: 1.2rem;"></i> إعدادات النظام
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-bar-chart' style="color: #f59e0b; font-size: 1.2rem;"></i> عرض التقارير
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+            </div>
+
+            <div
+              style="display: flex; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed #e2e8f0;">
+              <button class="btn-glass"
+                style="flex: 1; justify-content: center; color: var(--admin-primary); border-color: #cbd5e1;">
+                <i class='bx bx-edit'></i> إعدادات
+              </button>
+              <button class="btn-glass" disabled
+                style="flex: 1; justify-content: center; opacity: 0.5; color: #94a3b8; background: #f1f5f9; border-color: transparent;">
+                <i class='bx bx-lock'></i> محمي
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctor Role -->
+        <div class="content-card" style="position: relative; overflow: hidden;">
+          <div
+            style="position: absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, #10b981, #059669);">
+          </div>
+
+          <div class="card-header border-bottom" style="padding: 1.5rem; border-color: #f1f5f9;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="u-avatar"
+                style="background: linear-gradient(135deg, #10b981, #059669); color: white; width: 48px; height: 48px; font-size: 1.5rem;">
+                <i class='bx bx-user-pin'></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--surface-dark);">طبيب</h3>
+                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;"><i class='bx bx-user'></i> 12
+                  مستخدم</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body" style="padding: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-calendar' style="color: #10b981; font-size: 1.2rem;"></i> إدارة المواعيد
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-file' style="color: #3b82f6; font-size: 1.2rem;"></i> السجلات الطبية
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-edit' style="color: #8b5cf6; font-size: 1.2rem;"></i> تعديل الحالات
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-trash' style="color: #ef4444; font-size: 1.2rem;"></i> حذف السجلات
+                </span>
+                <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+              </div>
+
+            </div>
+
+            <div
+              style="display: flex; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed #e2e8f0;">
+              <button class="btn-glass"
+                style="flex: 1; justify-content: center; color: var(--admin-primary); border-color: #cbd5e1;">
+                <i class='bx bx-edit'></i> إعدادات
+              </button>
+              <button class="btn-glass"
+                style="flex: 1; justify-content: center; color: #ef4444; border-color: #fecaca; background: #fef2f2;">
+                <i class='bx bx-trash'></i> إيقاف
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Role -->
+        <div class="content-card" style="position: relative; overflow: hidden;">
+          <div
+            style="position: absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, #6366f1, #06b6d4);">
+          </div>
+
+          <div class="card-header border-bottom" style="padding: 1.5rem; border-color: #f1f5f9;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="u-avatar"
+                style="background: linear-gradient(135deg, #6366f1, #06b6d4); color: white; width: 48px; height: 48px; font-size: 1.5rem;">
+                <i class='bx bx-user'></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--surface-dark);">مريض</h3>
+                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;"><i class='bx bx-user'></i> 256
+                  مستخدم</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body" style="padding: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-calendar-plus' style="color: #10b981; font-size: 1.2rem;"></i> طلب موعد
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-show' style="color: #3b82f6; font-size: 1.2rem;"></i> عرض التقرير
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-edit-alt' style="color: #8b5cf6; font-size: 1.2rem;"></i> تحديث الملف
+                </span>
+                <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+              </div>
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: #f8fafc; border-radius: 12px;">
+                <span
+                  style="font-weight: 700; color: var(--surface-dark); display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-x-circle' style="color: #f59e0b; font-size: 1.2rem;"></i> إلغاء الحجز
+                </span>
+                <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+              </div>
+
+            </div>
+
+            <div
+              style="display: flex; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed #e2e8f0;">
+              <button class="btn-glass"
+                style="flex: 1; justify-content: center; color: var(--admin-primary); border-color: #cbd5e1;">
+                <i class='bx bx-edit'></i> إعدادات
+              </button>
+              <button class="btn-glass" disabled
+                style="flex: 1; justify-content: center; opacity: 0.5; color: #94a3b8; background: #f1f5f9; border-color: transparent;">
+                <i class='bx bx-lock'></i> محمي
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Activity Log -->
+      <div class="content-card" style="margin-top: 2rem;">
+        <div class="card-header border-bottom">
+          <h2 style="font-size: 1.3rem; color: var(--surface-dark);"><i class='bx bx-history'></i> سجل أحداث الصلاحيات
+          </h2>
+        </div>
+
+        <div class="card-body" style="padding: 1.5rem;">
+          <div style="display: flex; flex-direction: column; gap: 1rem; position: relative;" class="timeline-container">
+            <!-- Timeline Line -->
+            <div
+              style="position: absolute; top: 1rem; bottom: 1rem; right: 23px; width: 2px; background: #e2e8f0; z-index: 0;">
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; position: relative; z-index: 1;">
+              <div
+                style="width: 48px; height: 48px; min-width: 48px; background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #16a34a; font-size: 1.5rem;">
+                <i class='bx bx-check'></i>
+              </div>
+              <div style="padding-top: 0.5rem;">
+                <div style="font-weight: 700; color: var(--surface-dark); font-size: 1.1rem; margin-bottom: 0.2rem;">
+                  تعديل صلاحيات طبيب</div>
+                <div style="color: #64748b; font-size: 0.95rem;">تم تفعيل خيار تعديل الحالات الطبية للطاقم الطبي عبر
+                  <strong>المدير العام</strong>
+                </div>
+                <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.5rem;"><i class='bx bx-time-five'></i> قبل
+                  10 دقائق</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; position: relative; z-index: 1;">
+              <div
+                style="width: 48px; height: 48px; min-width: 48px; background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2563eb; font-size: 1.5rem;">
+                <i class='bx bx-user-plus'></i>
+              </div>
+              <div style="padding-top: 0.5rem;">
+                <div style="font-weight: 700; color: var(--surface-dark); font-size: 1.1rem; margin-bottom: 0.2rem;">
+                  تعيين دور تنفيذي</div>
+                <div style="color: #64748b; font-size: 0.95rem;">تم إعطاء صلاحية المدير العام إلى <strong>د.أحمد
+                    صالح</strong></div>
+                <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.5rem;"><i class='bx bx-time-five'></i> قبل
+                  ساعتين</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; position: relative; z-index: 1;">
+              <div
+                style="width: 48px; height: 48px; min-width: 48px; background: #fef2f2; border: 2px solid #fecaca; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #dc2626; font-size: 1.5rem;">
+                <i class='bx bx-trash'></i>
+              </div>
+              <div style="padding-top: 0.5rem;">
+                <div style="font-weight: 700; color: var(--surface-dark); font-size: 1.1rem; margin-bottom: 0.2rem;">
+                  إلغاء مجموعة صلاحيات مخصصة</div>
+                <div style="color: #64748b; font-size: 0.95rem;">تم حذف دور "متدرب" ودمج مستخدميه إلى "مريض"</div>
+                <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.5rem;"><i class='bx bx-time-five'></i>
+                  الأسبوع الماضي</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn-glass" style="padding: 0.5rem 2rem;">عرض السجل الكامل</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      // Mobile Sidebar Toggle JS
+      document.addEventListener('DOMContentLoaded', () => {
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (mobileToggle && sidebar) {
+          mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            if (sidebar.classList.contains('active')) {
+              document.body.style.overflow = 'hidden';
+            } else {
+              document.body.style.overflow = '';
+            }
+          });
+
+          document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+              if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                document.body.style.overflow = '';
+              }
+            }
+          });
+        }
+      });
+
+    </script>
+
+  </main>
+
+</body>
+
+</html>

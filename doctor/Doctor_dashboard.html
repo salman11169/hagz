@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم الطبيب — شفاء+</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/shared-dashboard.css">
+  <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+  <link rel="stylesheet" href="../assets/css/doctor-dashboard.css">
+</head>
+
+<body>
+
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Toggle Sidebar">
+          <i class='bx bx-menu'></i>
+        </button>
+        <div class="brand-icon">
+          <i class='bx bx-plus-medical'></i>
+        </div>
+        <div class="brand-text">شفاء<span>+</span></div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="icon-btn notif-btn" id="notifToggle" title="الإشعارات">
+          <i class='bx bx-bell'></i>
+          <span class="badge" id="notifBadge">3</span>
+        </button>
+        <div class="user-menu">
+          <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=عبدالعزيز+الصالح&background=0d9488&color=fff&font-family=Cairo"
+              alt="Doctor">
+          </div>
+          <div class="user-info">
+            <span class="user-greeting">مرحباً دكتور،</span>
+            <span class="user-name">عبدالعزيز الصالح</span>
+          </div>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <a href="Doctor_dashboard.html" class="menu-item active">
+        <i class='bx bxs-dashboard'></i>
+        <span>الرئيسية</span>
+      </a>
+      <a href="My_appointments.html" class="menu-item">
+        <i class='bx bx-calendar-check'></i>
+        <span>مواعيدي</span>
+      </a>
+      <a href="My_patients.html" class="menu-item">
+        <i class='bx bx-group'></i>
+        <span>المرضى</span>
+      </a>
+      <a href="Doctor_reports.html" class="menu-item">
+        <i class='bx bx-file-blank'></i>
+        <span>التقارير الطبية</span>
+      </a>
+      <a href="Doctor_profile.html" class="menu-item">
+        <i class='bx bx-user-circle'></i>
+        <span>ملفي الشخصي</span>
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <a href="../public/index.html" class="menu-item logout">
+        <i class='bx bx-log-out'></i>
+        <span>تسجيل الخروج</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="main-content">
+
+    <!-- Emergency Banner -->
+    <div class="emergency-banner" id="emergencyBanner"
+      style="position:relative;top:auto;z-index:10;border-radius:16px;margin-bottom:1.5rem;">
+      <div class="emergency-content">
+        <div class="emergency-text">
+          <div class="emergency-icon"><i class='bx bxs-error'></i></div>
+          <span id="emergencyMsg">0 حالة حرجة تحتاج تدخل فوري!</span>
+        </div>
+        <button class="btn-view-emergency" onclick="scrollToEmergencies()">
+          <i class='bx bx-show'></i> عرض الحالات
+        </button>
+      </div>
+    </div>
+
+    <!-- Header Card -->
+    <div class="doc-header">
+      <div class="doc-header-inner">
+        <div class="doc-header-title">
+          <h1>
+            <i class='bx bxs-stethoscope' style="vertical-align:middle;margin-left:.4rem;"></i>
+            لوحة تحكم الطبيب
+          </h1>
+          <p id="headerDate">جاري تحميل التاريخ...</p>
+        </div>
+        <div class="doc-header-actions">
+          <button class="btn-doc btn-doc-light" onclick="refreshData()">
+            <i class='bx bx-refresh'></i> تحديث
+          </button>
+          <button class="btn-doc btn-doc-white" onclick="window.location.href='#'">
+            <i class='bx bx-calendar'></i> جدولي
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card emergency">
+        <div class="stat-icon si-emergency">
+          <i class='bx bxs-error-circle'></i>
+        </div>
+        <div class="stat-value" id="statEmergency">0</div>
+        <div class="stat-label">حالات حرجة</div>
+        <div class="stat-trend trend-up" id="trendEmergency"></div>
+      </div>
+      <div class="stat-card urgent">
+        <div class="stat-icon si-urgent">
+          <i class='bx bx-time-five'></i>
+        </div>
+        <div class="stat-value" id="statUrgent">0</div>
+        <div class="stat-label">حالات متوسطة</div>
+      </div>
+      <div class="stat-card stable">
+        <div class="stat-icon si-stable">
+          <i class='bx bx-check-shield'></i>
+        </div>
+        <div class="stat-value" id="statNormal">0</div>
+        <div class="stat-label">حالات مستقرة</div>
+      </div>
+      <div class="stat-card today">
+        <div class="stat-icon si-today">
+          <i class='bx bx-calendar-check'></i>
+        </div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">إجمالي المواعيد</div>
+      </div>
+    </div>
+
+    <!-- Main Columns -->
+    <div class="doc-cols">
+
+      <!-- Patient Queue -->
+      <div class="doc-card" id="queueSection">
+        <div class="card-head">
+          <div class="card-title">
+            <i class='bx bx-list-ul'></i>
+            قائمة المرضى
+          </div>
+          <div class="filters-bar">
+            <button class="flt-btn active" onclick="filterQueue('all', this)">الكل</button>
+            <button class="flt-btn" onclick="filterQueue('emergency', this)"><i class='bx bxs-error-circle'></i>
+              حرجة</button>
+            <button class="flt-btn" onclick="filterQueue('urgent', this)"><i class='bx bx-time-five'></i>
+              متوسطة</button>
+            <button class="flt-btn" onclick="filterQueue('normal', this)"><i class='bx bx-check-circle'></i>
+              مستقرة</button>
+          </div>
+        </div>
+        <div class="patients-list" id="patientsQueue">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-col">
+
+        <!-- Schedule -->
+        <div class="doc-card">
+          <div class="card-title">
+            <i class='bx bx-time-five'></i>
+            جدول الدوام
+          </div>
+          <div class="schedule-days">
+            <div class="day-chip on">
+              <div class="day-name">الأحد</div>
+              <div class="day-hours">8 ص – 5 م</div>
+            </div>
+            <div class="day-chip on">
+              <div class="day-name">الإثنين</div>
+              <div class="day-hours">8 ص – 5 م</div>
+            </div>
+            <div class="day-chip on">
+              <div class="day-name">الثلاثاء</div>
+              <div class="day-hours">8 ص – 5 م</div>
+            </div>
+            <div class="day-chip on">
+              <div class="day-name">الأربعاء</div>
+              <div class="day-hours">8 ص – 5 م</div>
+            </div>
+            <div class="day-chip on">
+              <div class="day-name">الخميس</div>
+              <div class="day-hours">8 ص – 5 م</div>
+            </div>
+            <div class="day-chip">
+              <div class="day-name">الجمعة</div>
+              <div class="day-hours">إجازة</div>
+            </div>
+            <div class="day-chip">
+              <div class="day-name">السبت</div>
+              <div class="day-hours">إجازة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="doc-card">
+          <div class="card-title">
+            <i class='bx bx-zap'></i>
+            إجراءات سريعة
+          </div>
+          <div class="qa-grid">
+            <button class="qa-btn">
+              <i class='bx bx-file-blank qa-icon' style="color:#0d9488;"></i>
+              تقرير جديد
+            </button>
+            <button class="qa-btn">
+              <i class='bx bx-calendar-plus qa-icon' style="color:#2563eb;"></i>
+              جدولة موعد
+            </button>
+            <button class="qa-btn">
+              <i class='bx bx-capsule qa-icon' style="color:#10b981;"></i>
+              وصفة طبية
+            </button>
+            <button class="qa-btn">
+              <i class='bx bx-transfer-alt qa-icon' style="color:#f59e0b;"></i>
+              تحويل حالة
+            </button>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="doc-card">
+          <div class="card-title">
+            <i class='bx bx-bell'></i>
+            الإشعارات
+          </div>
+          <div class="notif-list" id="notifList">
+            <div class="notif-item">
+              <div class="notif-dot emergency"></div>
+              <div>
+                <div class="notif-text">حالة حرجة وصلت إلى طوارئ — تحتاج مراجعة فورية</div>
+                <div class="notif-time">منذ 5 دقائق</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot warning"></div>
+              <div>
+                <div class="notif-text">المريض أحمد العمري — ألغى موعده ليوم الغد</div>
+                <div class="notif-time">منذ 22 دقيقة</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot info"></div>
+              <div>
+                <div class="notif-text">تم إرسال تقرير الشهر إلى الإدارة بنجاح</div>
+                <div class="notif-time">منذ ساعة</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right-col -->
+    </div><!-- /doc-cols -->
+
+  </main>
+
+  <script>
+    /* ══ DATA ══ */
+    let allPatients = [];
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setHeaderDate();
+      loadPatients();
+      initSidebar();
+    });
+
+    function setHeaderDate() {
+      const now = new Date();
+      document.getElementById('headerDate').textContent =
+        now.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    /* ══ LOAD & RENDER ══ */
+    function loadPatients() {
+      const data = JSON.parse(localStorage.getItem('appointments') || '[]');
+      allPatients = data
+        .filter(a => a.status !== 'مكتمل' && a.status !== 'ملغي')
+        .sort((a, b) => {
+          const p = { emergency: 3, urgent: 2, normal: 1 };
+          return (p[b.priorityKey] || 0) - (p[a.priorityKey] || 0);
+        });
+      updateStats();
+      renderQueue();
+      checkEmergencies();
+    }
+
+    function refreshData() {
+      const btn = document.querySelector('.btn-doc-light');
+      btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> جاري التحديث...';
+      setTimeout(() => {
+        loadPatients();
+        btn.innerHTML = '<i class="bx bx-refresh"></i> تحديث';
+      }, 1000);
+    }
+
+    /* ══ STATS ══ */
+    function updateStats() {
+      const emergency = allPatients.filter(p => p.priorityKey === 'emergency').length;
+      const urgent = allPatients.filter(p => p.priorityKey === 'urgent').length;
+      const normal = allPatients.filter(p => p.priorityKey === 'normal').length;
+
+      animateCount('statEmergency', emergency);
+      animateCount('statUrgent', urgent);
+      animateCount('statNormal', normal);
+      animateCount('statTotal', allPatients.length);
+    }
+
+    function animateCount(id, target) {
+      const el = document.getElementById(id);
+      let current = 0;
+      const step = Math.ceil(target / 20);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current;
+        if (current >= target) clearInterval(timer);
+      }, 40);
+    }
+
+    /* ══ EMERGENCY ══ */
+    function checkEmergencies() {
+      const count = allPatients.filter(p => p.priorityKey === 'emergency').length;
+      const banner = document.getElementById('emergencyBanner');
+      if (count > 0) {
+        document.getElementById('emergencyMsg').textContent = `${count} حالة حرجة تحتاج تدخل فوري!`;
+        banner.classList.add('show');
+      } else {
+        banner.classList.remove('show');
+      }
+    }
+
+    function scrollToEmergencies() {
+      filterQueue('emergency', document.querySelector('.flt-btn:nth-child(2)'));
+      document.getElementById('queueSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ══ QUEUE ══ */
+    function filterQueue(type, btnEl) {
+      currentFilter = type;
+      document.querySelectorAll('.flt-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderQueue();
+    }
+
+    function renderQueue() {
+      const list = document.getElementById('patientsQueue');
+      const filtered = currentFilter === 'all'
+        ? allPatients
+        : allPatients.filter(p => p.priorityKey === currentFilter);
+
+      if (!filtered.length) {
+        list.innerHTML = `
+      <div class="empty-state">
+        <i class='bx bx-folder-open'></i>
+        <p>لا توجد حالات في هذه الفئة</p>
+      </div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(p => `
+    <div class="patient-card ${p.priorityKey || 'normal'}">
+      <div class="pc-row">
+        <div class="pc-info">
+          <div class="pc-avatar">${(p.name || 'م')[0]}</div>
+          <div>
+            <div class="pc-name">${p.name || 'غير محدد'}</div>
+            <div class="pc-id">${p.id || '—'}</div>
+          </div>
+        </div>
+        <span class="pri-pill pp-${p.priorityKey || 'normal'}">
+          ${priorityIcon(p.priorityKey)} ${p.priority || 'مستقرة'}
+        </span>
+      </div>
+      <div class="pc-meta">
+        <div class="meta-item"><i class='bx bx-phone'></i> ${p.phone || '—'}</div>
+        <div class="meta-item"><i class='bx bx-calendar'></i> ${formatDate(p.date)}</div>
+        <div class="meta-item"><i class='bx bx-time'></i> ${p.time || 'غير محدد'}</div>
+        <div class="meta-item"><i class='bx bx-error-circle'></i> ألم ${p.painLevel || '—'}/10</div>
+      </div>
+      <div class="pc-actions">
+        <button class="pc-btn pc-btn-view"     onclick="viewPatient('${p.id}')"><i class='bx bx-show'></i> عرض</button>
+        <button class="pc-btn pc-btn-transfer" onclick="transferPatient('${p.id}')"><i class='bx bx-transfer'></i> تحويل</button>
+        <button class="pc-btn pc-btn-done"     onclick="completeVisit('${p.id}')"><i class='bx bx-check-circle'></i> إكمال</button>
+      </div>
+    </div>
+  `).join('');
+    }
+
+    function priorityIcon(key) {
+      if (key === 'emergency') return "<i class='bx bxs-error-circle'></i>";
+      if (key === 'urgent') return "<i class='bx bx-time-five'></i>";
+      return "<i class='bx bx-check-circle'></i>";
+    }
+
+    function formatDate(d) {
+      if (!d) return '—';
+      return new Date(d).toLocaleDateString('ar-SA', { day: 'numeric', month: 'short' });
+    }
+
+    function viewPatient(id) { alert('عرض ملف المريض: ' + id); }
+    function transferPatient(id) { if (confirm('تحويل المريض إلى استشاري؟')) alert('تم التحويل بنجاح ✓'); }
+
+    function completeVisit(id) {
+      if (!confirm('تحديد هذه الزيارة كمكتملة؟')) return;
+      const data = JSON.parse(localStorage.getItem('appointments') || '[]');
+      const idx = data.findIndex(a => a.id === id);
+      if (idx > -1) {
+        data[idx].status = 'مكتمل';
+        localStorage.setItem('appointments', JSON.stringify(data));
+        loadPatients();
+      }
+    }
+
+    /* ══ SIDEBAR MOBILE ══ */
+    function initSidebar() {
+      const toggle = document.getElementById('mobileToggle');
+      const sidebar = document.getElementById('sidebar');
+      toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+      });
+      document.addEventListener('click', e => {
+        if (window.innerWidth <= 768)
+          if (!sidebar.contains(e.target) && !toggle.contains(e.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            document.body.style.overflow = '';
+          }
+      });
+    }
+  </script>
+
+</body>
+
+</html>

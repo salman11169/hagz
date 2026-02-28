@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اتصل بنا - نظام فرز المواعيد الذكي</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link href="../assets/css/contact.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class='bx bx-health'></i> نظام فرز المواعيد الذكي
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">من نحن</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">اتصل بنا</a></li>
+          <li class="nav-item"><a class="nav-link" href="faq.html">الأسئلة الشائعة</a></li>
+        </ul>
+        <a href="booking.html" class="btn btn-nav"><i class='bx bx-calendar-plus'></i> احجز الآن</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-content">
+      <h1>تواصل معنا</h1>
+      <p>نحن هنا لمساعدتك — تواصل معنا في أي وقت وسنكون سعداء بخدمتك</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Left: Contact Info -->
+        <div>
+          <div class="contact-cards">
+            <div class="contact-card">
+              <div class="contact-icon" style="background:var(--gp)">
+                <i class='bx bx-envelope'></i>
+              </div>
+              <div class="contact-info">
+                <h3>البريد الإلكتروني</h3>
+                <p>راسلنا على بريدنا الإلكتروني وسنرد عليك خلال 24 ساعة</p>
+                <a href="mailto:info@smartbooking.com">info@smartbooking.com</a>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon" style="background:var(--gg)">
+                <i class='bx bx-phone'></i>
+              </div>
+              <div class="contact-info">
+                <h3>الهاتف</h3>
+                <p>اتصل بنا مباشرة — نحن متاحون من الأحد إلى الخميس (9 ص - 5 م)</p>
+                <a href="tel:+966501234567">+966 50 123 4567</a>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+                <i class='bx bx-map'></i>
+              </div>
+              <div class="contact-info">
+                <h3>الموقع</h3>
+                <p>زرنا في مقرنا الرئيسي في العاصمة الرياض</p>
+                <a href="#">طريق الملك فهد، الرياض 12345، السعودية</a>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">
+                <i class='bx bx-time-five'></i>
+              </div>
+              <div class="contact-info">
+                <h3>ساعات العمل</h3>
+                <p>الأحد - الخميس: 9:00 ص - 5:00 م<br>
+                  الجمعة - السبت: مغلق</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map -->
+          <div class="map-card">
+            <div class="map-placeholder">
+              <div style="text-align:center;">
+                <i class='bx bx-map' style="font-size:3rem;color:var(--primary);opacity:.3;"></i>
+                <p style="margin-top:.8rem;font-size:.9rem;">خريطة الموقع</p>
+                <small style="font-size:.78rem;color:var(--muted);">طريق الملك فهد، الرياض</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Contact Form -->
+        <div>
+          <div class="form-card">
+            <h2>أرسل لنا رسالة</h2>
+            <p>املأ النموذج أدناه وسنتواصل معك في أقرب وقت ممكن</p>
+
+            <div class="alert alert-success" id="alert"></div>
+
+            <form id="contactForm" onsubmit="handleSubmit(event)">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">الاسم الكامل <span style="color:var(--danger)">*</span></label>
+                    <div class="input-wrap">
+                      <i class='bx bx-user'></i>
+                      <input type="text" class="form-control" id="name" placeholder="محمد أحمد" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">رقم الجوال <span style="color:var(--danger)">*</span></label>
+                    <div class="input-wrap">
+                      <i class='bx bx-phone'></i>
+                      <input type="tel" class="form-control" id="phone" placeholder="05xxxxxxxx" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                  <i class='bx bx-envelope'></i>
+                  <input type="email" class="form-control" id="email" placeholder="example@email.com" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">الموضوع <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                  <i class='bx bx-message-square-dots'></i>
+                  <select class="form-select" id="subject" required>
+                    <option value="">اختر الموضوع</option>
+                    <option>استفسار عام</option>
+                    <option>مشكلة تقنية</option>
+                    <option>طلب دعم</option>
+                    <option>شكوى</option>
+                    <option>اقتراح</option>
+                    <option>طلب شراكة</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">الرسالة <span style="color:var(--danger)">*</span></label>
+                <textarea class="form-control" id="message" placeholder="اكتب رسالتك هنا..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit">
+                <i class='bx bx-send'></i>
+                إرسال الرسالة
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Quick -->
+  <section class="faq-quick">
+    <div class="container">
+      <h2>الأسئلة الشائعة</h2>
+      <div class="faq-grid">
+        <div class="faq-card">
+          <h4>كيف أحجز موعداً؟</h4>
+          <p>يمكنك الحجز بسهولة عبر صفحة الحجز الذكي — فقط أجب على بعض الأسئلة البسيطة وسيحدد النظام الأولوية تلقائياً.
+          </p>
+        </div>
+        <div class="faq-card">
+          <h4>هل النظام مجاني؟</h4>
+          <p>نعم، خدمة الحجز مجانية بالكامل للمرضى. رسالتنا هي توفير رعاية صحية أفضل للجميع.</p>
+        </div>
+        <div class="faq-card">
+          <h4>كيف يتم تحديد الأولوية؟</h4>
+          <p>يعتمد النظام على خوارزميات ذكية تحلل الأعراض وشدتها ومدتها لتحديد الأولوية الطبية بدقة عالية.</p>
+        </div>
+        <div class="faq-card">
+          <h4>هل بياناتي آمنة؟</h4>
+          <p>نعم، نحن نستخدم أحدث معايير التشفير والأمان لحماية بياناتك الصحية والشخصية.</p>
+        </div>
+      </div>
+      <div class="faq-more">
+        <a href="faq.html">
+          عرض جميع الأسئلة الشائعة
+          <i class='bx bx-chevron-left'></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <h5>نظام فرز المواعيد الذكي</h5>
+          <p style="color:#94a3b8;font-size:.9rem;">
+            نظام حجز مواعيد طبية متطور يعتمد على الذكاء في تصنيف الحالات لضمان وصول الرعاية الصحية للجميع.
+          </p>
+        </div>
+        <div class="col-lg-2 col-md-6 mb-4">
+          <h5>روابط سريعة</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="booking.html">احجز موعد</a></li>
+            <li><a href="faq.html">الأسئلة الشائعة</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <h5>الدعم</h5>
+          <ul class="footer-links">
+            <li><a href="contact.html">اتصل بنا</a></li>
+            <li><a href="#">سياسة الخصوصية</a></li>
+            <li><a href="#">الشروط والأحكام</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <h5>تواصل معنا</h5>
+          <ul class="footer-links">
+            <li><i class='bx bx-envelope'></i> info@smartbooking.com</li>
+            <li><i class='bx bx-phone'></i> +966 50 123 4567</li>
+            <li><i class='bx bx-map'></i> الرياض، السعودية</li>
+          </ul>
+        </div>
+      </div>
+      <hr style="border-color:rgba(255,255,255,.1);margin:2rem 0 1rem;">
+      <div class="text-center">
+        <p style="color:#94a3b8;margin:0;">&copy; 2025 نظام فرز المواعيد الذكي. جميع الحقوق محفوظة.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !phone || !email || !subject || !message) {
+        showAlert('يرجى تعبئة جميع الحقول المطلوبة', 'danger');
+        return;
+      }
+
+      showAlert('جاري إرسال رسالتك...', 'success');
+
+      // Simulate sending
+      setTimeout(() => {
+        showAlert('✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.', 'success');
+        document.getElementById('contactForm').reset();
+      }, 1500);
+    }
+
+    function showAlert(msg, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = msg;
+      alert.className = `alert alert-${type} show`;
+      setTimeout(() => alert.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+
+</html>

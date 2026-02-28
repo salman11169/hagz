@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الأطباء - نظام فرز المواعيد الذكي</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/shared-dashboard.css">
+  <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Toggle Sidebar">
+          <i class='bx bx-menu'></i>
+        </button>
+        <div class="brand-icon">
+          <i class='bx bx-plus-medical'></i>
+        </div>
+        <div class="brand-text">شفاء<span>+</span></div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="icon-btn notif-btn">
+          <i class='bx bx-bell'></i>
+          <span class="badge">3</span>
+        </button>
+        <div class="user-menu">
+          <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=مدير+النظام&background=2563eb&color=fff&font-family=Cairo"
+              alt="User">
+          </div>
+          <div class="user-info">
+            <span class="user-greeting">مرحباً بك،</span>
+            <span class="user-name">المدير العام</span>
+          </div>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar (Admin) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <a href="admin.html" class="menu-item">
+        <i class='bx bxs-dashboard'></i>
+        <span>لوحة التحكم</span>
+      </a>
+      <a href="Manage_doctors.html" class="menu-item active">
+        <i class='bx bx-user-pin'></i>
+        <span>إدارة الأطباء</span>
+      </a>
+      <a href="Manage_patients.html" class="menu-item">
+        <i class='bx bx-group'></i>
+        <span>إدارة المرضى</span>
+      </a>
+      <a href="Reports.html" class="menu-item">
+        <i class='bx bx-chart'></i>
+        <span>التقارير والإحصائيات</span>
+      </a>
+      <a href="System_settings.html" class="menu-item">
+        <i class='bx bx-cog'></i>
+        <span>إعدادات النظام</span>
+      </a>
+      <a href="User_permissions.html" class="menu-item">
+        <i class='bx bx-shield-quarter'></i>
+        <span>صلاحيات المستخدمين</span>
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <a href="../public/index.html" class="menu-item logout">
+        <i class='bx bx-log-out'></i>
+        <span>تسجيل الخروج</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <div class="dashboard-wrap">
+
+      <!-- Page Header -->
+      <div class="hero-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <div class="hero-content">
+          <h1 style="font-size: 1.8rem; margin-bottom: 0;"><i class='bx bx-user-voice'></i> إدارة الأطباء</h1>
+          <p style="margin-top: 0.5rem; font-size: 1rem;">التحكم الكامل في سجلات وبيانات الطاقم الطبي</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn-glass" onclick="window.location.href='Add_doctor.html'">
+            <i class='bx bx-plus'></i> إضافة طبيب
+          </button>
+          <button class="btn-glass primary" onclick="exportDoctors()">
+            <i class='bx bx-download'></i> تصدير البيانات
+          </button>
+        </div>
+        <div class="hero-glow"></div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon s-blue"><i class='bx bx-group'></i></div>
+          <div class="stat-info">
+            <h3>إجمالي الأطباء</h3>
+            <div class="stat-value" id="totalDoctors">0</div>
+            <div class="stat-trend positive"><i class='bx bx-up-arrow-alt'></i> متاحون بالخدمة</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon s-green"><i class='bx bx-check-circle'></i></div>
+          <div class="stat-info">
+            <h3>أطباء نشطون</h3>
+            <div class="stat-value" id="activeDoctors">0</div>
+            <div class="stat-trend positive"><i class='bx bx-check'></i> على رأس العمل</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon s-orange"><i class='bx bx-time'></i></div>
+          <div class="stat-info">
+            <h3>مشغولون الآن</h3>
+            <div class="stat-value" id="busyDoctors">0</div>
+            <div class="stat-trend warning"><i class='bx bx-pulse'></i> يعالجون مرضى</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon s-purple"><i class='bx bx-calendar-check'></i></div>
+          <div class="stat-info">
+            <h3>مواعيد اليوم</h3>
+            <div class="stat-value" id="todayAppts">0</div>
+            <div class="stat-trend positive"><i class='bx bx-calendar-event'></i> مجدولة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content (Filters and Grid) -->
+      <div class="content-grid" style="grid-template-columns: 1fr;">
+
+        <!-- Filters (Glassmorphism layout) -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+          <div class="card-header border-bottom">
+            <h2><i class='bx bx-filter-alt'></i> خيارات التصفية</h2>
+            <button class="btn-text" onclick="resetFilters()">
+              <i class='bx bx-refresh'></i> إعادة تعيين
+            </button>
+          </div>
+          <div class="card-body" style="padding: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              <div>
+                <label
+                  style="font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem; display: block;">بحث
+                  بالاسم</label>
+                <input type="text" id="searchName" placeholder="ابحث عن طبيب..." onkeyup="filterDoctors()"
+                  style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Cairo'; background: #f8fafc; transition: border 0.3s; outline: none;">
+              </div>
+              <div>
+                <label
+                  style="font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem; display: block;">التخصص</label>
+                <select id="filterSpec" onchange="filterDoctors()"
+                  style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Cairo'; background: #f8fafc; outline: none;">
+                  <option value="">جميع التخصصات</option>
+                  <option>طب عام</option>
+                  <option>طب طوارئ</option>
+                  <option>طب باطني</option>
+                  <option>جراحة</option>
+                  <option>أطفال</option>
+                  <option>عظام</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  style="font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem; display: block;">الحالة</label>
+                <select id="filterStatus" onchange="filterDoctors()"
+                  style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Cairo'; background: #f8fafc; outline: none;">
+                  <option value="">جميع الحالات</option>
+                  <option value="active">نشط</option>
+                  <option value="busy">مشغول</option>
+                  <option value="inactive">غير نشط</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctors Table -->
+        <div class="content-card">
+          <div class="card-header border-bottom">
+            <h2><i class='bx bx-list-ul'></i> قائمة الأطباء</h2>
+          </div>
+
+          <div class="table-responsive" style="padding-top: 1rem;">
+            <table class="premium-table">
+              <thead>
+                <tr>
+                  <th>الطبيب</th>
+                  <th>التخصص</th>
+                  <th>معلومات الاتصال</th>
+                  <th>مواعيد اليوم</th>
+                  <th>التقييم</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="doctorsTableBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+
+            <!-- Empty state shown via JS -->
+            <div id="emptyState" style="display:none; text-align: center; padding: 4rem 2rem;">
+              <i class='bx bx-user-x' style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+              <h3 style="color: #475569;">لا توجد نتائج</h3>
+              <p style="color: #64748b;">لم يتم العثور على أطباء مطابقين للبحث</p>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /content-grid -->
+
+    </div> <!-- /dashboard-wrap -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      let doctors = [
+        { id: 'DOC001', name: 'د. عبدالعزيز الصالح', spec: 'طب عام · طب طوارئ', specialties: ['طب عام', 'طب طوارئ'], phone: '0512001001', email: 'dr.saleh@hospital.com', status: 'active', rating: 4.8, todayAppts: 4, totalAppts: 124, completedAppts: 118 },
+        { id: 'DOC002', name: 'د. نورة العتيبي', spec: 'طب باطني · أمراض مزمنة', specialties: ['طب باطني'], phone: '0512001002', email: 'dr.noura@hospital.com', status: 'active', rating: 4.6, todayAppts: 3, totalAppts: 87, completedAppts: 82 },
+        { id: 'DOC003', name: 'د. فيصل الحربي', spec: 'جراحة عامة · طوارئ', specialties: ['جراحة', 'طب طوارئ'], phone: '0512001003', email: 'dr.faisal@hospital.com', status: 'busy', rating: 4.9, todayAppts: 6, totalAppts: 201, completedAppts: 195 },
+        { id: 'DOC004', name: 'د. منى الزهراني', spec: 'أطفال · طب عام', specialties: ['أطفال', 'طب عام'], phone: '0512001004', email: 'dr.mona@hospital.com', status: 'active', rating: 4.7, todayAppts: 2, totalAppts: 59, completedAppts: 56 },
+        { id: 'DOC005', name: 'د. خالد المطيري', spec: 'عظام · جراحة', specialties: ['عظام'], phone: '0512001005', email: 'dr.khaled@hospital.com', status: 'inactive', rating: 4.5, todayAppts: 0, totalAppts: 143, completedAppts: 138 },
+      ];
+
+      let filteredDoctors = [...doctors];
+
+      window.addEventListener('DOMContentLoaded', () => {
+        // Load from localStorage if available
+        const stored = localStorage.getItem('doctors');
+        if (stored) doctors = JSON.parse(stored);
+
+        updateStats();
+        renderDoctors();
+      });
+
+      function updateStats() {
+        document.getElementById('totalDoctors').textContent = doctors.length;
+        document.getElementById('activeDoctors').textContent = doctors.filter(d => d.status === 'active').length;
+        document.getElementById('busyDoctors').textContent = doctors.filter(d => d.status === 'busy').length;
+        document.getElementById('todayAppts').textContent = doctors.reduce((sum, d) => sum + d.todayAppts, 0);
+      }
+
+      function renderDoctors() {
+        const tbody = document.getElementById('doctorsTableBody');
+        const empty = document.getElementById('emptyState');
+        const table = document.querySelector('.premium-table');
+
+        if (!filteredDoctors.length) {
+          table.style.display = 'none';
+          empty.style.display = 'block';
+          return;
+        }
+
+        table.style.display = 'table';
+        empty.style.display = 'none';
+
+        tbody.innerHTML = filteredDoctors.map(d => createDoctorRow(d)).join('');
+      }
+
+      function createDoctorRow(d) {
+        const statusMap = {
+          active: { label: 'نشط', class: 'b-success' },
+          busy: { label: 'مشغول', class: 'b-warning' },
+          inactive: { label: 'غير نشط', class: 'b-danger' }
+        };
+        const status = statusMap[d.status] || statusMap.active;
+
+        const bgColors = ['blue', 'purple', 'orange', ''];
+        const bgColor = bgColors[parseInt(d.id.replace('DOC', '')) % bgColors.length];
+
+        return `
+        <tr>
+            <td>
+                <div class="user-block">
+                    <div class="u-avatar ${bgColor}">${d.name.replace('د. ', '')[0]}</div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--surface-dark);">${d.name}</div>
+                        <div style="font-size: 0.8rem; color: #64748b;">${d.id}</div>
+                    </div>
+                </div>
+            </td>
+            <td><span style="font-weight: 600; color: #475569;">${d.spec.split(' · ')[0]}</span></td>
+            <td>
+                <div style="font-size: 0.85rem; color: #64748b;"><i class='bx bx-phone'></i> ${d.phone}</div>
+                <div style="font-size: 0.85rem; color: #64748b;"><i class='bx bx-envelope'></i> ${d.email}</div>
+            </td>
+            <td><span style="font-weight: 800; color: var(--admin-primary);">${d.todayAppts}</span> موعد</td>
+            <td><i class='bx bxs-star' style="color: #f59e0b;"></i> ${d.rating}</td>
+            <td><span class="badge-status ${status.class}">${status.label}</span></td>
+            <td>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="action-btn" title="عرض التفاصيل" onclick="viewDoctor('${d.id}')"><i class='bx bx-show'></i></button>
+                    <button class="action-btn" title="تعديل" onclick="editDoctor('${d.id}')"><i class='bx bx-edit'></i></button>
+                    <button class="action-btn" title="حذف" style="color: #ef4444;" onclick="deleteDoctor('${d.id}')"><i class='bx bx-trash'></i></button>
+                </div>
+            </td>
+        </tr>
+        `;
+      }
+
+      function filterDoctors() {
+        const searchName = document.getElementById('searchName').value.toLowerCase();
+        const filterSpec = document.getElementById('filterSpec').value;
+        const filterStatus = document.getElementById('filterStatus').value;
+
+        filteredDoctors = doctors.filter(d => {
+          const matchName = !searchName || d.name.toLowerCase().includes(searchName);
+          const matchSpec = !filterSpec || d.specialties.includes(filterSpec);
+          const matchStatus = !filterStatus || d.status === filterStatus;
+          return matchName && matchSpec && matchStatus;
+        });
+
+        renderDoctors();
+      }
+
+      function resetFilters() {
+        document.getElementById('searchName').value = '';
+        document.getElementById('filterSpec').value = '';
+        document.getElementById('filterStatus').value = '';
+        filteredDoctors = [...doctors];
+        renderDoctors();
+      }
+
+      function viewDoctor(id) {
+        alert('عرض تفاصيل الطبيب: ' + id);
+        // TODO: Navigate to doctor details page
+      }
+
+      function editDoctor(id) {
+        window.location.href = 'edit-doctor.html?id=' + id;
+      }
+
+      function deleteDoctor(id) {
+        if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الطبيب؟')) {
+          return;
+        }
+
+        const index = doctors.findIndex(d => d.id === id);
+        if (index > -1) {
+          doctors.splice(index, 1);
+          localStorage.setItem('doctors', JSON.stringify(doctors));
+          filteredDoctors = [...doctors];
+          updateStats();
+          renderDoctors();
+          alert('تم حذف الطبيب بنجاح');
+        }
+      }
+
+      function exportDoctors() {
+        const json = JSON.stringify(doctors, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'doctors_' + new Date().toISOString().slice(0, 10) + '.json';
+        a.click();
+        alert('تم تصدير بيانات الأطباء بنجاح');
+      }
+
+      // Mobile Sidebar Toggle JS
+      document.addEventListener('DOMContentLoaded', () => {
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (mobileToggle && sidebar) {
+          mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            if (sidebar.classList.contains('active')) {
+              document.body.style.overflow = 'hidden';
+            } else {
+              document.body.style.overflow = '';
+            }
+          });
+
+          document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+              if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                document.body.style.overflow = '';
+              }
+            }
+          });
+        }
+      });
+
+    </script>
+
+  </main>
+
+</body>
+
+</html>

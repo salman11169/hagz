@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجلي الطبي — شفاء+</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/shared-dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="../assets/css/patient-dashboard.css">
+    <style>
+        /* Page hero */
+        .page-hero {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #0ea5e9 100%);
+            border-radius: 24px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 55px rgba(79, 70, 229, .25);
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .07);
+        }
+
+        .page-hero-inner {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-hero h1 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .page-hero p {
+            color: rgba(255, 255, 255, .8);
+            font-size: .9rem;
+            margin-top: .3rem;
+            font-weight: 600;
+        }
+
+        /* Summary cards */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sc {
+            background: #fff;
+            border-radius: 18px;
+            padding: 1.2rem 1.4rem;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, .04);
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+        }
+
+        .sc-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .sc-num {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .sc-lbl {
+            font-size: .75rem;
+            color: #64748b;
+            font-weight: 700;
+            margin-top: .15rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: .9rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.3rem;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            background: #fff;
+            border-radius: 14px;
+            padding: .7rem 1.1rem;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+        }
+
+        .search-box i {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+            font-size: .9rem;
+            width: 100%;
+            background: transparent;
+            color: #0f172a;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .ft {
+            padding: .5rem 1.1rem;
+            border-radius: 50px;
+            font-family: 'Cairo', sans-serif;
+            font-size: .82rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            color: #64748b;
+            transition: all .25s;
+        }
+
+        .ft:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+
+        .ft.active {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        /* Timeline of visits */
+        .visit-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .visit-card {
+            background: #fff;
+            border-radius: 20px;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, .04);
+            overflow: hidden;
+            transition: all .3s;
+            cursor: pointer;
+        }
+
+        .visit-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(79, 70, 229, .12);
+            border-color: #4f46e5;
+        }
+
+        .visit-head {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1.5px solid #f1f5f9;
+            flex-wrap: wrap;
+        }
+
+        .visit-date {
+            text-align: center;
+            background: rgba(79, 70, 229, .08);
+            border-radius: 12px;
+            padding: .5rem .9rem;
+            min-width: 62px;
+        }
+
+        .vd-day {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #4f46e5;
+            line-height: 1;
+        }
+
+        .vd-mon {
+            font-size: .7rem;
+            font-weight: 800;
+            color: #6366f1;
+            text-transform: uppercase;
+        }
+
+        .visit-info {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .vi-spec {
+            font-size: 1rem;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+        .vi-doc {
+            font-size: .8rem;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: .2rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .visit-badge {
+            padding: .35rem .9rem;
+            border-radius: 50px;
+            font-size: .74rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .vb-done {
+            background: rgba(16, 185, 129, .1);
+            color: #059669;
+        }
+
+        .vb-cancel {
+            background: rgba(239, 68, 68, .1);
+            color: #dc2626;
+        }
+
+        .vb-trans {
+            background: rgba(99, 102, 241, .1);
+            color: #4f46e5;
+        }
+
+        .visit-body {
+            padding: 1.2rem 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .vb-sec h4 {
+            font-size: .72rem;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+            letter-spacing: .3px;
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+        }
+
+        .chip {
+            font-size: .75rem;
+            font-weight: 700;
+            padding: .25rem .7rem;
+            border-radius: 50px;
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+        }
+
+        .chip.lab {
+            background: rgba(79, 70, 229, .08);
+            color: #4338ca;
+            border-color: rgba(79, 70, 229, .2);
+        }
+
+        .chip.med {
+            background: rgba(16, 185, 129, .08);
+            color: #059669;
+            border-color: rgba(16, 185, 129, .2);
+        }
+
+        .chip.sym {
+            background: rgba(245, 158, 11, .08);
+            color: #d97706;
+            border-color: rgba(245, 158, 11, .2);
+        }
+
+        .notes-text {
+            font-size: .82rem;
+            font-weight: 600;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            opacity: .4;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        @media(max-width:900px) {
+            .summary-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width:700px) {
+            .visit-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:500px) {
+            .summary-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .page-hero h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <button class="icon-btn mobile-toggle" id="mobileToggle"><i class='bx bx-menu'></i></button>
+                <div class="brand-icon"><i class='bx bx-plus-medical'></i></div>
+                <div class="brand-text">شفاء<span>+</span></div>
+            </div>
+            <div class="nav-actions">
+                <button class="icon-btn notif-btn"><i class='bx bx-bell'></i><span class="badge">2</span></button>
+                <div class="user-menu">
+                    <div class="user-avatar"><img
+                            src="https://ui-avatars.com/api/?name=محمد+العتيبي&background=4f46e5&color=fff&font-family=Cairo"
+                            alt=""></div>
+                    <div class="user-info"><span class="user-greeting">مرحباً بك،</span><span class="user-name">محمد
+                            العتيبي</span></div>
+                    <i class='bx bx-chevron-down dropdown-icon'></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu">
+            <a href="patient-dashboard.html" class="menu-item"><i class='bx bxs-dashboard'></i><span>الرئيسية</span></a>
+            <a href="booking1.html" class="menu-item"><i class='bx bx-calendar-plus'></i><span>حجز موعد</span></a>
+            <a href="Patient_medical_records.html" class="menu-item active"><i class='bx bx-folder-open'></i><span>سجلي
+                    الطبي</span></a>
+            <a href="Patient_prescriptions.html" class="menu-item"><i class='bx bx-receipt'></i><span>الوصفات
+                    والفواتير</span></a>
+            <a href="Patient_profile.html" class="menu-item"><i class='bx bx-user-circle'></i><span>الملف
+                    الشخصي</span></a>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="../public/index.html" class="menu-item logout"><i class='bx bx-log-out'></i><span>تسجيل
+                    الخروج</span></a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <div class="page-hero">
+            <div class="page-hero-inner">
+                <div>
+                    <h1><i class='bx bx-folder-open'></i> سجلي الطبي</h1>
+                    <p>تاريخ زياراتك الطبية الكاملة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-row">
+            <div class="sc">
+                <div class="sc-icon" style="background:rgba(79,70,229,.1);color:#4f46e5;"><i class='bx bx-calendar'></i>
+                </div>
+                <div>
+                    <div class="sc-num" id="totalVisits">0</div>
+                    <div class="sc-lbl">إجمالي الزيارات</div>
+                </div>
+            </div>
+            <div class="sc">
+                <div class="sc-icon" style="background:rgba(16,185,129,.1);color:#059669;"><i
+                        class='bx bx-check-circle'></i></div>
+                <div>
+                    <div class="sc-num" id="doneVisits">0</div>
+                    <div class="sc-lbl">مكتملة</div>
+                </div>
+            </div>
+            <div class="sc">
+                <div class="sc-icon" style="background:rgba(14,165,233,.1);color:#0284c7;"><i
+                        class='bx bx-test-tube'></i></div>
+                <div>
+                    <div class="sc-num" id="labCount">0</div>
+                    <div class="sc-lbl">فحوصات مخبرية</div>
+                </div>
+            </div>
+            <div class="sc">
+                <div class="sc-icon" style="background:rgba(245,158,11,.1);color:#d97706;"><i class='bx bx-capsule'></i>
+                </div>
+                <div>
+                    <div class="sc-num" id="medCount">0</div>
+                    <div class="sc-lbl">أدوية موصوفة</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" id="searchQ" placeholder="ابحث بالتاريخ أو التخصص أو اسم الطبيب..."
+                    oninput="renderRecords()">
+            </div>
+            <div class="filter-tabs">
+                <button class="ft active" onclick="setFilter('all',this)">الكل</button>
+                <button class="ft" onclick="setFilter('done',this)">مكتملة</button>
+                <button class="ft" onclick="setFilter('labs',this)">لها فحوصات</button>
+                <button class="ft" onclick="setFilter('meds',this)">لها أدوية</button>
+            </div>
+        </div>
+
+        <!-- Records -->
+        <div class="visit-timeline" id="recordsList"></div>
+
+    </main>
+
+    <script>
+        const RECORDS = [
+            {
+                id: 'APT-2024-0071', date: '2026-02-28', spec: 'طب باطني', doctor: 'د. عبدالعزيز الصالح',
+                status: 'مكتمل', symptoms: ['آلام في الصدر', 'ضيق في التنفس', 'إرهاق'],
+                labs: ['CBC - صورة دم كاملة', 'HbA1c - سكر تراكمي', 'Lipid Profile - دهون الدم'],
+                meds: ['Metformin 500mg', 'Amlodipine 10mg'],
+                notes: 'المريض يعاني من ضغط دم مرتفع وسكري غير منضبط. تم تعديل الجرعات.'
+            },
+            {
+                id: 'APT-2024-0058', date: '2026-01-15', spec: 'طب باطني', doctor: 'د. عبدالعزيز الصالح',
+                status: 'مكتمل', symptoms: ['الإرهاق', 'صداع مزمن'],
+                labs: ['TSH - الغدة الدرقية', 'Vitamin D - فيتامين د'],
+                meds: ['Vitamin D3 1000IU', 'Aspirin 100mg'],
+                notes: 'نقص في فيتامين د ووظائف الدرقية طبيعية. أُحيل للفحص الدوري بعد 3 أشهر.'
+            },
+            {
+                id: 'APT-2024-0041', date: '2025-11-20', spec: 'طب عيون', doctor: 'د. منيرة الحارثي',
+                status: 'مكتمل', symptoms: ['ضعف في النظر', 'جفاف العيون'],
+                labs: [], meds: ['قطرة Tears Naturale', 'نظارة طبية'],
+                notes: 'قصر نظر خفيف، موصى بنظارة. مراجعة بعد 6 أشهر.'
+            },
+            {
+                id: 'APT-2024-0029', date: '2025-09-05', spec: 'طب باطني', doctor: 'د. عبدالعزيز الصالح',
+                status: 'محول', symptoms: ['آلام في الظهر', 'خدر في القدمين'],
+                labs: ['MRI Brain - رنين دماغ'],
+                meds: ['Ibuprofen 400mg'],
+                notes: 'تحويل إلى استشاري أعصاب بسبب الخدر المتكرر.'
+            },
+            {
+                id: 'APT-2024-0014', date: '2025-07-12', spec: 'طب الطوارئ', doctor: 'د. سيف العمري',
+                status: 'مكتمل', symptoms: ['ألم حاد في البطن', 'غثيان'],
+                labs: ['CBC - صورة دم كاملة', 'Abdominal Ultrasound - سونار بطن'],
+                meds: ['Omeprazole 20mg', 'Metoclopramide 10mg'],
+                notes: 'التهاب في المعدة. تحسن بعد العلاج. مراجعة طبيب باطني.'
+            },
+        ];
+
+        let currentFilter = 'all';
+
+        function setFilter(f, el) {
+            currentFilter = f;
+            document.querySelectorAll('.ft').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            renderRecords();
+        }
+
+        function renderRecords() {
+            const q = document.getElementById('searchQ').value.trim().toLowerCase();
+            let list = RECORDS.slice();
+            if (currentFilter === 'done') list = list.filter(r => r.status === 'مكتمل');
+            if (currentFilter === 'labs') list = list.filter(r => r.labs.length > 0);
+            if (currentFilter === 'meds') list = list.filter(r => r.meds.length > 0);
+            if (q) list = list.filter(r =>
+                r.spec.includes(q) || r.doctor.toLowerCase().includes(q) || r.date.includes(q)
+            );
+
+            // Stats
+            document.getElementById('totalVisits').textContent = RECORDS.length;
+            document.getElementById('doneVisits').textContent = RECORDS.filter(r => r.status === 'مكتمل').length;
+            document.getElementById('labCount').textContent = RECORDS.reduce((s, r) => s + r.labs.length, 0);
+            document.getElementById('medCount').textContent = RECORDS.reduce((s, r) => s + r.meds.length, 0);
+
+            const el = document.getElementById('recordsList');
+            if (!list.length) { el.innerHTML = '<div class="empty-state"><i class=\'bx bx-folder-open\'></i>لا يوجد سجلات مطابقة</div>'; return; }
+
+            el.innerHTML = list.map(r => {
+                const d = new Date(r.date);
+                const day = d.getDate();
+                const mon = d.toLocaleDateString('ar-SA', { month: 'short' });
+                const bClass = r.status === 'مكتمل' ? 'vb-done' : r.status === 'محول' ? 'vb-trans' : 'vb-cancel';
+                const labHtml = r.labs.length ? r.labs.map(l => `<span class="chip lab"><i class='bx bx-test-tube'></i>${l.split(' - ')[0]}</span>`).join('') : '<span class="chip">—</span>';
+                const medHtml = r.meds.length ? r.meds.map(m => `<span class="chip med"><i class='bx bx-capsule'></i>${m}</span>`).join('') : '<span class="chip">—</span>';
+                const symHtml = r.symptoms.length ? r.symptoms.map(s => `<span class="chip sym">${s}</span>`).join('') : '<span class="chip">—</span>';
+                return `
+        <div class="visit-card">
+          <div class="visit-head">
+            <div class="visit-date"><div class="vd-day">${day}</div><div class="vd-mon">${mon}</div></div>
+            <div class="visit-info">
+              <div class="vi-spec">${r.spec}</div>
+              <div class="vi-doc"><i class='bx bx-user-pin'></i>${r.doctor} · ${r.id}</div>
+            </div>
+            <span class="visit-badge ${bClass}">${r.status}</span>
+          </div>
+          <div class="visit-body">
+            <div class="vb-sec"><h4><i class='bx bx-error-circle'></i> الأعراض</h4><div class="chip-list">${symHtml}</div></div>
+            <div class="vb-sec"><h4><i class='bx bx-test-tube'></i> الفحوصات</h4><div class="chip-list">${labHtml}</div></div>
+            <div class="vb-sec"><h4><i class='bx bx-capsule'></i> الأدوية</h4><div class="chip-list">${medHtml}</div></div>
+          </div>
+          ${r.notes ? `<div style="padding:.2rem 1.5rem 1.2rem;"><div class="notes-text"><i class='bx bx-note' style="color:#4f46e5;margin-left:.4rem;"></i>${r.notes}</div></div>` : ''}
+        </div>`;
+            }).join('');
+        }
+
+        function initSidebar() {
+            const toggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            toggle.addEventListener('click', () => { sidebar.classList.toggle('active'); document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : ''; });
+            document.addEventListener('click', e => { if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target) && sidebar.classList.contains('active')) { sidebar.classList.remove('active'); document.body.style.overflow = ''; } });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { initSidebar(); renderRecords(); });
+    </script>
+</body>
+
+</html>

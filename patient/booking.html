@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجز موعد - نظام فرز المواعيد الذكي</title>
+
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Google Fonts - Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/shared-dashboard.css">
+    <link rel="stylesheet" href="../assets/css/booking.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Toggle Sidebar">
+                    <i class='bx bx-menu'></i>
+                </button>
+                <div class="brand-icon">
+                    <i class='bx bx-plus-medical'></i>
+                </div>
+                <div class="brand-text">شفاء<span>+</span></div>
+            </div>
+
+            <div class="nav-actions">
+                <button class="icon-btn notif-btn">
+                    <i class='bx bx-bell'></i>
+                    <span class="badge">2</span>
+                </button>
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=مريض&background=6366f1&color=fff&font-family=Cairo"
+                            alt="User">
+                    </div>
+                    <div class="user-info">
+                        <span class="user-greeting">مرحباً بك،</span>
+                        <span class="user-name">محمد أحمد</span>
+                    </div>
+                    <i class='bx bx-chevron-down dropdown-icon'></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar (Patient) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu">
+            <a href="patient-dashboard.html" class="menu-item">
+                <i class='bx bxs-dashboard'></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="booking1.html" class="menu-item active">
+                <i class='bx bx-calendar-plus'></i>
+                <span>حجز موعد</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class='bx bx-folder-open'></i>
+                <span>سجلي الطبي</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class='bx bx-receipt'></i>
+                <span>الوصفات والفواتير</span>
+            </a>
+            <a href="Patient_profile.html" class="menu-item">
+                <i class='bx bx-user-circle'></i>
+                <span>الملف الشخصي</span>
+            </a>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="../public/index.html" class="menu-item logout">
+                <i class='bx bx-log-out'></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+
+
+        <!-- PAGE HERO -->
+        <section class="page-hero">
+            <div class="container">
+                <div class="page-hero-content">
+                    <h1><i class='bx bx-calendar-plus'></i> احجز موعدك الآن</h1>
+                    <p>أكمل الخطوات أدناه وسيتكفل نظامنا بتحديد أفضل موعد بناءً على حالتك الصحية</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEPS BAR -->
+        <div class="container">
+            <div class="steps-wrapper mt-n5">
+                <div class="step-progress">
+                    <div class="step-item active" id="s1">
+                        <div class="step-circle"><i class='bx bx-user'></i></div>
+                        <span class="step-label">بياناتك</span>
+                    </div>
+                    <div class="step-line" id="c1"></div>
+                    <div class="step-item" id="s2">
+                        <div class="step-circle"><i class='bx bx-clipboard'></i></div>
+                        <span class="step-label">الخدمة</span>
+                    </div>
+                    <div class="step-line" id="c2"></div>
+                    <div class="step-item" id="s3">
+                        <div class="step-circle"><i class='bx bx-calendar'></i></div>
+                        <span class="step-label">الموعد</span>
+                    </div>
+                    <div class="step-line" id="c3"></div>
+                    <div class="step-item" id="s4">
+                        <div class="step-circle"><i class='bx bx-check'></i></div>
+                        <span class="step-label">التأكيد</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BODY -->
+        <section style="background:var(--light-color); padding:3rem 0 5rem;">
+            <div class="container">
+                <div class="row g-4">
+
+                    <!-- LEFT FORM -->
+                    <div class="col-lg-8">
+
+                        <!-- STEP 1: Personal Info -->
+                        <div class="section-card">
+                            <div class="section-card-title">
+                                <span class="title-icon"><i class='bx bx-user'></i></span>
+                                البيانات الشخصية
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">الاسم الكامل <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-user text-primary'></i></span>
+                                        <input type="text" class="form-control" id="fullName"
+                                            placeholder="محمد أحمد العلي">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">رقم الجوال <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-phone text-primary'></i></span>
+                                        <input type="tel" class="form-control" id="phone" placeholder="05xxxxxxxx">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i
+                                                class='bx bx-envelope text-primary'></i></span>
+                                        <input type="email" class="form-control" id="email"
+                                            placeholder="example@email.com">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">رقم الهوية / الإقامة <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card text-primary'></i></span>
+                                        <input type="text" class="form-control" id="idNumber" placeholder="1xxxxxxxxx">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">العمر <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="age" placeholder="25" min="1"
+                                        max="120">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">الجنس <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="gender">
+                                        <option value="">اختر الجنس</option>
+                                        <option>ذكر</option>
+                                        <option>أنثى</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">فصيلة الدم</label>
+                                    <select class="form-select" id="bloodType">
+                                        <option value="">غير معروف</option>
+                                        <option>A+</option>
+                                        <option>A-</option>
+                                        <option>B+</option>
+                                        <option>B-</option>
+                                        <option>O+</option>
+                                        <option>O-</option>
+                                        <option>AB+</option>
+                                        <option>AB-</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Service & Priority -->
+                        <div class="section-card">
+                            <div class="section-card-title">
+                                <span class="title-icon"><i class='bx bx-clipboard'></i></span>
+                                نوع الخدمة الطبية
+                            </div>
+                            <div class="service-grid">
+                                <div class="service-card" data-service="فحص عام" onclick="selectService(this)">
+                                    <span class="check-badge"><i class='bx bx-check'></i></span>
+                                    <div class="service-card-icon s-blue"><i class='bx bx-search-alt'></i></div>
+                                    <div class="service-card-label">فحص عام</div>
+                                </div>
+                                <div class="service-card" data-service="استشارة طبية" onclick="selectService(this)">
+                                    <span class="check-badge"><i class='bx bx-check'></i></span>
+                                    <div class="service-card-icon s-purple"><i class='bx bx-chat'></i></div>
+                                    <div class="service-card-label">استشارة طبية</div>
+                                </div>
+                                <div class="service-card" data-service="تحاليل مخبرية" onclick="selectService(this)">
+                                    <span class="check-badge"><i class='bx bx-check'></i></span>
+                                    <div class="service-card-icon s-cyan"><i class='bx bx-test-tube'></i></div>
+                                    <div class="service-card-label">تحاليل مخبرية</div>
+                                </div>
+                                <div class="service-card" data-service="أشعة وتصوير" onclick="selectService(this)">
+                                    <span class="check-badge"><i class='bx bx-check'></i></span>
+                                    <div class="service-card-icon s-orange"><i class='bx bx-scan'></i></div>
+                                    <div class="service-card-label">أشعة وتصوير</div>
+                                </div>
+                                <div class="service-card" data-service="تقييم الطوارئ" onclick="selectService(this)">
+                                    <span class="check-badge"><i class='bx bx-check'></i></span>
+                                    <div class="service-card-icon s-pink"><i class='bx bx-first-aid'></i></div>
+                                    <div class="service-card-label">تقييم الطوارئ</div>
+                                </div>
+                                <div class="service-card" data-service="متابعة دورية" onclick="selectService(this)">
+                                    <span class="check-badge"><i class='bx bx-check'></i></span>
+                                    <div class="service-card-icon s-green"><i class='bx bx-repeat'></i></div>
+                                    <div class="service-card-label">متابعة دورية</div>
+                                </div>
+                            </div>
+
+                            <!-- Priority -->
+                            <div class="mt-4">
+                                <label class="form-label">مستوى الأولوية الطبية <span
+                                        class="text-danger">*</span></label>
+                                <div class="priority-selector">
+                                    <div class="priority-opt" data-priority="مستقرة"
+                                        onclick="selectPriority(this,'normal')">
+                                        <div class="priority-opt-icon poi-normal"><i class='bx bx-check-circle'></i>
+                                        </div>
+                                        <div class="priority-opt-label pol-normal">حالة مستقرة</div>
+                                        <div class="priority-opt-desc">أعراض خفيفة لا تستدعي تدخلاً عاجلاً</div>
+                                    </div>
+                                    <div class="priority-opt" data-priority="عاجلة"
+                                        onclick="selectPriority(this,'urgent')">
+                                        <div class="priority-opt-icon poi-urgent"><i class='bx bx-error-circle'></i>
+                                        </div>
+                                        <div class="priority-opt-label pol-urgent">حالة عاجلة</div>
+                                        <div class="priority-opt-desc">أعراض متوسطة تحتاج متابعة سريعة</div>
+                                    </div>
+                                    <div class="priority-opt" data-priority="حرجة"
+                                        onclick="selectPriority(this,'emergency')">
+                                        <div class="priority-opt-icon poi-emergency"><i class='bx bx-error'></i></div>
+                                        <div class="priority-opt-label pol-emergency">حالة حرجة</div>
+                                        <div class="priority-opt-desc">أعراض خطيرة تستلزم تدخلاً فورياً</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Symptoms -->
+                            <div class="mt-4">
+                                <label class="form-label">وصف الأعراض</label>
+                                <textarea class="form-control" id="symptoms" rows="3"
+                                    placeholder="اشرح أعراضك بالتفصيل لمساعدتنا في تحديد الأولوية بدقة..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Date & Doctor -->
+                        <div class="section-card">
+                            <div class="section-card-title">
+                                <span class="title-icon"><i class='bx bx-calendar'></i></span>
+                                التاريخ والطبيب
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">التاريخ المفضل <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="apptDate"
+                                        onchange="updateSlots(); syncSummary();">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">التخصص المطلوب</label>
+                                    <select class="form-select" id="specialty">
+                                        <option value="">جميع التخصصات</option>
+                                        <option>طب عام</option>
+                                        <option>طب طوارئ</option>
+                                        <option>طب باطني</option>
+                                        <option>جراحة عامة</option>
+                                        <option>أطفال</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Doctors -->
+                            <label class="form-label mb-3">اختر الطبيب</label>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="doctor-card selected" data-doctor="د. عبدالعزيز الصالح"
+                                        onclick="selectDoctor(this)">
+                                        <div class="doctor-avatar da1"><i class='bx bx-user'></i></div>
+                                        <div class="doctor-info">
+                                            <div class="doctor-name">د. عبدالعزيز الصالح</div>
+                                            <div class="doctor-spec">طب عام · طب طوارئ</div>
+                                            <div class="doctor-rating">★★★★★ <small class="text-muted">(124)</small>
+                                            </div>
+                                        </div>
+                                        <span class="avail-badge available">متاح</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="doctor-card" data-doctor="د. نورة العتيبي" onclick="selectDoctor(this)">
+                                        <div class="doctor-avatar da2"><i class='bx bx-user'></i></div>
+                                        <div class="doctor-info">
+                                            <div class="doctor-name">د. نورة العتيبي</div>
+                                            <div class="doctor-spec">طب باطني · أمراض مزمنة</div>
+                                            <div class="doctor-rating">★★★★☆ <small class="text-muted">(87)</small>
+                                            </div>
+                                        </div>
+                                        <span class="avail-badge available">متاح</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="doctor-card" data-doctor="د. فيصل الحربي" onclick="selectDoctor(this)">
+                                        <div class="doctor-avatar da3"><i class='bx bx-user'></i></div>
+                                        <div class="doctor-info">
+                                            <div class="doctor-name">د. فيصل الحربي</div>
+                                            <div class="doctor-spec">جراحة عامة · طوارئ</div>
+                                            <div class="doctor-rating">★★★★★ <small class="text-muted">(201)</small>
+                                            </div>
+                                        </div>
+                                        <span class="avail-badge limited">مواعيد محدودة</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="doctor-card" data-doctor="د. منى الزهراني" onclick="selectDoctor(this)">
+                                        <div class="doctor-avatar da4"><i class='bx bx-user'></i></div>
+                                        <div class="doctor-info">
+                                            <div class="doctor-name">د. منى الزهراني</div>
+                                            <div class="doctor-spec">طب أطفال · طب عام</div>
+                                            <div class="doctor-rating">★★★★☆ <small class="text-muted">(59)</small>
+                                            </div>
+                                        </div>
+                                        <span class="avail-badge available">متاح</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Time Slots -->
+                            <label class="form-label">الوقت المفضل <span class="text-danger">*</span></label>
+                            <div class="time-slots-grid" id="timeSlotsGrid"></div>
+                            <div class="legend">
+                                <div class="legend-item"><span class="legend-dot ld-available"></span> متاح</div>
+                                <div class="legend-item"><span class="legend-dot ld-selected"></span> محدد</div>
+                                <div class="legend-item"><span class="legend-dot ld-busy"></span> محجوز</div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: Notes -->
+                        <div class="section-card">
+                            <div class="section-card-title">
+                                <span class="title-icon"><i class='bx bx-note'></i></span>
+                                ملاحظات إضافية
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">حساسية من أدوية؟</label>
+                                    <select class="form-select" id="allergy">
+                                        <option value="">لا يوجد</option>
+                                        <option>بنسلين</option>
+                                        <option>سلفا</option>
+                                        <option>مسكنات</option>
+                                        <option>أخرى</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">هل تتناول أدوية حالياً؟</label>
+                                    <select class="form-select" id="currentMeds">
+                                        <option value="">لا</option>
+                                        <option>نعم – أدوية ضغط</option>
+                                        <option>نعم – أدوية سكر</option>
+                                        <option>نعم – أدوية أخرى</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">ملاحظات للطبيب</label>
+                                    <textarea class="form-control" id="notes" rows="3"
+                                        placeholder="أي معلومات إضافية تود مشاركتها مع الطبيب..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /col-lg-8 -->
+
+                    <!-- RIGHT SUMMARY -->
+                    <div class="col-lg-4">
+                        <div class="summary-card">
+                            <h4><i class='bx bx-receipt'></i> ملخص الحجز</h4>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-user'></i> المريض</span>
+                                <span class="summary-val" id="sum-name">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-phone'></i> الجوال</span>
+                                <span class="summary-val" id="sum-phone">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-clipboard'></i> الخدمة</span>
+                                <span class="summary-val" id="sum-service">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-shield'></i> الأولوية</span>
+                                <span class="summary-val" id="sum-priority">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-user-pin'></i> الطبيب</span>
+                                <span class="summary-val" id="sum-doctor">د. عبدالعزيز الصالح</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-calendar'></i> التاريخ</span>
+                                <span class="summary-val" id="sum-date">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-key"><i class='bx bx-time'></i> الوقت</span>
+                                <span class="summary-val" id="sum-time">—</span>
+                            </div>
+
+                            <div class="estimated-time">
+                                <div class="et-label">وقت الانتظار التقديري</div>
+                                <div class="et-value" id="sum-wait">—</div>
+                            </div>
+
+                            <button class="btn btn-submit" onclick="submitBooking()">
+                                <i class='bx bx-calendar-check'></i> تأكيد الحجز
+                            </button>
+                            <div class="text-center mt-3">
+                                <small class="text-muted"><i class='bx bx-lock-alt'></i> بياناتك محمية وآمنة</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /row -->
+            </div>
+        </section>
+
+        <!-- SUCCESS OVERLAY -->
+        <div class="success-overlay" id="successOverlay">
+            <div class="success-box">
+                <div class="success-icon-wrap"><i class='bx bx-check-double'></i></div>
+                <h2>تم تأكيد حجزك! 🎉</h2>
+                <p>سيتم التواصل معك على رقم جوالك لتأكيد الموعد</p>
+                <div class="booking-ref" id="bookingRef">—</div>
+                <div class="d-flex flex-column gap-2">
+                    <button class="btn btn-done" onclick="window.location.href='patient-dashboard.html'">
+                        <i class='bx bx-layout'></i> عرض مواعيدي
+                    </button>
+                    <button class="btn btn-outline-secondary mt-1" onclick="window.location.href='index.html'">
+                        العودة للرئيسية
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            /* ── GLOBALS ── */
+            let selService = '', selPriority = '', selPriorityKey = '',
+                selDoctor = 'د. عبدالعزيز الصالح', selTime = '';
+
+            const WAIT_TIMES = { normal: '~45 دقيقة', urgent: '~15 دقيقة', emergency: 'فوري' };
+            const TIMES = [
+                { t: '08:00', l: '08:00 ص' }, { t: '09:00', l: '09:00 ص' }, { t: '10:00', l: '10:00 ص' },
+                { t: '11:00', l: '11:00 ص' }, { t: '12:00', l: '12:00 م' }, { t: '13:00', l: '01:00 م' },
+                { t: '14:00', l: '02:00 م' }, { t: '15:00', l: '03:00 م' }, { t: '16:00', l: '04:00 م' },
+                { t: '17:00', l: '05:00 م' },
+            ];
+
+            /* Min date */
+            document.getElementById('apptDate').min = new Date().toISOString().split('T')[0];
+
+            /* ── RENDER TIME SLOTS ── */
+            function updateSlots() {
+                const busySet = new Set();
+                while (busySet.size < 3) busySet.add(Math.floor(Math.random() * TIMES.length));
+                document.getElementById('timeSlotsGrid').innerHTML = TIMES.map((t, i) => {
+                    const busy = busySet.has(i);
+                    return `<div class="time-slot ${busy ? 'busy' : ''}" data-time="${t.t}" onclick="selectTime(this)">
+            ${t.l}<div class="time-slot-sub">${busy ? 'محجوز' : '30 د'}</div></div>`;
+                }).join('');
+                selTime = '';
+            }
+            updateSlots();
+
+            /* ── SELECTIONS ── */
+            function selectService(el) {
+                document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                selService = el.dataset.service;
+                syncSummary();
+            }
+            function selectPriority(el, key) {
+                document.querySelectorAll('.priority-opt').forEach(p =>
+                    p.classList.remove('sel-normal', 'sel-urgent', 'sel-emergency'));
+                el.classList.add(`sel-${key}`);
+                selPriority = el.dataset.priority;
+                selPriorityKey = key;
+                syncSummary();
+            }
+            function selectDoctor(el) {
+                document.querySelectorAll('.doctor-card').forEach(d => d.classList.remove('selected'));
+                el.classList.add('selected');
+                selDoctor = el.dataset.doctor;
+                syncSummary();
+            }
+            function selectTime(el) {
+                if (el.classList.contains('busy')) return;
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                el.classList.add('selected');
+                selTime = el.dataset.time;
+                syncSummary();
+            }
+
+            /* ── LIVE SUMMARY ── */
+            function syncSummary() {
+                const name = document.getElementById('fullName').value || '—';
+                const phone = document.getElementById('phone').value || '—';
+                const date = document.getElementById('apptDate').value;
+                const dateF = date
+                    ? new Date(date).toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+                    : '—';
+
+                document.getElementById('sum-name').textContent = name;
+                document.getElementById('sum-phone').textContent = phone;
+                document.getElementById('sum-service').textContent = selService || '—';
+                document.getElementById('sum-doctor').textContent = selDoctor || '—';
+                document.getElementById('sum-date').textContent = dateF;
+                document.getElementById('sum-time').textContent = selTime || '—';
+                document.getElementById('sum-wait').textContent = WAIT_TIMES[selPriorityKey] || '—';
+
+                const pEl = document.getElementById('sum-priority');
+                pEl.innerHTML = selPriority
+                    ? `<span class="priority-pill pp-${selPriorityKey}">${selPriority}</span>`
+                    : '—';
+
+                /* Steps */
+                const d1 = name !== '—' && phone !== '—';
+                const d2 = selService && selPriority;
+                const d3 = date && selTime;
+                setStep('s1', 'c1', d1, true);
+                setStep('s2', 'c2', d2, d1);
+                setStep('s3', 'c3', d3, d2);
+                setStep('s4', null, false, d3);
+            }
+
+            function setStep(sid, cid, done, active) {
+                const s = document.getElementById(sid);
+                s.classList.remove('active', 'done');
+                if (done) s.classList.add('done');
+                else if (active) s.classList.add('active');
+                if (cid) document.getElementById(cid).classList.toggle('active', done || active);
+            }
+
+            /* Live listeners */
+            ['fullName', 'phone', 'email', 'apptDate'].forEach(id => {
+                document.getElementById(id).addEventListener('input', syncSummary);
+            });
+
+            /* ── SUBMIT ── */
+            function submitBooking() {
+                const name = document.getElementById('fullName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const idNum = document.getElementById('idNumber').value.trim();
+                const age = document.getElementById('age').value;
+                const gender = document.getElementById('gender').value;
+                const date = document.getElementById('apptDate').value;
+
+                if (!name || !phone || !idNum || !age || !gender)
+                    return alert('⚠️ يرجى إكمال البيانات الشخصية (الاسم، الجوال، الهوية، العمر، الجنس)');
+                if (!selService) return alert('⚠️ يرجى اختيار نوع الخدمة');
+                if (!selPriority) return alert('⚠️ يرجى تحديد مستوى الأولوية');
+                if (!date) return alert('⚠️ يرجى اختيار تاريخ الموعد');
+                if (!selTime) return alert('⚠️ يرجى اختيار الوقت');
+
+                const ref = 'APT-' + Date.now().toString().slice(-6);
+                const booking = {
+                    id: ref, name, phone, idNumber: idNum, age, gender,
+                    bloodType: document.getElementById('bloodType').value,
+                    service: selService,
+                    priority: selPriority,
+                    priorityKey: selPriorityKey,
+                    doctor: selDoctor,
+                    date, time: selTime,
+                    allergy: document.getElementById('allergy').value,
+                    currentMeds: document.getElementById('currentMeds').value,
+                    symptoms: document.getElementById('symptoms').value,
+                    notes: document.getElementById('notes').value,
+                    status: selPriorityKey === 'emergency' ? 'حرجة' : 'قيد الانتظار',
+                    createdAt: new Date().toISOString()
+                };
+
+                const list = JSON.parse(localStorage.getItem('appointments') || '[]');
+                list.push(booking);
+                localStorage.setItem('appointments', JSON.stringify(list));
+
+                document.getElementById('bookingRef').textContent = ref;
+                document.getElementById('successOverlay').classList.add('show');
+            }
+
+            // Mobile Sidebar Toggle JS
+            document.addEventListener('DOMContentLoaded', () => {
+                const mobileToggle = document.getElementById('mobileToggle');
+                const sidebar = document.getElementById('sidebar');
+
+                if (mobileToggle && sidebar) {
+                    mobileToggle.addEventListener('click', () => {
+                        sidebar.classList.toggle('active');
+                        if (sidebar.classList.contains('active')) {
+                            document.body.style.overflow = 'hidden';
+                        } else {
+                            document.body.style.overflow = '';
+                        }
+                    });
+
+                    document.addEventListener('click', (e) => {
+                        if (window.innerWidth <= 768) {
+                            if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                                sidebar.classList.remove('active');
+                                document.body.style.overflow = '';
+                            }
+                        }
+                    });
+                }
+            });
+
+        </script>
+    </main>
+</body>
+
+</html>
