@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرد الأكاديمي والتقني لمتطلبات الفرز - نظام شفاء+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; color: #1e293b; line-height: 1.8; margin: 0; padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 50px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 8px solid #2563eb; }
+        h1 { color: #0f172a; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; font-weight: 900; }
+        .feature-box { background: #ffffff; border: 1px solid #e2e8f0; border-right: 5px solid #2563eb; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .feature-box h2 { color: #1d4ed8; font-size: 1.3rem; margin-top: 0; margin-bottom: 15px; font-weight: 800; }
+        .feature-box p { font-size: 1.05rem; margin-bottom: 10px; color: #334155; text-align: justify; }
+        .feature-box ul { margin-top: 10px; margin-bottom: 0; padding-right: 25px; color: #475569; }
+        .feature-box li { margin-bottom: 8px; }
+        .highlight { background-color: rgba(37,99,235,0.1); color: #1d4ed8; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .alert-box { border-right-color: #ef4444; }
+        .alert-box h2 { color: #b91c1c; }
+        
+        @media print {
+            @page { margin: 0; }
+            body { background: #fff; padding: 15mm; margin: 0; }
+            .container { box-shadow: none; padding: 0; border: none; max-width: 100%; }
+            .feature-box { page-break-inside: avoid; break-inside: avoid; border: 1px solid #ddd; border-right: 5px solid #2563eb; box-shadow: none; }
+            .alert-box { border-right: 5px solid #ef4444; }
+            h1, h2 { page-break-after: avoid; break-after: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>الرد الهندسي والتشغيلي لمتطلبات الفرز الطبي<br><span style="font-size: 1.2rem; color: #64748b; font-weight: 600;">توضيح إمكانيات نظام "شفاء+" (System Architecture Capabilities)</span></h1>
+
+    <div class="feature-box">
+        <h2>1. التوجيه المبني على المسمى الوظيفي والدراجات (Rank-Based Routing)</h2>
+        <p>النظام ليس مجرد حجز وقت، بل هو نظام واعٍ بهيكلية الكادر الطبي داخل التخصص الواحد، وتم برمجة طبقة اتخاذ القرار لتنفذ القاعدة التالية:</p>
+        <ul>
+            <li><span class="highlight">الحالة الحرجة (Critical):</span> تُحول تلقائياً إلى <strong>الاستشاري (Consultant)</strong> أو لأطباء الطوارئ المتخصصين، لضمان أعلى مستوى من اتخاذ القرار السريع.</li>
+            <li><span class="highlight">الحالة المتوسطة العاجلة (Medium):</span> تُبرمج لتحول تلقائياً إلى <strong>الأخصائي (Specialist)</strong> لإدارة الحالة ومنع تفاقمها.</li>
+            <li><span class="highlight">الحالة الروتينية/المستقرة (Routine):</span> تُوزع على جداول <strong>الطبيب العام (General Practitioner)</strong> أو الطبيب المقيم، لتخفيف العبء عن الاستشاريين.</li>
+        </ul>
+    </div>
+
+    <div class="feature-box alert-box">
+        <h2>2. الديناميكية في التعامل مع الحالات الحرجة وطوارئ الازدحام (Cascade Scheduling & Queue Jumping)</h2>
+        <p>هذه هي الميزة الجوهرية (Core Feature) في خوارزمية "شفاء+". في حال ورود <span class="highlight" style="color: #ef4444; background: rgba(239,68,68,0.1);">حالة حرجة (أولوية 1)</span> وكان الاستشاري أو طبيب الطوارئ مشغولاً بالكامل، فالنظام لا يرفض الحالة أبداً، بل يُطبق خوارزمية الإزاحة التسلسلية (Cascade Shift):</p>
+        <ul>
+            <li>يبحث النظام فورا عن أي طبيب מتاح في قسم الطوارئ.</li>
+            <li>إذا كان الجميع مشغولين بمراجعين، يتم <strong>اختراق الطابور (Queue Jumping)</strong>؛ حيث يُدخل المريض الحرج فوراً على الطبيب، ويقوم النظام بعمل إزاحة (Shift) تلقائية للمراجع الروتيني الأقل أهمية.</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <h2>3. إدارة قسم الطوارئ والورديات (Emergency Routing & Night Shifts)</h2>
+        <p>يحتوي النظام على تعريف واضح لقسم (طب الطوارئ). قواعد النظام مجهزة بما يلي:</p>
+        <ul>
+            <li><strong>التوجيه المباشر:</strong> أي حالة تُصنف كحرجة (Critical) تُوجه فنياً لقسم الطوارئ قبل أي قسم آخر.</li>
+            <li><strong>ورديات الليل:</strong> يدعم النظام تعريف فترات المناوبة للصلاحيات (Shift 1 صباحي / Shift 2 مسائي)، بحيث يستطيع النظام توجيه المريض لطبيب "أخصائي طوارئ" المناوب في وردية الليل.</li>
+        </ul>
+    </div>
+
+    <div class="feature-box alert-box">
+        <h2>4. نظام استدعاء طارئ وإنذار باللون الأحمر (Real-Time Red Alerts)</h2>
+        <p>تصميم واجهة لوحة تحكم الطبيب تعتمد حيوية التنبيهات. تم تخصيص آلية تنبيهات فورية:</p>
+        <ul>
+            <li>بمجرد وصول حالة تصنف كـ (حرجة)، تظهر إشعارات وإنذارات لونية <strong>(باللون الأحمر القاني)</strong> على لوحة الطبيب (Dashboard).</li>
+            <li>تحمل هذه الإشعارات علامة (استدعاء طارئ) لإبلاغ الطبيب أن عليه التوجه الفوري للحالة أو معاينتها كأولوية قصوى قبل الحالات الأخرى.</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <h2>5. تقارير الفرز الطبي الموثقة (Medical Triage Reports)</h2>
+        <p>
+            تلبيةً للمعايير الطبية، لا يستخدم النظام مصطلحات تجارية، بل يستخرج <strong>"تقارير فرز طبي سريري (Clinical Triage Reports)"</strong> كبديل للمسميات القديمة. هذه التقارير تحتوي على ملخص الحالة، مستوى الخطورة (محسوب رقمياً Scoring)، والقرار الخوارزمي الذي تم بناءً عليه تقديم الحالة، مما يجعله ملفاً يعتد به لدى الإدارة الطبية لتقييم جودة الفرز.
+        </p>
+    </div>
+
+    <div class="feature-box">
+        <h2>دور الذكاء الاصطناعي (AI) في النظام العيادي</h2>
+        <p>
+            لا يتدخل الذكاء الاصطناعي في إعطاء وصفات طبية أو علاج، بل يقتصر دوره على <strong>تسهيل اتخاذ قرار الجدولة والتوجيه</strong>. يقوم النظام بإرسال شكوى المريض المكتوبة كنص عادي لمعالج لغوي ضخم (LLM) مُدرب طبياً ليقوم بـ:
+        </p>
+        <ul>
+            <li><strong>تحليل اللغة الطبيعية (NLP):</strong> استيعاب شكوى المريض مهما كانت طريقة كتابتها واستخراج "الكلمات المفتاحية" الطبية منها.</li>
+            <li><strong>التوجيه للتخصص المناسب:</strong> ربط الأعراض بالتخصص الصحيح (مثال: "ألم في صدري يمتد ليدي" يترجمه إلى "طب قلب/طوارئ").</li>
+            <li><strong>اكتشاف عوامل الخطر:</strong> يقوم الـ AI بقراءة "الأمراض المزمنة" التي صرح بها المريض. فإذا كان مريض السكري يشتكي من غثيان، يرفع النظام درجة الخطورة بناءً على التداخل المحتمل.</li>
+        </ul>
+    </div>
+
+    <!-- قسم المرجعية والاقتباسات -->
+    <h2 style="color: #0f172a; border-right: 5px solid #2563eb; padding-right: 15px; margin-top: 40px; margin-bottom: 20px;">الأنظمة والمواقع العالمية المشابهة (المصادر والاقتباسات Benchmark)</h2>
+    <p style="font-size: 1.05rem; margin-bottom: 20px;">تم استلهام واقتباس هيكلية الفرز الذكي في نظامنا من الأنظمة والمنتجات الطبية العالمية التالية التي توظف تقنيات مطابقة:</p>
+
+    <div class="feature-box" style="border-right-color: #10b981;">
+        <h3 style="color: #047857; margin-top: 0;">1. مؤشر خطورة الطوارئ (Emergency Severity Index - ESI)</h3>
+        <p><strong>المصدر:</strong> وكالة أبحاث وجودة الرعاية الصحية الأمريكية (AHRQ).</p>
+        <p>مرجعية طبية حكومية أمريكية للفرز. في كود نظامنا الداخلي (Rule-Based Fallback)، تم الاستناد إلى هذا المعيار في إعطاء أوزان وتقييم للكلمات المفتاحية الخطيرة (مثل النزيف، التأثير على التنفس، الآلام القلبية) بحيث يتم تصنيف الحالة آلياً كأولوية قصوى واختراق الطابور.</p>
+    </div>
+
+    <div class="feature-box" style="border-right-color: #10b981;">
+        <h3 style="color: #047857; margin-top: 0;">2. نظام التوجيه الرقمي في خدمة NHS 111 (بريطانيا)</h3>
+        <p><strong>المصدر:</strong> <a href="https://111.nhs.uk" target="_blank" style="color: #2563eb;">111.nhs.uk</a></p>
+        <p>خدمة حكومية تعمل بخوارزميات شجرية (Decision Trees) لسؤال المريض عن تفاصيل الألم والأمراض المزمنة لتوجيهه إما للطوارئ أو لعيادات الروتين. نظامنا يتبنى نفس المنهجية التشخيصية لربط الحالة بالأطباء الصحيحين.</p>
+    </div>
+
+    <div class="feature-box" style="border-right-color: #10b981;">
+        <h3 style="color: #047857; margin-top: 0;">3. منصة Ada Health للفرز الذكي</h3>
+        <p><strong>المصدر:</strong> <a href="https://ada.com" target="_blank" style="color: #2563eb;">ada.com</a></p>
+        <p>من أشهر الأنظمة المعتمدة عالمياً في استيعاب الأعراض عبر الذكاء الاصطناعي (AI Symptom Assessment). آليتنا في إرسال (متغيرات الألم، والوقت، والأعراض) للمحرك الذكي تحاكي بالضبط منهجية عمل Ada.</p>
+    </div>
+
+    <div class="feature-box" style="border-right-color: #10b981;">
+        <h3 style="color: #047857; margin-top: 0;">4. منصة Symptomate (لشركات الرعاية الأولية)</h3>
+        <p><strong>المصدر:</strong> <a href="https://symptomate.com" target="_blank" style="color: #2563eb;">symptomate.com</a></p>
+        <p>محرك تشخيص يطابق شكوى المريض مع قاعدة بيانات الأمراض. نظامنا يتبنى فكرة استخراج (التخصص المناسب) منه لربطه بجدول الطبيب الصحيح في النظام الخاص بنا أوتوماتيكياً.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

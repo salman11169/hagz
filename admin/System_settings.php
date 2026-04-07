@@ -1,0 +1,640 @@
+<?php
+require_once __DIR__ . '/../includes/session.php';
+require_role(ROLE_ADMIN);
+$userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTES, 'UTF-8');
+?>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إعدادات النظام - نظام فرز المواعيد الذكي</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/shared-dashboard.css?v=1.1">
+  <link rel="stylesheet" href="../assets/css/admin-dashboard.css?v=1.1">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Toggle Sidebar">
+          <i class='bx bx-menu'></i>
+        </button>
+        <div class="brand-icon">
+          <i class='bx bx-plus-medical'></i>
+        </div>
+        <div class="brand-text">شفاء<span>+</span></div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="icon-btn notif-btn">
+          <i class='bx bx-bell'></i>
+          <span class="badge">3</span>
+        </button>
+        <div class="user-menu">
+          <div class="user-avatar">
+            <img
+              src="https://ui-avatars.com/api/?name=<?= urlencode($userName) ?>&background=2563eb&color=fff&font-family=Cairo"
+              alt="User">
+          </div>
+          <div class="user-info">
+            <span class="user-greeting">مرحباً بك،</span>
+            <span class="user-name">
+              <?= $userName ?>
+            </span>
+          </div>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar (Admin) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <a href="admin.php" class="menu-item"><i class='bx bxs-dashboard'></i><span>لوحة التحكم</span></a>
+      <a href="Manage_doctors.php" class="menu-item"><i class='bx bx-user-pin'></i><span>إدارة الأطباء</span></a>
+      <a href="Manage_patients.php" class="menu-item"><i class='bx bx-group'></i><span>إدارة المرضى</span></a>
+      <a href="Reports.php" class="menu-item"><i class='bx bx-chart'></i><span>التقارير والإحصائيات</span></a>
+      <a href="System_settings.php" class="menu-item active"><i class='bx bx-cog'></i><span>إعدادات النظام</span></a>
+      <a href="User_permissions.php" class="menu-item"><i class='bx bx-shield-quarter'></i><span>صلاحيات
+          المستخدمين</span></a>
+    </div>
+    <div class="sidebar-bottom">
+      <a href="#" onclick="showLogoutModal(event)" class="menu-item logout"><i class='bx bx-log-out'></i><span>تسجيل
+          الخروج</span></a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <div class="dashboard-wrap">
+
+      <!-- Page Header -->
+      <div class="hero-card" style="padding: 2rem; margin-bottom: 2rem;">
+        <div class="hero-content">
+          <h1 style="font-size: 1.8rem; margin-bottom: 0;"><i class='bx bx-cog'></i> إعدادات النظام</h1>
+          <p style="margin-top: 0.5rem; font-size: 1rem;">التحكم في خيارات المنصة، الإشعارات، والأمان</p>
+        </div>
+        <div class="hero-glow"></div>
+      </div>
+
+      <div class="content-grid" style="grid-template-columns: 280px 1fr; align-items: start;">
+
+        <!-- Sidebar Navigation -->
+        <div class="content-card" style="position: sticky; top: 2rem;">
+          <div class="card-body" style="padding: 1rem;">
+            <div class="settings-sidebar" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div class="sidebar-item active" onclick="showSection('general', this)"
+                style="padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; font-weight: 700; color: var(--admin-primary); background: #f1f5f9; transition: all 0.3s;">
+                <i class='bx bx-cog' style="font-size: 1.2rem;"></i> عام
+              </div>
+              <div class="sidebar-item" onclick="showSection('notifications', this)"
+                style="padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; font-weight: 600; color: #64748b; transition: all 0.3s;">
+                <i class='bx bx-bell' style="font-size: 1.2rem;"></i> الإشعارات
+              </div>
+              <div class="sidebar-item" onclick="showSection('triage', this)"
+                style="padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; font-weight: 600; color: #64748b; transition: all 0.3s;">
+                <i class='bx bx-git-merge' style="font-size: 1.2rem;"></i> نظام الفرز
+              </div>
+              <div class="sidebar-item" onclick="showSection('appointments', this)"
+                style="padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; font-weight: 600; color: #64748b; transition: all 0.3s;">
+                <i class='bx bx-calendar' style="font-size: 1.2rem;"></i> المواعيد
+              </div>
+              <div class="sidebar-item" onclick="showSection('security', this)"
+                style="padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; font-weight: 600; color: #64748b; transition: all 0.3s;">
+                <i class='bx bx-shield' style="font-size: 1.2rem;"></i> الأمان
+              </div>
+              <div class="sidebar-item" onclick="showSection('backup', this)"
+                style="padding: 1rem; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; font-weight: 600; color: #64748b; transition: all 0.3s;">
+                <i class='bx bx-data' style="font-size: 1.2rem;"></i> النسخ الاحتياطي
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-card">
+          <div class="card-body" style="padding: 2rem; position: relative;">
+
+            <!-- Success Alert -->
+            <div id="successAlert"
+              style="position: absolute; top: -1rem; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 0.8rem 1.5rem; border-radius: 30px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10;">
+              <i class='bx bx-check-circle' style="font-size: 1.2rem;"></i>
+              <span>تم حفظ الإعدادات بنجاح!</span>
+            </div>
+
+            <!-- General -->
+            <div class="settings-section active" id="section-general">
+              <h2
+                style="font-size: 1.4rem; color: var(--surface-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-cog' style="color: var(--admin-primary)"></i> الإعدادات العامة
+              </h2>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">اسم النظام</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">الاسم الذي سيظهر في جميع الصفحات والإشعارات</div>
+                  </div>
+                  <input type="text" value="مستشفى الملك فيصل" id="hospitalName"
+                    style="width: 250px; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none;">
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">اللغة الافتراضية
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">اللغة المستخدمة في واجهة النظام</div>
+                  </div>
+                  <select
+                    style="width: 250px; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none;">
+                    <option selected>العربية</option>
+                    <option>English</option>
+                  </select>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">المنطقة الزمنية
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">توقيت النظام الرئيسي للفرز</div>
+                  </div>
+                  <select
+                    style="width: 250px; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none;">
+                    <option selected>توقيت الرياض (GMT+3)</option>
+                    <option>توقيت جدة (GMT+3)</option>
+                    <option>توقيت دبي (GMT+4)</option>
+                  </select>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">وضع الصيانة</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">تفعيل وضع الصيانة يمنع الوصول للنظام مؤقتاً
+                      للمستخدمين العاديين</div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" id="maintenanceMode">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div style="margin-top: 2rem; text-align: left;">
+                <button class="btn-glass primary" onclick="saveSettings()">
+                  <i class='bx bx-save'></i> حفظ التغييرات
+                </button>
+              </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="settings-section" id="section-notifications" style="display: none;">
+              <h2
+                style="font-size: 1.4rem; color: var(--surface-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-bell' style="color: var(--admin-primary)"></i> إعدادات الإشعارات
+              </h2>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">الحالات الحرجة
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">إرسال إشعار فوري وتنبيه صوتي عند تسجيل حالة حرجة
+                    </div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">إشعارات البريد
+                      الإلكتروني</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">إرسال ملخص يومي للتقارير عبر البريد الإلكتروني
+                      للإدارة</div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">تذكير المواعيد
+                      (للمرضى)</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">إرسال تذكير للمريض قبل الموعد بـ</div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="number" value="24"
+                      style="width: 80px; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none; text-align: center;">
+                    <span style="font-weight: 700; color: #64748b;">ساعة</span>
+                  </div>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">إشعارات الرسائل
+                      القصيرة SMS</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">إرسال تنبيهات المواعيد ورابط الدخول كرسالة نصية
+                    </div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div style="margin-top: 2rem; text-align: left;">
+                <button class="btn-glass primary" onclick="saveSettings()">
+                  <i class='bx bx-save'></i> حفظ التغييرات
+                </button>
+              </div>
+            </div>
+
+            <!-- Triage -->
+            <div class="settings-section" id="section-triage" style="display: none;">
+              <h2
+                style="font-size: 1.4rem; color: var(--surface-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-git-merge' style="color: var(--admin-primary)"></i> نظام الفرز التلقائي
+              </h2>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">تفعيل الفرز الذكي
+                      (AI)</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">السماح للنظام بتحديد الأولوية تلقائياً بناءً على
+                      الأعراض المدخلة</div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">معيار الحالات
+                      الحرجة (مستوى الألم)</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">مستوى الألم الذي يرفع الحالة إلى الطوارئ فوراً
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="number" value="8" min="1" max="10"
+                      style="width: 80px; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none; text-align: center;">
+                    <span style="font-weight: 700; color: #64748b;">من 10</span>
+                  </div>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">مدة الأعراض
+                      للحالات العاجلة</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">المدة التي بعدها تصبح الحالة مزمنة/مستقرة وليست
+                      عاجلة</div>
+                  </div>
+                  <select
+                    style="width: 200px; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none;">
+                    <option selected>أقل من 24 ساعة</option>
+                    <option>أقل من 48 ساعة</option>
+                    <option>أقل من أسبوع</option>
+                  </select>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">مراجعة يدوية
+                      للحالات الحرجة</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">يتطلب اعتماد موظف الاستقبال أو الممرض للحالات
+                      الحرجة المحددة آلياً</div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+              </div>
+
+              <div style="margin-top: 2rem; text-align: left;">
+                <button class="btn-glass primary" onclick="saveSettings()">
+                  <i class='bx bx-save'></i> حفظ التغييرات
+                </button>
+              </div>
+            </div>
+
+            <!-- Appointments Section -->
+            <div class="settings-section" id="section-appointments" style="display: none;">
+              <h2
+                style="font-size: 1.4rem; color: var(--surface-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-calendar' style="color: var(--admin-primary)"></i> إعدادات الجدولة والمواعيد
+              </h2>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">مدة الكشف
+                      الافتراضية</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">الزمن المخصص لكل موعد في جدول الطبيب بشكل افتراضي
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="number" value="30"
+                      style="width: 80px; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none; text-align: center;">
+                    <span style="font-weight: 700; color: #64748b;">دقيقة</span>
+                  </div>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">الاستشارات عن بُعد
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">السماح للمرضى بحجز مواعيد اتصال فيديو مع الأطباء
+                    </div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div style="margin-top: 2rem; text-align: left;">
+                <button class="btn-glass primary" onclick="saveSettings()">
+                  <i class='bx bx-save'></i> حفظ التغييرات
+                </button>
+              </div>
+            </div>
+
+            <!-- Security Section -->
+            <div class="settings-section" id="section-security" style="display: none;">
+              <h2
+                style="font-size: 1.4rem; color: var(--surface-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-shield' style="color: var(--admin-primary)"></i> إعدادات الأمان
+              </h2>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">المصادقة الثنائية
+                      (2FA) للأطباء</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">تأمين دخول الكوادر الطبية برمز إضافي يتم إرساله
+                      للجوال</div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">مدة الجلسة</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">الوقت قبل تسجيل خروج المستخدم غير النشط تلقائياً
+                      للحد من المخاطر</div>
+                  </div>
+                  <select
+                    style="width: 200px; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Cairo'; outline: none;">
+                    <option>30 دقيقة</option>
+                    <option>ساعة واحدة</option>
+                    <option selected>4 ساعات</option>
+                    <option>8 ساعات</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top: 2rem; text-align: left;">
+                <button class="btn-glass primary" onclick="saveSettings()">
+                  <i class='bx bx-save'></i> حفظ التغييرات
+                </button>
+              </div>
+            </div>
+
+            <!-- Backup Section -->
+            <div class="settings-section" id="section-backup" style="display: none;">
+              <h2
+                style="font-size: 1.4rem; color: var(--surface-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-data' style="color: var(--admin-primary)"></i> النسخ الاحتياطي وإدارة البيانات
+              </h2>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">النسخ الاحتياطي
+                      التلقائي</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">جدولة نسخ قواعد البيانات والسجلات لضمان عدم ضياعها
+                    </div>
+                  </div>
+                  <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--surface-dark); margin-bottom: 0.3rem;">تنزيل نسخة
+                      احتياطية محلية</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">قم بتحميل جميع السجلات بصيغة JSON على جهازك</div>
+                  </div>
+                  <button class="btn-glass" onclick="createBackup()">
+                    <i class='bx bx-download'></i> تنزيل النسخة
+                  </button>
+                </div>
+              </div>
+
+              <div style="margin-top: 2rem; border-top: 2px dashed #fca5a5; padding-top: 2rem;">
+                <h3
+                  style="color: #ef4444; font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                  <i class='bx bx-error'></i> منطقة الخطر (Danger Zone)
+                </h3>
+                <div style="display: flex; gap: 1rem;">
+                  <button class="btn-glass" style="color: #ef4444; border-color: #fee2e2; background: #fef2f2;"
+                    onclick="if(confirm('هل أنت متأكد من مسح كافة السجلات الطبية التجريبية؟')) { alert('تم تفريغ السجلات'); }">
+                    <i class='bx bx-trash'></i> مسح بيانات النظام التجريبية
+                  </button>
+                  <button class="btn-glass" style="color: #f59e0b; border-color: #fef3c7; background: #fffbeb;"
+                    onclick="if(confirm('سيتم العودة لإعدادات المصنع، هل أنت متأكد؟')) { alert('تم استعادة الضبط'); }">
+                    <i class='bx bx-reset'></i> استعادة الضبط الافتراضي
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      function showSection(sectionName, element) {
+        // Update sidebar visual states
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          item.classList.remove('active');
+          item.style.color = '#64748b';
+          item.style.background = 'transparent';
+          item.style.fontWeight = '600';
+        });
+
+        if (element) {
+          element.classList.add('active');
+          element.style.color = 'var(--admin-primary)';
+          element.style.background = '#f1f5f9';
+          element.style.fontWeight = '700';
+        }
+
+        // Update content visibility
+        document.querySelectorAll('.settings-section').forEach(sec => {
+          sec.style.display = 'none';
+          sec.classList.remove('active');
+        });
+        const activeSection = document.getElementById('section-' + sectionName);
+        if (activeSection) {
+          activeSection.style.display = 'block';
+
+          // Add a small fade-in effect
+          activeSection.style.opacity = '0';
+          setTimeout(() => {
+            activeSection.style.transition = 'opacity 0.4s ease';
+            activeSection.style.opacity = '1';
+            activeSection.classList.add('active');
+          }, 10);
+        }
+      }
+
+      function saveSettings() {
+        const alert = document.getElementById('successAlert');
+        alert.style.opacity = '1';
+        alert.style.top = '1rem';
+
+        // Save to localStorage (example)
+        const settings = {
+          hospitalName: document.getElementById('hospitalName')?.value || '',
+          maintenanceMode: document.getElementById('maintenanceMode')?.checked || false,
+          // Add other settings as needed
+        };
+        localStorage.setItem('systemSettings', JSON.stringify(settings));
+
+        setTimeout(() => {
+          alert.style.opacity = '0';
+          alert.style.top = '-1rem';
+        }, 3000);
+      }
+
+      function createBackup() {
+        const data = {
+          appointments: localStorage.getItem('appointments'),
+          doctors: localStorage.getItem('doctors'),
+          settings: localStorage.getItem('systemSettings'),
+          timestamp: new Date().toISOString()
+        };
+
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'backup_' + new Date().toISOString().slice(0, 10) + '.json';
+        a.click();
+
+        alert('تم إنشاء النسخة الاحتياطية بنجاح!');
+      }
+
+      // Mobile Sidebar Toggle JS
+      document.addEventListener('DOMContentLoaded', () => {
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (mobileToggle && sidebar) {
+          mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            if (sidebar.classList.contains('active')) {
+              document.body.style.overflow = 'hidden';
+            } else {
+              document.body.style.overflow = '';
+            }
+          });
+
+          document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+              const logoutOpen = document.getElementById('logoutOverlay')?.classList.contains('active');
+              if (!logoutOpen && !sidebar.contains(e.target) && !mobileToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                document.body.style.overflow = '';
+              }
+            }
+          });
+        }
+      });
+
+      function showLogoutModal(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        document.getElementById('logoutOverlay').classList.add('active');
+      }
+      function closeLogoutModal() {
+        document.getElementById('logoutOverlay').classList.remove('active');
+      }
+      function confirmLogout() {
+        window.location.href = '../logout.php';
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('logoutOverlay');
+        if (overlay) {
+          overlay.addEventListener('click', function (e) {
+            if (e.target === this) closeLogoutModal();
+          });
+          overlay.querySelector('.logout-modal').addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+        }
+      });
+
+    </script>
+  </main>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="logout-overlay" id="logoutOverlay">
+    <div class="logout-modal">
+      <div class="logout-modal-icon"><i class='bx bx-log-out'></i></div>
+      <h3>تسجيل الخروج</h3>
+      <p>هل أنت متأكد من رغبتك في تسجيل الخروج من نظام شفاء+؟</p>
+      <div class="logout-modal-btns">
+        <button class="btn-logout-cancel" onclick="closeLogoutModal()"><i class='bx bx-x'></i> بقاء</button>
+        <button class="btn-logout-confirm" onclick="confirmLogout()"><i class='bx bx-log-out'></i> تسجيل
+          الخروج</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

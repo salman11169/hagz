@@ -1,0 +1,33 @@
+# Hagz Clinic — Apache Configuration
+# Ensures /controllers/, /auth/, /api/ etc. work from localhost/Hagz/
+
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /Hagz/
+
+    # ── Virtual API routes ──────────────────────────────────────
+    # /api/auth/login  → controllers/AuthController.php?action=login
+    RewriteRule ^api/auth/login$      controllers/AuthController.php?action=login [QSA,L]
+    RewriteRule ^api/auth/register$   controllers/AuthController.php?action=register [QSA,L]
+    RewriteRule ^api/auth/logout$     controllers/AuthController.php?action=logout [QSA,L]
+
+    # /api/patient  → controllers/PatientController.php
+    RewriteRule ^api/patient(.*)$     controllers/PatientController.php$1 [QSA,L]
+
+    # /api/doctor   → controllers/DoctorController.php
+    RewriteRule ^api/doctor(.*)$      controllers/DoctorController.php$1 [QSA,L]
+
+    # /api/booking  → controllers/BookingController.php
+    RewriteRule ^api/booking(.*)$     controllers/BookingController.php$1 [QSA,L]
+
+    # /api/admin    → controllers/AdminController.php
+    RewriteRule ^api/admin(.*)$       controllers/AdminController.php$1 [QSA,L]
+
+    # ── Root index ───────────────────────────────────────────────
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^$ index.php [L]
+</IfModule>
