@@ -10,6 +10,9 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
+// ── Timezone: Saudi Arabia (UTC+3) ─────────────────────
+date_default_timezone_set('Asia/Riyadh');
+
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {

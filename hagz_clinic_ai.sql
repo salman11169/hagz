@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2026 at 10:23 PM
+-- Generation Time: Apr 13, 2026 at 12:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -36,7 +36,7 @@ CREATE TABLE `appointments` (
   `appointment_time` time NOT NULL,
   `status` enum('Pending','Confirmed','Completed','Cancelled','Transferred') DEFAULT 'Pending',
   `visit_type` enum('In-person','Telehealth') DEFAULT 'In-person',
-  `booking_type` enum('regular','smart') NOT NULL DEFAULT 'regular' COMMENT 'نوع الحجز',
+  `booking_type` enum('smart','regular','emergency') DEFAULT 'regular',
   `confirmed_at` timestamp NULL DEFAULT NULL,
   `completed_at` timestamp NULL DEFAULT NULL,
   `cancelled_at` timestamp NULL DEFAULT NULL,
@@ -125,6 +125,23 @@ INSERT INTO `doctors` (`id`, `user_id`, `specialization_id`, `license_number`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `doctor_alerts`
+--
+
+CREATE TABLE `doctor_alerts` (
+  `id` int(11) NOT NULL,
+  `from_doctor_id` int(11) DEFAULT NULL COMMENT 'NULL means system/emergency',
+  `to_doctor_id` int(11) NOT NULL,
+  `appointment_id` int(11) DEFAULT NULL,
+  `alert_type` enum('summon','emergency') NOT NULL DEFAULT 'summon',
+  `message` varchar(255) NOT NULL,
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `doctor_schedules`
 --
 
@@ -146,35 +163,30 @@ CREATE TABLE `doctor_schedules` (
 
 INSERT INTO `doctor_schedules` (`id`, `doctor_id`, `day_of_week`, `shift_number`, `slot_duration_min`, `max_patients`, `start_time`, `end_time`, `is_available`) VALUES
 (1, 1, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
-(3, 2, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (4, 5, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (5, 3, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (6, 8, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (7, 4, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (8, 7, 0, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (9, 1, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
-(11, 2, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (12, 5, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (13, 3, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (14, 8, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (15, 4, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (16, 7, 1, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (17, 1, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
-(19, 2, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (20, 5, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (21, 3, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (22, 8, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (23, 4, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (24, 7, 2, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (25, 1, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
-(27, 2, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (28, 5, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (29, 3, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (30, 8, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (31, 4, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (32, 7, 3, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (33, 1, 4, 1, 30, NULL, '08:00:00', '16:00:00', 1),
-(35, 2, 4, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (36, 5, 4, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (37, 3, 4, 1, 30, NULL, '08:00:00', '16:00:00', 1),
 (38, 8, 4, 1, 30, NULL, '08:00:00', '16:00:00', 1),
@@ -195,7 +207,15 @@ INSERT INTO `doctor_schedules` (`id`, `doctor_id`, `day_of_week`, `shift_number`
 (105, 10, 3, 1, 30, NULL, '09:00:00', '23:00:00', 1),
 (106, 10, 4, 1, 30, NULL, '09:00:00', '23:00:00', 1),
 (107, 10, 5, 1, 30, NULL, '09:00:00', '23:00:00', 0),
-(108, 10, 6, 1, 30, NULL, '09:00:00', '23:00:00', 0);
+(108, 10, 6, 1, 30, NULL, '09:00:00', '23:00:00', 0),
+(124, 2, 0, 1, 20, NULL, '08:00:00', '14:00:00', 1),
+(125, 2, 0, 2, 20, NULL, '16:00:00', '02:00:00', 1),
+(126, 2, 1, 1, 20, NULL, '08:00:00', '14:00:00', 1),
+(127, 2, 1, 2, 20, NULL, '16:00:00', '02:00:00', 1),
+(128, 2, 2, 1, 20, NULL, '08:00:00', '14:00:00', 1),
+(129, 2, 2, 2, 20, NULL, '16:00:00', '02:00:00', 1),
+(130, 2, 3, 1, 20, NULL, '08:00:00', '16:00:00', 1),
+(131, 2, 4, 1, 20, NULL, '08:00:00', '16:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -511,6 +531,15 @@ ALTER TABLE `doctors`
   ADD KEY `specialization_id` (`specialization_id`);
 
 --
+-- Indexes for table `doctor_alerts`
+--
+ALTER TABLE `doctor_alerts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `from_doctor_id` (`from_doctor_id`),
+  ADD KEY `to_doctor_id` (`to_doctor_id`),
+  ADD KEY `appointment_id` (`appointment_id`);
+
+--
 -- Indexes for table `doctor_schedules`
 --
 ALTER TABLE `doctor_schedules`
@@ -621,7 +650,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `billing`
@@ -648,10 +677,16 @@ ALTER TABLE `doctors`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `doctor_alerts`
+--
+ALTER TABLE `doctor_alerts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `doctor_schedules`
 --
 ALTER TABLE `doctor_schedules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
 
 --
 -- AUTO_INCREMENT for table `doctor_skills`
@@ -663,7 +698,7 @@ ALTER TABLE `doctor_skills`
 -- AUTO_INCREMENT for table `medical_records`
 --
 ALTER TABLE `medical_records`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -675,19 +710,19 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `prescriptions`
 --
 ALTER TABLE `prescriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `record_lab_tests`
 --
 ALTER TABLE `record_lab_tests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `record_symptoms`
@@ -717,13 +752,13 @@ ALTER TABLE `specializations`
 -- AUTO_INCREMENT for table `triage_logs`
 --
 ALTER TABLE `triage_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables
@@ -761,6 +796,14 @@ ALTER TABLE `chronic_diseases`
 ALTER TABLE `doctors`
   ADD CONSTRAINT `doctors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `doctors_ibfk_2` FOREIGN KEY (`specialization_id`) REFERENCES `specializations` (`id`);
+
+--
+-- Constraints for table `doctor_alerts`
+--
+ALTER TABLE `doctor_alerts`
+  ADD CONSTRAINT `doctor_alerts_ibfk_1` FOREIGN KEY (`from_doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `doctor_alerts_ibfk_2` FOREIGN KEY (`to_doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `doctor_alerts_ibfk_3` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `doctor_schedules`

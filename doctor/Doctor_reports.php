@@ -151,15 +151,15 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
                     <div class="panel-head">
                         <div class="panel-title"><i class='bx bx-pie-chart-alt'></i> نوع الزيارة</div>
                     </div>
-                    <div class="donut-wrap">
-                        <div class="donut"
-                            style="background:conic-gradient(var(--doc-primary) 0% 68%, #e2e8f0 68% 100%);"></div>
-                        <div class="donut-legend">
+                    <div class="donut-wrap" id="visitDonutWrap">
+                        <div class="donut" id="visitDonut"
+                            style="background:conic-gradient(var(--doc-primary) 0% 0%, #e2e8f0 0% 100%);"></div>
+                        <div class="donut-legend" id="visitLegend">
                             <div class="dl-item">
-                                <div class="dl-dot" style="background:var(--doc-primary);"></div> حضوري — 68%
+                                <div class="dl-dot" style="background:var(--doc-primary);"></div> حضوري — 0%
                             </div>
                             <div class="dl-item">
-                                <div class="dl-dot" style="background:#e2e8f0;"></div> عن بُعد — 32%
+                                <div class="dl-dot" style="background:#e2e8f0;"></div> عن بُعد — 0%
                             </div>
                         </div>
                     </div>
@@ -170,15 +170,15 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
                     <div class="panel-head">
                         <div class="panel-title"><i class='bx bx-user-voice'></i> المرضى</div>
                     </div>
-                    <div class="donut-wrap">
-                        <div class="donut"
-                            style="background:conic-gradient(var(--doc-primary) 0% 60%, #f43f5e 60% 100%);"></div>
-                        <div class="donut-legend">
+                    <div class="donut-wrap" id="genderDonutWrap">
+                        <div class="donut" id="genderDonut"
+                            style="background:conic-gradient(var(--doc-primary) 0% 0%, #f43f5e 0% 100%);"></div>
+                        <div class="donut-legend" id="genderLegend">
                             <div class="dl-item">
-                                <div class="dl-dot" style="background:var(--doc-primary);"></div> ذكور — 60%
+                                <div class="dl-dot" style="background:var(--doc-primary);"></div> ذكور — 0%
                             </div>
                             <div class="dl-item">
-                                <div class="dl-dot" style="background:#f43f5e;"></div> إناث — 40%
+                                <div class="dl-dot" style="background:#f43f5e;"></div> إناث — 0%
                             </div>
                         </div>
                     </div>
@@ -252,13 +252,42 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
 
                     // Day chart: count appointments per day of week
                     const dayCounts = Array(7).fill(0);
+                    let inPerson = 0, telehealth = 0;
+                    let males = 0, females = 0;
+                    
                     appts.forEach(a => {
                         if (a.appointment_date) {
                             const dow = new Date(a.appointment_date).getDay();
                             dayCounts[dow]++;
                         }
+                        if (a.visit_type === 'Telehealth') telehealth++;
+                        else inPerson++;
+                        
+                        if (a.gender === 'Female') females++;
+                        else if(a.gender === 'Male') males++;
                     });
                     renderDayChart(dayCounts);
+                    
+                    // Render Visit Types Donut
+                    const totalVisits = inPerson + telehealth || 1;
+                    const inPersonPct = Math.round(inPerson / totalVisits * 100);
+                    const tlPct = 100 - inPersonPct;
+                    document.getElementById('visitDonut').style.background = `conic-gradient(var(--doc-primary) 0% ${inPersonPct}%, #e2e8f0 ${inPersonPct}% 100%)`;
+                    document.getElementById('visitLegend').innerHTML = `
+                        <div class="dl-item"><div class="dl-dot" style="background:var(--doc-primary);"></div> حضوري — ${inPersonPct}%</div>
+                        <div class="dl-item"><div class="dl-dot" style="background:#e2e8f0;"></div> عن بُعد — ${tlPct}%</div>
+                    `;
+                    
+                    // Render Gender Donut
+                    const totalGender = males + females || 1;
+                    const malePct = Math.round(males / totalGender * 100);
+                    const femalePct = 100 - malePct;
+                    document.getElementById('genderDonut').style.background = `conic-gradient(var(--doc-primary) 0% ${malePct}%, #f43f5e ${malePct}% 100%)`;
+                    document.getElementById('genderLegend').innerHTML = `
+                        <div class="dl-item"><div class="dl-dot" style="background:var(--doc-primary);"></div> ذكور — ${malePct}%</div>
+                        <div class="dl-item"><div class="dl-dot" style="background:#f43f5e;"></div> إناث — ${femalePct}%</div>
+                    `;
+
                 })
                 .catch(() => { });
         }

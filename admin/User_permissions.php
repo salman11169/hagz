@@ -147,10 +147,7 @@ $totalUsers        = array_sum(array_column($roleCounts, 'user_count'));
         <div class="brand-text">شفاء<span>+</span></div>
       </div>
       <div class="nav-actions">
-        <button class="icon-btn notif-btn">
-          <i class='bx bx-bell'></i>
-          <span class="badge"><?= $totalUsers ?></span>
-        </button>
+        
         <div class="user-menu">
           <div class="user-avatar">
             <img src="https://ui-avatars.com/api/?name=<?= urlencode($userName) ?>&background=2563eb&color=fff&font-family=Cairo" alt="User">
@@ -444,7 +441,7 @@ $totalUsers        = array_sum(array_column($roleCounts, 'user_count'));
          z-index:10000;align-items:center;justify-content:center;">
       <div style="background:white;border-radius:20px;padding:2rem;max-width:400px;width:90%;text-align:center;
                   box-shadow:0 20px 60px rgba(0,0,0,.2);">
-        <div style="font-size:3rem;margin-bottom:1rem;" id="confirmIcon">⚠️</div>
+        <div style="font-size:3rem;margin-bottom:1rem;" id="confirmIcon"><i class="bx bx-error"></i></div>
         <h3 style="color:#1e293b;font-weight:900;margin-bottom:.5rem;" id="confirmTitle">تأكيد</h3>
         <p style="color:#64748b;margin-bottom:2rem;" id="confirmMsg"></p>
         <div style="display:flex;gap:1rem;justify-content:center;">
@@ -650,7 +647,7 @@ $totalUsers        = array_sum(array_column($roleCounts, 'user_count'));
       // ── Confirm Toggle Status ─────────────────────────────────
       function confirmToggle(userId, newStatus, name) {
         const isActivate = newStatus === 1;
-        document.getElementById('confirmIcon').textContent  = isActivate ? '✅' : '⚠️';
+        document.getElementById('confirmIcon').textContent  = isActivate ? '<i class="bx bx-check-circle"></i>' : '<i class="bx bx-error"></i>';
         document.getElementById('confirmTitle').textContent = isActivate ? 'تفعيل المستخدم' : 'إيقاف المستخدم';
         document.getElementById('confirmMsg').textContent   =
           isActivate

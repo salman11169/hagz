@@ -41,6 +41,7 @@ match ($action) {
     'slots'           => getAvailableSlots(),
     'triage'          => triagePatient($patient_id),
     'book'            => bookAppointment($patient_id),
+    'emergency_book'  => bookEmergency($patient_id),
     default           => json_response(false, 'طلب غير معروف.')
 };
 
@@ -700,3 +701,103 @@ function bookAppointment(int $patient_id): void
         'doctor_id'      => $doctor_id,
     ]);
 }
+
+// ─────────────────────────────────────────────
+// EMERGENCY DIRECT BOOKING (Bypass AI & Normal UI)
+// ─────────────────────────────────────────────
+function bookEmergency(int $patient_id): void
+{
+    if (!$patient_id || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        json_response(false, 'طلب غير صالح.');
+    }
+
+    $body = json_decode(file_get_contents('php://input'), true);
+    if (!$body) {
+        json_response(false, 'بيانات غير صالحة.');
+    }
+
+    $description = sanitize($body['description'] ?? '');
+    if (!$description) {
+        json_response(false, 'وصف الحالة مطلوب.');
+    }
+
+    $pdo = getDB();
+    $date = date('Y-m-d');
+    $time = date('H:i:00'); // Insert current time
+
+    // Find Emergency Doctor
+    $stmt = $pdo->prepare("
+        SELECT d.id AS doctor_id 
+        FROM Doctors d
+        JOIN Users u ON d.user_id = u.id
+        JOIN Specializations s ON d.specialization_id = s.id
+        WHERE s.name = 'طب طوارئ' AND u.is_active = 1
+        ORDER BY d.experience_years DESC LIMIT 1
+    ");
+    $stmt->execute();
+    $doc = $stmt->fetch();
+
+    if (!$doc) {
+        // Fallback to General
+        $stmt = $pdo->prepare("
+            SELECT d.id AS doctor_id 
+            FROM Doctors d
+            JOIN Users u ON d.user_id = u.id
+            JOIN Specializations s ON d.specialization_id = s.id
+            WHERE s.name = 'طب عام' AND u.is_active = 1
+            ORDER BY d.experience_years DESC LIMIT 1
+        ");
+        $stmt->execute();
+        $doc = $stmt->fetch();
+    }
+
+    if (!$doc) {
+        json_response(false, 'لا يوجد أطباء متاحون حالياً في القسم، يرجى الاتصال بالطوارئ.');
+    }
+
+    $doctor_id = $doc['doctor_id'];
+
+    // Insert Appointment
+    $ins = $pdo->prepare("
+        INSERT INTO appointments
+            (patient_id, doctor_id, appointment_date, appointment_time, status, booking_type, visit_type, notes)
+        VALUES (?, ?, ?, ?, 'Pending', 'emergency', 'In-person', ?)
+    ");
+    $ins->execute([$patient_id, $doctor_id, $date, $time, $description]);
+    $appt_id = (int)$pdo->lastInsertId();
+
+    // Insert Triage Log
+    $triageData = [
+        'symptoms'   => [$description],
+        'pain_level' => 10,
+        'duration'   => 'فوري وطارئ',
+        'conditions' => [],
+        'notes'      => 'طلب مباشر للتدخل الطارئ بدون خوارزمية ذكية.',
+    ];
+    
+    $triageStmt = $pdo->prepare("
+        INSERT INTO Triage_Logs
+            (appointment_id, raw_symptoms_input, ai_predicted_priority,
+             algorithm_confidence_score, ai_summary, ai_reasoning,
+             scheduled_date, scheduled_time)
+        VALUES (?, ?, 'Critical', 100, 'طلب نداء طوارئ بقرار من المريض', 'تدخل فوري للطوارئ', ?, ?)
+    ");
+    $triageStmt->execute([
+        $appt_id,
+        json_encode($triageData, JSON_UNESCAPED_UNICODE),
+        $date,
+        $time,
+    ]);
+
+    $ref = 'EMR-' . str_pad($appt_id, 6, '0', STR_PAD_LEFT);
+
+    json_response(true, 'تم طلب نداء الطوارئ. توجه لغرفة الطوارئ فوراً.', [
+        'appointment_id' => $appt_id,
+        'ref'            => $ref,
+        'date'           => $date,
+        'time'           => $time,
+        'priority'       => 'Critical',
+        'doctor_id'      => $doctor_id,
+    ]);
+}
+

@@ -42,10 +42,6 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
             </div>
 
             <div class="nav-actions">
-                <button class="icon-btn notif-btn">
-                    <i class='bx bx-bell'></i>
-                    <span class="badge" id="notifBadge">0</span>
-                </button>
                 <div class="user-menu">
                     <div class="user-avatar">
                         <img src="https://ui-avatars.com/api/?name=<?= urlencode($userName) ?>&background=2563eb&color=fff&font-family=Cairo"
@@ -272,7 +268,7 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
                     // ── Ping ──
                     const ms = Math.round(performance.now() - t0);
                     document.getElementById('pingStatus').innerHTML =
-                        `<strong style="color:#10b981">✅ ممتاز (${ms}ms)</strong> <span class="pulse-dot"></span>`;
+                        `<strong style="color:#10b981"><i class='bx bx-check-circle'></i> ممتاز (${ms}ms)</strong> <span class="pulse-dot"></span>`;
 
                     // ── Stats ──
                     const s = data.stats;
@@ -280,22 +276,16 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
                     document.getElementById('statPatients').textContent = s.total_patients ?? '—';
                     document.getElementById('statToday').textContent = s.today_appointments ?? '—';
                     document.getElementById('statCritical').textContent = s.active_critical ?? '—';
-                    // Hero meta
+                    // ── Hero Meta ──
                     const hToday = document.getElementById('heroToday');
                     const hCritical = document.getElementById('heroCritical');
                     if (hToday) hToday.textContent = s.today_appointments ?? '—';
                     if (hCritical) hCritical.textContent = s.active_critical ?? '—';
 
-                    // ── Notifications Badge ──
-                    const pending = parseInt(s.pending_count) || 0;
-                    const badge = document.getElementById('notifBadge');
-                    badge.textContent = pending > 99 ? '99+' : pending;
-                    badge.style.display = pending > 0 ? '' : 'none';
-
                     // ── DB Status ──
                     const total = (parseInt(s.total_patients) || 0) + (parseInt(s.total_doctors) || 0);
                     document.getElementById('dbStatus').innerHTML =
-                        `<strong style="color:#10b981">✅ متصلة</strong> &mdash; ${Number(total).toLocaleString('ar')} سجل`;
+                        `<strong style="color:#10b981"><i class='bx bx-check-circle'></i> متصلة</strong> &mdash; ${Number(total).toLocaleString('ar')} سجل`;
 
                     // ── Doctor Performance ──
                     const perfList = document.getElementById('perfList');
@@ -331,13 +321,17 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
                             const priBadge = PRIORITY_MAP[a.priority] || `<span class="badge-priority">${a.priority}</span>`;
                             const stBadge = STATUS_MAP[a.status] || `<span class="badge-status">${a.status}</span>`;
                             const isCrit = a.priority === 'Critical' ? 'class="emergency-row"' : '';
-                            const bookType = a.booking_type === 'smart' ? '<span class="badge-priority b-warning">ذكي</span>' : '<span class="badge-priority b-normal">عادي</span>';
+                            
+                            let bookTypeBadge = '<span class="badge-priority b-normal">عادي</span>';
+                            if (a.booking_type === 'smart') bookTypeBadge = '<span class="badge-priority b-warning">ذكي</span>';
+                            if (a.booking_type === 'emergency') bookTypeBadge = '<span class="badge-priority b-danger"><i class="bx bxs-ambulance"></i> طوارئ</span>';
+
                             return `<tr ${isCrit}>
                                 <td><strong>#${a.id}</strong><br><small style="color:#94a3b8;font-size:.75rem">${a.appointment_date} ${a.appointment_time?.slice(0, 5) ?? ''}</small></td>
                                 <td><div class="user-block"><div class="u-avatar">${initials}</div><span>${a.patient_name}</span></div></td>
                                 <td>د. ${a.doctor_name}</td>
                                 <td>${a.specialization}</td>
-                                <td>${bookType}</td>
+                                <td>${bookTypeBadge}</td>
                                 <td>${priBadge}</td>
                                 <td>${stBadge}</td>
                             </tr>`;
@@ -347,8 +341,8 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
                     }
                 })
                 .catch(() => {
-                    document.getElementById('pingStatus').innerHTML = '<strong style="color:#ef4444">❌ تعذر الاتصال</strong>';
-                    document.getElementById('dbStatus').innerHTML = '<strong style="color:#ef4444">❌ تعذر</strong>';
+                    document.getElementById('pingStatus').innerHTML = '<strong style="color:#ef4444"><i class=\'bx bx-x-circle\'></i> تعذر الاتصال</strong>';
+                    document.getElementById('dbStatus').innerHTML = '<strong style="color:#ef4444"><i class=\'bx bx-x-circle\'></i> تعذر</strong>';
                 });
         }
 

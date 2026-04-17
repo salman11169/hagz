@@ -32,7 +32,7 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
         <div class="brand-text">شفاء<span>+</span></div>
       </div>
       <div class="nav-actions">
-        <button class="icon-btn notif-btn"><i class='bx bx-bell'></i><span class="badge">3</span></button>
+        
         <div class="user-menu">
           <div class="user-avatar">
             <img src="https://ui-avatars.com/api/?name=مدير+النظام&background=2563eb&color=fff&font-family=Cairo"

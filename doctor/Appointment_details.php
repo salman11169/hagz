@@ -63,7 +63,9 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
       <a href="Doctor_profile.php" class="menu-item"><i class='bx bx-user-circle'></i><span>ملفي الشخصي</span></a>
     </div>
     <div class="sidebar-bottom">
-      <a href="../logout.php" class="menu-item logout" onclick="event.preventDefault(); if(window.hagzConfirmLogout) window.hagzConfirmLogout('../logout.php'); else window.location.href='../logout.php';"><i class='bx bx-log-out'></i><span>تسجيل الخروج</span></a>
+      <a href="../logout.php" class="menu-item logout"
+        onclick="event.preventDefault(); if(window.hagzConfirmLogout) window.hagzConfirmLogout('../logout.php'); else window.location.href='../logout.php';"><i
+          class='bx bx-log-out'></i><span>تسجيل الخروج</span></a>
     </div>
   </aside>
 
@@ -113,6 +115,10 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
             <div class="info-item">
               <div class="info-label">نوع الزيارة</div>
               <div class="info-value" id="visitType">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">نوع الحجز</div>
+              <div class="info-value" id="bookingTypeBadge">—</div>
             </div>
             <div class="info-item">
               <div class="info-label">الأولوية</div>
@@ -368,6 +374,11 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
             onclick="openTransferModal()">
             <i class='bx bx-transfer-alt'></i> تحويل إلى استشاري
           </button>
+          <button class="action-btn"
+            style="background:rgba(220,38,38,.1);color:#dc2626;border:1.5px solid rgba(220,38,38,.3);padding:.75rem 1rem;border-radius:12px;font-family:'Cairo',sans-serif;font-weight:700;display:flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;width:100%;transition:all .2s;"
+            onclick="openSummonModal()" onmouseover="this.style.background='rgba(220,38,38,.2)'" onmouseout="this.style.background='rgba(220,38,38,.1)'">
+            <i class='bx bx-alarm-exclamation' style="font-size:1.2rem;"></i> استدعاء طبيب مساعد
+          </button>
           <button class="action-btn ab-primary" id="confirmBtn" onclick="confirmAppt()"
             style="background:linear-gradient(135deg,#0d9488,#0891b2);display:none;">
             <i class='bx bx-check-double'></i> قبول الموعد
@@ -393,6 +404,28 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
     </div>
 
   </main>
+
+  <!-- ══ SUMMON MODAL ══ -->
+  <div class="modal-overlay" id="summonModal">
+    <div class="modal-box">
+      <div class="modal-title" style="color:#dc2626;"><i class='bx bx-alarm-exclamation'></i> نداء استدعاء عاجل للطوارئ</div>
+      <div class="modal-field">
+        <label style="display:block;margin-bottom:.5rem;font-weight:700;font-size:.9rem;">قائمة الأطباء المداومين حالياً <span style="color:#ef4444">*</span></label>
+        <select id="summonDocSel" multiple style="width:100%;height:120px;padding:.7rem;border-radius:10px;border:1.5px solid var(--doc-border);font-family:'Cairo',sans-serif;margin-bottom:1rem;outline:none;">
+          <option value="" disabled>— جاري التحميل... —</option>
+        </select>
+        <div style="font-size:0.85rem;color:var(--doc-muted);background:#fef2f2;padding:0.75rem;border-radius:10px;border:1px solid #fca5a5;margin-top:0.5rem;">
+          <i class='bx bx-info-circle'></i> سيصل تنبيه باللون الأحمر وبشكل فوري على شاشة الطبيب المداوم الذي تختاره للاستجابة السريعة لمساندتك.
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeSummonModal()">إلغاء</button>
+        <button class="modal-send" style="background:#dc2626;border-color:#dc2626;" onclick="submitSummon()">
+          <i class='bx bx-send'></i> توجيه النداء
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Transfer Modal -->
   <div class="modal-overlay" id="transferModal">
@@ -481,6 +514,17 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
       const pri = priMap[a.priority] || priMap.Routine;
       document.getElementById('priorityVal').innerHTML = `<span class="pri-dot ${pri.key}"></span>${pri.label}`;
 
+      // Booking Type
+      let btnTypeHTML = '';
+      if (a.booking_type === 'smart') {
+         btnTypeHTML = `<span style="background:rgba(13,148,136,.1);color:#0d9488;padding:3px 8px;border-radius:4px;font-size:0.8rem;border:1px solid rgba(13,148,136,.2);"><i class='bx bx-bot'></i> ذكي</span>`;
+      } else if (a.booking_type === 'emergency' || (triage && triage.ai_reasoning === 'تدخل فوري للطوارئ')) {
+         btnTypeHTML = `<span style="background:#fef2f2;color:#dc2626;padding:3px 8px;border-radius:4px;font-size:0.8rem;border:1px solid #fca5a5;font-weight:bold;"><i class='bx bxs-ambulance'></i> طارئ</span>`;
+      } else {
+         btnTypeHTML = `<span style="background:#f1f5f9;color:#475569;padding:3px 8px;border-radius:4px;font-size:0.8rem;border:1px solid #cbd5e1;"><i class='bx bx-calendar'></i> عادي</span>`;
+      }
+      document.getElementById('bookingTypeBadge').innerHTML = btnTypeHTML;
+
       // Patient
       document.getElementById('patientName').textContent = a.patient_name || '—';
       document.getElementById('patientPhone').textContent = a.phone || a.patient_phone || '—';
@@ -501,11 +545,18 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
       document.getElementById('docSpec').textContent = 'طبيب معالج';
 
       // === AI Triage Card ===
-      renderTriageCard(triage);
+      const isEmergency = a.booking_type === 'emergency' || (triage && triage.ai_reasoning === 'تدخل فوري للطوارئ');
+
+      if (isEmergency) {
+        const aiCard = document.getElementById('aiTriageCard');
+        if (aiCard) aiCard.style.display = 'none';
+      } else {
+        renderTriageCard(triage);
+      }
 
       // === الأعراض والشكوى ===
       // الأولوية: 1) rec.symptoms (بعد فحص الطبيب) 2) triage.raw_symptoms_input (وقت الحجز) 3) لا شيء
-      const isSmart = a.booking_type === 'smart';
+      const isSmart = a.booking_type === 'smart' && !isEmergency;
 
       if (rec && rec.symptoms && rec.symptoms.length) {
         // ── بيانات من الملف الطبي (بعد الفحص) ─────────────────────────
@@ -534,10 +585,16 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
           const pain = parseInt(triageObj.pain_level) || 0;
           const dur = triageObj.duration || '—';
           const notes = triageObj.notes || '';
-          const chronic = triageObj.chronic || [];
+          const chronic = triageObj.conditions || triageObj.chronic || [];
 
-          document.getElementById('duration').textContent = dur;
-          renderPainBar(pain);
+          if (isEmergency) {
+             document.getElementById('duration').closest('.info-item').style.display = 'none';
+             const painBlock = document.getElementById('painTxt')?.parentElement?.parentElement;
+             if (painBlock) painBlock.style.display = 'none';
+          } else {
+             document.getElementById('duration').textContent = dur;
+             renderPainBar(pain);
+          }
 
           document.getElementById('symList').innerHTML = symsArr.length
             ? symsArr.map(s => {
@@ -634,6 +691,20 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
         renderPainBar(0);
       }
 
+      // === Force UI Visibility Overrides ===
+      if (isEmergency) {
+        const durItem = document.getElementById('duration')?.closest('.info-item');
+        if (durItem) durItem.style.display = 'none';
+        
+        const condItem = document.getElementById('condition')?.closest('.info-item');
+        if (condItem) condItem.style.display = 'none';
+
+        const painTxt = document.getElementById('painTxt');
+        if (painTxt && painTxt.parentElement && painTxt.parentElement.parentElement) {
+           painTxt.parentElement.parentElement.style.display = 'none';
+        }
+      }
+
       // محتوى Medical_Record (ملاحظات + مختبريات + أدوية)
       if (rec) {
         if (rec.doctor_notes) document.getElementById('docNotes').value = rec.doctor_notes;
@@ -649,11 +720,11 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
           rec.medications.forEach(m => {
             const details = [m.dosage_strength, m.frequency, m.timing].filter(Boolean).join(' — ');
             const label = m.medication_name + (details ? ' (' + details + ')' : '');
-            medItems.push({ 
-                name: m.medication_name, 
-                strength: m.dosage_strength || '',
-                freq: m.frequency || '',
-                timing: m.timing || ''
+            medItems.push({
+              name: m.medication_name,
+              strength: m.dosage_strength || '',
+              freq: m.frequency || '',
+              timing: m.timing || ''
             });  // أعد تعبئة array بشكل صحيح
             addItemRow('medList', label, 'med');
           });
@@ -991,6 +1062,51 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
         location.reload();
       } else {
         HagzUI.toast(data?.message || 'فشل إرسال التحويل', 'error');
+      }
+    }
+
+    // ══ SUMMON MODAL ══
+    async function openSummonModal() {
+      const sel = document.getElementById('summonDocSel');
+      sel.innerHTML = '<option value="" disabled>— جاري التحميل... —</option>';
+      const data = await fetch(`${API}?action=get_available_doctors`).then(r => r.json()).catch(() => null);
+      if (data?.success && data.doctors?.length) {
+        sel.innerHTML = data.doctors.map(d => `<option value="${d.id}">${esc(d.name)} — ${esc(d.specialization)}</option>`).join('');
+      } else {
+        sel.innerHTML = '<option value="" disabled>لا يوجد أطباء مداومين حالياً</option>';
+      }
+      document.getElementById('summonModal').classList.add('open');
+    }
+
+    function closeSummonModal() {
+      document.getElementById('summonModal').classList.remove('open');
+    }
+
+    async function submitSummon() {
+      const sel = document.getElementById('summonDocSel');
+      const selectedDocs = Array.from(sel.selectedOptions).map(opt => opt.value);
+      
+      if (selectedDocs.length === 0) {
+        HagzUI.toast('الرجاء اختيار طبيب واحد على الأقل', 'warning');
+        return;
+      }
+
+      const btn = document.querySelector('#summonModal .modal-send');
+      btn.disabled = true; btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i> جاري الإرسال...`;
+
+      const data = await fetch(`${API}?action=summon_doctor`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appointment_id: +currentApptId, to_doctor_ids: selectedDocs })
+      }).then(r => r.json()).catch(() => null);
+
+      btn.disabled = false; btn.innerHTML = `<i class='bx bx-send'></i> توجيه النداء`;
+
+      if (data?.success) {
+        HagzUI.toast('تم توجيه النداء العاجل بنجاح', 'success');
+        closeSummonModal();
+      } else {
+        HagzUI.toast(data?.message || 'فشل توجيه النداء', 'error');
       }
     }
 

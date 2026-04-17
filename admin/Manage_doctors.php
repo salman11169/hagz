@@ -33,10 +33,7 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'المدير', ENT_QUOTE
       </div>
 
       <div class="nav-actions">
-        <button class="icon-btn notif-btn">
-          <i class='bx bx-bell'></i>
-          <span class="badge">0</span>
-        </button>
+        
         <div class="user-menu">
           <div class="user-avatar">
             <img

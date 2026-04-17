@@ -41,6 +41,12 @@ match ($action) {
     'create_referral'      => createReferral($doctor_id),
     'get_referrals'        => getReferrals($doctor_id),
     'doctors'              => getDoctorsList(),
+    'get_available_doctors'=> getAvailableDoctors($doctor_id),
+    'summon_doctor'        => summonDoctor($doctor_id),
+    'check_alerts'         => checkAlerts($doctor_id),
+    'get_all_alerts'       => getAllAlerts($doctor_id),
+    'mark_alert_read'      => markAlertRead($doctor_id),
+    'mark_all_read'        => markAllRead($doctor_id),
     default                => json_response(false, 'طلب غير معروف.')
 };
 
@@ -230,9 +236,12 @@ function getAppointmentDetail(int $doctor_id): void {
         JOIN patients p  ON a.patient_id = p.id
         JOIN users u     ON p.user_id    = u.id
         LEFT JOIN triage_logs tl ON tl.appointment_id = a.id
-        WHERE a.id = ? AND a.doctor_id = ?
+        WHERE a.id = ? AND (a.doctor_id = ? OR EXISTS(
+            SELECT 1 FROM doctor_alerts da 
+            WHERE da.appointment_id = a.id AND da.to_doctor_id = ?
+        ))
     ");
-    $stmt->execute([$appt_id, $doctor_id]);
+    $stmt->execute([$appt_id, $doctor_id, $doctor_id]);
     $appt = $stmt->fetch();
     if (!$appt) json_response(false, 'الموعد غير موجود أو غير مصرح.');
 
@@ -298,8 +307,11 @@ function saveTreatment(int $doctor_id): void {
     if (!$appt_id) json_response(false, 'رقم الموعد مطلوب.');
 
     // التحقق من الملكية
-    $chk = $pdo->prepare("SELECT id FROM appointments WHERE id = ? AND doctor_id = ?");
-    $chk->execute([$appt_id, $doctor_id]);
+    $chk = $pdo->prepare("
+        SELECT id FROM appointments a 
+        WHERE a.id = ? AND (a.doctor_id = ? OR EXISTS(SELECT 1 FROM doctor_alerts da WHERE da.appointment_id = a.id AND da.to_doctor_id = ?))
+    ");
+    $chk->execute([$appt_id, $doctor_id, $doctor_id]);
     if (!$chk->fetch()) json_response(false, 'غير مصرح بالوصول لهذا الموعد.');
 
     // Upsert السجل الطبي
@@ -365,8 +377,11 @@ function updateAppointmentStatus(int $doctor_id): void {
 
     if (!$appt_id || !in_array($status, $allowed)) json_response(false, 'بيانات غير صحيحة.');
 
-    $chk = $pdo->prepare("SELECT id FROM appointments WHERE id = ? AND doctor_id = ?");
-    $chk->execute([$appt_id, $doctor_id]);
+    $chk = $pdo->prepare("
+        SELECT id FROM appointments a 
+        WHERE a.id = ? AND (a.doctor_id = ? OR EXISTS(SELECT 1 FROM doctor_alerts da WHERE da.appointment_id = a.id AND da.to_doctor_id = ?))
+    ");
+    $chk->execute([$appt_id, $doctor_id, $doctor_id]);
     if (!$chk->fetch()) json_response(false, 'غير مصرح.');
 
     $fields = ['status = ?'];
@@ -624,12 +639,7 @@ function saveSchedule(int $id): void {
 
     if (empty($days)) json_response(false, 'لا توجد بيانات للحفظ.');
 
-    // حفظ مدة المعاينة إن أرسلت
-    if (isset($body['consultation_duration'])) {
-        $dur = max(5, (int) $body['consultation_duration']);
-        $pdo->prepare('UPDATE doctors SET consultation_duration = ? WHERE id = ?')
-            ->execute([$dur, $id]);
-    }
+    // (مدة المعاينة سيتم حفظها مباشرة داخل دوام الطبيب في الجدول doctor_schedules لاحقاً)
 
     // حذف الجدول القديم
     $pdo->prepare('DELETE FROM doctor_schedules WHERE doctor_id = ?')->execute([$id]);
@@ -728,8 +738,11 @@ function createReferral(int $doctor_id): void {
     if (!in_array($priority, ['Routine','Urgent','Emergency'])) $priority = 'Routine';
 
     // التحقق من الملكية
-    $chk = $pdo->prepare("SELECT id FROM appointments WHERE id = ? AND doctor_id = ?");
-    $chk->execute([$appt_id, $doctor_id]);
+    $chk = $pdo->prepare("
+        SELECT id FROM appointments a 
+        WHERE a.id = ? AND (a.doctor_id = ? OR EXISTS(SELECT 1 FROM doctor_alerts da WHERE da.appointment_id = a.id AND da.to_doctor_id = ?))
+    ");
+    $chk->execute([$appt_id, $doctor_id, $doctor_id]);
     if (!$chk->fetch()) json_response(false, 'غير مصرح بالوصول لهذا الموعد.');
 
     $pdo->prepare("
@@ -808,4 +821,126 @@ function getDoctorsList(): void {
         ORDER BY s.name, u.first_name
     ");
     json_response(true, 'ok', ['doctors' => $stmt->fetchAll()]);
+}
+
+// ══════════════════════════════════════════════
+// DOCTOR SUMMON & REALTIME ALERTS
+// ══════════════════════════════════════════════
+
+function getAvailableDoctors(int $doctor_id): void {
+    requireId($doctor_id);
+    $pdo  = getDB();
+    // الحصول على الأطباء المداومين في الوقت الحالي واليوم الحالي
+    // WEEKDAY() in MySQL: 0=Monday, 6=Sunday. 
+    // Our DB uses day_of_week 0=Sunday, 6=Saturday according to comments? 
+    // IF PHP date('w'): 0=Sunday, ..., 6=Saturday
+    // So let's use PHP to get current day mapping to our DB format
+    $currentDay = (int) date('w'); 
+    $yesterday = ($currentDay == 0) ? 6 : $currentDay - 1;
+    
+    $stmt = $pdo->prepare("
+        SELECT DISTINCT d.id, CONCAT(u.first_name, ' ', u.last_name) AS name,
+               s.name AS specialization
+        FROM doctors d
+        JOIN users u ON d.user_id = u.id
+        JOIN specializations s ON d.specialization_id = s.id
+        JOIN doctor_schedules ds ON ds.doctor_id = d.id
+        WHERE u.is_active = 1 
+          AND d.id != ?
+          AND ds.is_available = 1
+          AND (
+              -- الشفت العادي (في نفس اليوم)
+              (ds.day_of_week = ? AND ds.start_time <= ds.end_time AND CURTIME() BETWEEN ds.start_time AND ds.end_time)
+              OR 
+              -- شفت ليلي بدأ اليوم ولم نصل لمنتصف الليل
+              (ds.day_of_week = ? AND ds.start_time > ds.end_time AND CURTIME() >= ds.start_time)
+              OR
+              -- شفت ليلي بدأ بالأمس ونحن الآن بعد منتصف الليل
+              (ds.day_of_week = ? AND ds.start_time > ds.end_time AND CURTIME() <= ds.end_time)
+          )
+        ORDER BY s.name, u.first_name
+    ");
+    $stmt->execute([$doctor_id, $currentDay, $currentDay, $yesterday]);
+    json_response(true, 'ok', ['doctors' => $stmt->fetchAll()]);
+}
+
+function summonDoctor(int $doctor_id): void {
+    requireId($doctor_id);
+    requirePost();
+    $pdo = getDB();
+    $body = parseBody();
+    
+    $to_docs = $body['to_doctor_ids'] ?? [];
+    $appt_id = (int) ($body['appointment_id'] ?? 0);
+    
+    if (empty($to_docs) || !$appt_id) {
+        json_response(false, 'المرجو تحديد الأطباء المُراد استدعاؤهم لغرفة المعاينة.');
+    }
+    
+    // من هو الطبيب الحالي؟
+    $me = $pdo->prepare("SELECT CONCAT(first_name, ' ', last_name) AS n FROM users JOIN doctors d ON d.user_id=users.id WHERE d.id=?");
+    $me->execute([$doctor_id]);
+    $docName = $me->fetchColumn();
+
+    $message = "الطبيب {$docName} يستدعيك بشكل عاجل للمساعدة في المعاينة رقم #{$appt_id}.";
+
+    $stmt = $pdo->prepare("
+        INSERT INTO doctor_alerts (from_doctor_id, to_doctor_id, appointment_id, alert_type, message)
+        VALUES (?, ?, ?, 'summon', ?)
+    ");
+
+    foreach ($to_docs as $to_doc) {
+        if ((int)$to_doc > 0) {
+            $stmt->execute([$doctor_id, (int)$to_doc, $appt_id, $message]);
+        }
+    }
+
+    json_response(true, 'تم توجيه النداء العاجل بنجاح.');
+}
+
+function checkAlerts(int $doctor_id): void {
+    requireId($doctor_id);
+    $pdo = getDB();
+    $stmt = $pdo->prepare("
+        SELECT id, alert_type, message, appointment_id, created_at
+        FROM doctor_alerts
+        WHERE to_doctor_id = ? AND is_read = 0
+        ORDER BY created_at ASC
+    ");
+    $stmt->execute([$doctor_id]);
+    json_response(true, 'ok', ['alerts' => $stmt->fetchAll()]);
+}
+
+function getAllAlerts(int $doctor_id): void {
+    requireId($doctor_id);
+    $pdo = getDB();
+    $stmt = $pdo->prepare("
+        SELECT id, alert_type, message, appointment_id, created_at, is_read
+        FROM doctor_alerts
+        WHERE to_doctor_id = ?
+        ORDER BY created_at DESC
+        LIMIT 20
+    ");
+    $stmt->execute([$doctor_id]);
+    json_response(true, 'ok', ['alerts' => $stmt->fetchAll()]);
+}
+
+function markAlertRead(int $doctor_id): void {
+    requireId($doctor_id);
+    requirePost();
+    $pdo = getDB();
+    $body = parseBody();
+    $alert_id = (int) ($body['alert_id'] ?? 0);
+    
+    if ($alert_id) {
+        $pdo->prepare("UPDATE doctor_alerts SET is_read = 1 WHERE id = ? AND to_doctor_id = ?")->execute([$alert_id, $doctor_id]);
+    }
+    json_response(true, 'تم تحديد النداء كمقروء.');
+}
+
+function markAllRead(int $doctor_id): void {
+    requireId($doctor_id);
+    requirePost();
+    getDB()->prepare("UPDATE doctor_alerts SET is_read = 1 WHERE to_doctor_id = ?")->execute([$doctor_id]);
+    json_response(true, 'تم تحديد الكل كمقروء.');
 }

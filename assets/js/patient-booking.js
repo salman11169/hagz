@@ -277,11 +277,49 @@ function selectMode(mode, fromRestore = false) {
 }
 
 function triggerEmergency() {
-    selectMode('smart');
-    if (confirm('تأكيد وضع الطوارئ؟ سيتم تخطي الأسئلة بناءً على الأولوية.')) {
-        setStep(4);
-        runTriage(true);
+    // This is now purely via HTML Modal data-bs-toggle attributes.
+    // Kept here in case a manual trigger is needed.
+    const m = document.getElementById('emergencyModal');
+    if(m) new bootstrap.Modal(m).show();
+}
+
+function submitEmergencyDirect() {
+    const textDesc = document.getElementById('emrSymptomsInput')?.value?.trim();
+    if (!textDesc) {
+        showErr('الرجاء كتابة الأعراض التي تعاني منها.');
+        document.getElementById('emrSymptomsInput').focus();
+        return;
     }
+
+    const btn = document.getElementById('btnEmrSubmit');
+    if(btn) {
+        btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> جاري الإرسال للطوارئ...';
+        btn.disabled = true;
+    }
+
+    fetch(BOOKING_API + '?action=emergency_book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: textDesc })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(btn) { btn.innerHTML = 'إرسال إلى طوارئ المستشفى الآن'; btn.disabled = false; }
+        if (data.success) {
+            const mData = bootstrap.Modal.getInstance(document.getElementById('emergencyModal'));
+            if (mData) mData.hide();
+            
+            // Show Success UI directly
+            document.getElementById('sbRef').textContent = data.ref;
+            document.getElementById('successOvl').classList.add('show');
+        } else {
+            showErr(data.message || 'المعذرة، فشل طلب الطوارئ.');
+        }
+    })
+    .catch(() => {
+        if(btn) { btn.innerHTML = 'إرسال إلى طوارئ المستشفى الآن'; btn.disabled = false; }
+        showErr('حدث خطأ في الاتصال بالخادم، يرجى المحاولة ثانية.');
+    });
 }
 
 function setStep(n) {

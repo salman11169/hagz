@@ -366,13 +366,13 @@ session_start();
                     <ul class="footer-links">
                         <li><i class="fas fa-phone ms-2"></i> 800-123-4567</li>
                         <li><i class="fas fa-envelope ms-2"></i> info@smarttriage.com</li>
-                        <li><i class="fas fa-map-marker-alt ms-2"></i> الرياض، المملكة العربية السعودية</li>
+                        <li><i class="fas fa-map-marker-alt ms-2"></i> نجران، المملكة العربية السعودية</li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2024 نظام الفرز الذكي. جميع الحقوق محفوظة.</p>
+                <p>&copy; 2026 نظام الفرز الذكي. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
@@ -446,8 +446,10 @@ session_start();
                     <h3 class="fw-bold mb-3">تسجيل الدخول مطلوب</h3>
                     <p class="text-muted mb-4">يجب عليك تسجيل الدخول بحساب مريض لتتمكن من حجز موعد جديد في النظام.</p>
                     <div class="d-flex gap-2 justify-content-center">
-                        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">إلغاء</button>
-                        <a href="../auth/login.php" class="btn btn-primary rounded-pill px-4" style="background:#0d9488; border-color:#0d9488;">تسجيل الدخول</a>
+                        <button type="button" class="btn btn-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">إلغاء</button>
+                        <a href="../auth/login.php" class="btn btn-primary rounded-pill px-4"
+                            style="background:#0d9488; border-color:#0d9488;">تسجيل الدخول</a>
                     </div>
                 </div>
             </div>

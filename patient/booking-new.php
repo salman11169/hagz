@@ -62,7 +62,7 @@ include __DIR__ . '/partials/patient-nav.php';
     </div>
 
     <!-- Emergency Strip -->
-    <div class="emergency-strip" onclick="triggerEmergency()">
+    <div class="emergency-strip" data-bs-toggle="modal" data-bs-target="#emergencyModal" style="cursor: pointer;">
       <div class="em-icon"><i class='bx bxs-error-circle'></i></div>
       <div>
         <div class="em-title">هل لديك حالة طارئة؟ اضغط هنا للتدخل السريع</div>
@@ -552,8 +552,34 @@ include __DIR__ . '/partials/patient-nav.php';
 
 </main>
 
+<!-- EMERGENCY CUSTOM MODAL -->
+<div class="modal fade" id="emergencyModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border: 2px solid #ef4444;">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title fw-bold"><i class='bx bx-first-aid'></i> طلب طوارئ فوري</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger fw-bold mb-3">
+           <i class="bx bx-error-circle fs-5 align-middle"></i>
+           هذا الإجراء سيقوم بحجز موعد فوري لدى أطباء الطوارئ المتاحين وتخطي الذكاء الاصطناعي والأولوية للحالات الحرجة فقط.
+        </p>
+        <label class="form-label fw-bold">اكتب باختصار وتوضيح ما تعاني منه الآن:</label>
+        <textarea id="emrSymptomsInput" class="form-control" rows="4" placeholder="مثال: ألم شديد في الصدر يمتد للكتف الأيسر منذ ساعة، دوخة مستمرة..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
+        <button type="button" class="btn btn-danger fw-bold" id="btnEmrSubmit" onclick="submitEmergencyDirect()">
+           إرسال إلى طوارئ المستشفى الآن
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/hagz-ui.js"></script>
-<script src="../assets/js/patient-booking.js?v=5.0"></script>
+<script src="../assets/js/patient-booking.js?v=6.0"></script>
 </body>
 </html>

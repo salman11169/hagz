@@ -268,9 +268,14 @@ $activeNav = 'dashboard';
                 };
                 const st = statusMap[a.status] || statusMap.Pending;
                 
-                const bookingLabel = a.booking_type === 'smart' 
-                                   ? `<span class="badge rounded-pill bg-light text-dark fw-bold border p-2"><i class='bx bx-brain text-primary'></i> حجز ذكي</span>`
-                                   : `<span class="badge rounded-pill bg-light text-dark fw-bold border p-2"><i class='bx bx-user'></i> حجز عادي</span>`;
+                let bookingLabel;
+                if (a.booking_type === 'smart') {
+                    bookingLabel = `<span class="badge rounded-pill bg-light text-dark fw-bold border p-2"><i class='bx bx-brain text-primary'></i> حجز ذكي</span>`;
+                } else if (a.booking_type === 'emergency') {
+                    bookingLabel = `<span class="badge rounded-pill fw-bold p-2" style="background:#fff0f0;color:#dc2626;border:1.5px solid #fca5a5;"><i class='bx bxs-ambulance'></i> طوارئ</span>`;
+                } else {
+                    bookingLabel = `<span class="badge rounded-pill bg-light text-dark fw-bold border p-2"><i class='bx bx-user'></i> حجز عادي</span>`;
+                }
 
                 const initial = (a.doctor_first_name?.[0] ?? 'ط');
                 const docName = `${a.doctor_first_name ?? ''} ${a.doctor_last_name ?? ''}`.trim();

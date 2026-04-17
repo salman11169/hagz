@@ -331,6 +331,7 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'الطبيب', ENT_QUOTE
         // ══════════════════════════════════════════════
         function typeBadge(type) {
             if (type === 'smart') return `<span class="type-badge type-smart"><i class='bx bx-bot'></i> ذكي</span>`;
+            if (type === 'emergency') return `<span class="type-badge" style="background:#fef2f2;color:#dc2626;border-color:#fca5a5"><i class='bx bxs-ambulance'></i> طارئ</span>`;
             if (type === 'regular') return `<span class="type-badge type-regular"><i class='bx bx-calendar'></i> عادي</span>`;
             return '';
         }
