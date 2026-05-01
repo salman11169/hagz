@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 if (session_status() === PHP_SESSION_NONE) {
 
@@ -39,7 +39,7 @@ function require_role(int $role): void
 {
 
     if (!is_logged_in()) {
-        header('Location: /Hagz/auth/login.php?error=يرجى_تسجيل_الدخول_أولاً');
+        header('Location: /hagz/auth/login.php?error=يرجى_تسجيل_الدخول_أولاً');
 
         exit();
     }
@@ -47,7 +47,7 @@ function require_role(int $role): void
 
     if (($_SESSION['role_id'] ?? 0) !== $role) {
 
-        header('Location: /Hagz/public/403.html');
+        header('Location: /hagz/public/403.html');
         exit();
     }
 }
@@ -64,7 +64,7 @@ function logout(): void
 
     session_destroy();
 
-    header('Location: /Hagz/auth/login.php');
+    header('Location: /hagz/auth/login.php');
     exit();
 }
 

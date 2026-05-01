@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (_p4d) _p4d.min = _today;
     const _r4d = document.getElementById('r4Date');
     if (_r4d) _r4d.min = _today;
+
+    // Initialize Bootstrap tooltips (for medical source badges & symptom info dots)
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el, { trigger: 'hover focus', placement: 'top' }));
     
     // Auto fill user data
     fetch('../controllers/PatientController.php?action=profile')
@@ -121,7 +125,16 @@ function pickSpec(el) {
 function toggleSym(el) {
   el.classList.toggle('selected');
   const chips = [...document.querySelectorAll('.sym-chip.selected')];
-  st.symptoms = chips.map(c => c.textContent.trim());
+  // Extract only the symptom text, excluding the tooltip info icon
+  st.symptoms = chips.map(c => {
+    const clone = c.cloneNode(true);
+    const srcDot = clone.querySelector('.sym-src-dot');
+    if (srcDot) srcDot.remove();
+    // Also remove leading icon text
+    const icon = clone.querySelector('i');
+    if (icon) icon.remove();
+    return clone.textContent.trim();
+  });
   st.symScore = chips.reduce((s, c) => s + parseInt(c.dataset.score || 0), 0);
   calcPriority(); syncSummary();
 }

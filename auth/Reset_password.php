@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../includes/session.php';
 // If already logged in, redirect to appropriate dashboard
 if (is_logged_in()) {
     $role = $_SESSION['role_id'] ?? 0;
-    if ($role === ROLE_ADMIN)   { header('Location: /Hagz/admin/admin.php'); exit(); }
-    if ($role === ROLE_DOCTOR)  { header('Location: /Hagz/doctor/Doctor_dashboard.php'); exit(); }
-    if ($role === ROLE_PATIENT) { header('Location: /Hagz/patient/dashboard-new.php'); exit(); }
+    if ($role === ROLE_ADMIN)   { header('Location: /hagz/admin/admin.php'); exit(); }
+    if ($role === ROLE_DOCTOR)  { header('Location: /hagz/doctor/Doctor_dashboard.php'); exit(); }
+    if ($role === ROLE_PATIENT) { header('Location: /hagz/patient/dashboard-new.php'); exit(); }
 }
 ?>
 <!DOCTYPE html>

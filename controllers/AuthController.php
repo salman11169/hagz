@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * AuthController — Handles Registration and Login
  * Hagz Clinic System
@@ -87,7 +87,7 @@ function handleRegister(): void {
     ");
     $stmtPatient->execute([$userId, $dob, $genderEn, $bloodType ?: null]);
 
-    json_response(true, 'تم إنشاء الحساب بنجاح! يرجى تسجيل الدخول.', ['redirect' => '/Hagz/auth/login.php']);
+    json_response(true, 'تم إنشاء الحساب بنجاح! يرجى تسجيل الدخول.', ['redirect' => '/hagz/auth/login.php']);
 }
 
 // ─────────────────────────────────────────────
@@ -137,10 +137,10 @@ function handleLogin(): void {
 
     // Redirect based on role
     $redirect = match ((int) $user['role_id']) {
-        ROLE_ADMIN   => '/Hagz/admin/admin.php',
-        ROLE_DOCTOR  => '/Hagz/doctor/Doctor_dashboard.php',
-        ROLE_PATIENT => '/Hagz/patient/dashboard-new.php',
-        default      => '/Hagz/auth/login.php'
+        ROLE_ADMIN   => '/hagz/admin/admin.php',
+        ROLE_DOCTOR  => '/hagz/doctor/Doctor_dashboard.php',
+        ROLE_PATIENT => '/hagz/patient/dashboard-new.php',
+        default      => '/hagz/auth/login.php'
     };
 
     json_response(true, 'تم تسجيل الدخول بنجاح!', [
