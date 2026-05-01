@@ -6,7 +6,7 @@ DirectoryIndex index.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /Hagz/
+    RewriteBase /hagz/
 
     # ── Virtual API routes ──────────────────────────────────────
     # /api/auth/login  → controllers/AuthController.php?action=login

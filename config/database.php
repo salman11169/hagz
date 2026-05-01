@@ -24,6 +24,7 @@ function getDB(): PDO {
         ];
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+            $pdo->exec("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
         } catch (PDOException $e) {
             // In production, log error and show generic message
             error_log("Database Connection Error: " . $e->getMessage());

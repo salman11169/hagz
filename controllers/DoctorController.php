@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DoctorController — JSON API for the Doctor Portal
  * Hagz Clinic System
@@ -15,7 +15,7 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/session.php';
 
 if (!is_doctor()) {
-    json_response(false, 'غير مصرح.', ['redirect' => '/Hagz/auth/login.php']);
+    json_response(false, 'غير مصرح.', ['redirect' => '/hagz/auth/login.php']);
 }
 
 $doctor_id = (int) ($_SESSION['doctor_id'] ?? 0);

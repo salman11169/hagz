@@ -13,7 +13,7 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="../assets/css/patient.css?v=9.0">
+  <link rel="stylesheet" href="../assets/css/patient.css?v=10.0">
 </head>
 <body>
 
@@ -203,30 +203,75 @@ include __DIR__ . '/partials/patient-nav.php';
                   <p>اختر ما يصف حالتك بدقة — يمكنك اختيار أكثر من عرض</p>
                 </div>
               </div>
-              
-              <div class="symptom-grid mb-4">
-                <!-- Emergency symptoms (score 3 each) -->
-                <div class="sym-chip" data-score="3" onclick="toggleSym(this)"><i class='bx bx-heart-circle'></i>ألم شديد في الصدر</div>
-                <div class="sym-chip" data-score="3" onclick="toggleSym(this)"><i class='bx bx-dizzy'></i>صعوبة في التنفس</div>
-                <div class="sym-chip" data-score="3" onclick="toggleSym(this)"><i class='bx bx-confused'></i>فقدان الوعي / إغماء</div>
-                <div class="sym-chip" data-score="3" onclick="toggleSym(this)"><i class='bx bx-droplet'></i>نزيف غير متوقف</div>
-                <div class="sym-chip" data-score="3" onclick="toggleSym(this)"><i class='bx bx-walk'></i>شلل أو تخدر مفاجئ</div>
-                <!-- Urgent symptoms (score 2 each) -->
-                <div class="sym-chip" data-score="2" onclick="toggleSym(this)"><i class='bx bx-trending-up'></i>ارتفاع حرارة شديد</div>
-                <div class="sym-chip" data-score="2" onclick="toggleSym(this)"><i class='bx bx-dizzy'></i>دوخة وغثيان</div>
-                <div class="sym-chip" data-score="2" onclick="toggleSym(this)"><i class='bx bx-body'></i>ألم شديد في البطن</div>
-                <div class="sym-chip" data-score="2" onclick="toggleSym(this)"><i class='bx bx-run'></i>ألم في الظهر والعمود</div>
-                <div class="sym-chip" data-score="2" onclick="toggleSym(this)"><i class='bx bx-smile-beam'></i>تشنج في الفك أو الوجه</div>
-                <!-- Normal symptoms (score 1 each) -->
-                <div class="sym-chip" data-score="1" onclick="toggleSym(this)"><i class='bx bx-cloud'></i>سعال</div>
-                <div class="sym-chip" data-score="1" onclick="toggleSym(this)"><i class='bx bx-cloud-rain'></i>زكام ورشح</div>
-                <div class="sym-chip" data-score="1" onclick="toggleSym(this)"><i class='bx bx-face'></i>صداع خفيف</div>
-                <div class="sym-chip" data-score="1" onclick="toggleSym(this)"><i class='bx bx-tired'></i>إرهاق وتعب عام</div>
-                <div class="sym-chip" data-score="1" onclick="toggleSym(this)"><i class='bx bx-droplet-half'></i>جفاف وعطش</div>
-                <div class="sym-chip" data-score="1" onclick="toggleSym(this)"><i class='bx bx-cookie'></i>غثيان خفيف</div>
+
+              <!-- ═══ Medical Sources Badge ═══ -->
+              <div class="medical-sources-badge">
+                <div class="msb-header">
+                  <div class="msb-icon"><i class='bx bxs-shield-plus'></i></div>
+                  <div class="msb-text">
+                    <span class="msb-title">أعراض معتمدة من مصادر طبية موثوقة</span>
+                    <span class="msb-subtitle">تم تجميع هذه القائمة استناداً إلى إرشادات مراجع طبية عالمية ومحلية</span>
+                  </div>
+                </div>
+                <div class="msb-sources">
+                  <span class="msb-source-pill" data-bs-toggle="tooltip" title="وزارة الصحة في المملكة العربية السعودية — moh.gov.sa"><i class='bx bxs-plus-circle'></i> وزارة الصحة السعودية</span>
+                  <span class="msb-source-pill" data-bs-toggle="tooltip" title="منظمة الصحة العالمية — أداة الفرز المتكاملة (IITT) + ICD-11"><i class='bx bx-globe'></i> منظمة الصحة العالمية (WHO)</span>
+                  <span class="msb-source-pill" data-bs-toggle="tooltip" title="المكتبة الوطنية للطب — المعاهد الوطنية للصحة الأمريكية"><i class='bx bxs-book-content'></i> MedlinePlus (NIH)</span>
+                  <span class="msb-source-pill" data-bs-toggle="tooltip" title="مايو كلينك — أحد أكبر المراكز الطبية الأكاديمية في العالم"><i class='bx bxs-clinic'></i> Mayo Clinic</span>
+                </div>
               </div>
 
-              <label class="p-form-label">تفاصيل إضافية (اختياري)</label>
+              <!-- ═══ Category: Emergency Symptoms (score=3) ═══ -->
+              <div class="sym-category">
+                <div class="sym-cat-label sym-cat-critical"><i class='bx bxs-error-circle'></i> أعراض طارئة <span class="sym-cat-hint">تستدعي تدخلاً فورياً</span></div>
+                <div class="symptom-grid mb-3">
+                  <div class="sym-chip sym-critical" data-score="3" data-source="Mayo Clinic + وزارة الصحة السعودية" onclick="toggleSym(this)"><i class='bx bx-heart-circle'></i>ألم حاد أو ضغط في الصدر<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic + وزارة الصحة السعودية"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-critical" data-score="3" data-source="WHO IITT + وزارة الصحة السعودية" onclick="toggleSym(this)"><i class='bx bx-wind'></i>صعوبة شديدة في التنفس<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: منظمة الصحة العالمية (IITT) + وزارة الصحة السعودية"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-critical" data-score="3" data-source="وزارة الصحة السعودية + MedlinePlus" onclick="toggleSym(this)"><i class='bx bx-confused'></i>فقدان الوعي أو الإغماء<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: وزارة الصحة السعودية + MedlinePlus (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-critical" data-score="3" data-source="WHO IITT + وزارة الصحة السعودية" onclick="toggleSym(this)"><i class='bx bx-droplet'></i>نزيف حاد غير مُسيطر عليه<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: منظمة الصحة العالمية (IITT) + وزارة الصحة السعودية"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-critical" data-score="3" data-source="Mayo Clinic — علامات السكتة الدماغية" onclick="toggleSym(this)"><i class='bx bx-body'></i>شلل أو خدر مفاجئ في الوجه أو الأطراف<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic — علامات السكتة الدماغية (Stroke)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-critical" data-score="3" data-source="WHO IITT + MedlinePlus" onclick="toggleSym(this)"><i class='bx bx-pulse'></i>تشنجات أو نوبات صرع<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: منظمة الصحة العالمية (IITT) + MedlinePlus (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-critical" data-score="3" data-source="Mayo Clinic — علامات السكتة الدماغية" onclick="toggleSym(this)"><i class='bx bx-message-x'></i>صعوبة مفاجئة في الكلام أو الفهم<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic — علامات السكتة الدماغية (Stroke Signs)"><i class='bx bxs-info-circle'></i></span></div>
+                </div>
+              </div>
+
+              <!-- ═══ Category: Urgent Symptoms (score=2) ═══ -->
+              <div class="sym-category">
+                <div class="sym-cat-label sym-cat-urgent"><i class='bx bxs-error'></i> أعراض عاجلة <span class="sym-cat-hint">تحتاج متابعة سريعة</span></div>
+                <div class="symptom-grid mb-3">
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="وزارة الصحة السعودية + Mayo Clinic" onclick="toggleSym(this)"><i class='bx bx-sun'></i>حمّى شديدة (أعلى من 39°)<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: وزارة الصحة السعودية + Mayo Clinic"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-body'></i>ألم حاد في البطن<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="Mayo Clinic" onclick="toggleSym(this)"><i class='bx bx-dizzy'></i>دوخة مستمرة مع غثيان أو قيء<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-run'></i>ألم حاد في الظهر أو العمود الفقري<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="Mayo Clinic" onclick="toggleSym(this)"><i class='bx bx-error-circle'></i>صداع شديد ومفاجئ غير معتاد<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="MedlinePlus + WHO" onclick="toggleSym(this)"><i class='bx bx-face'></i>تورّم مفاجئ في الوجه أو الحلق<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus (NIH) + منظمة الصحة العالمية"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-urgent" data-score="2" data-source="Mayo Clinic" onclick="toggleSym(this)"><i class='bx bx-walk'></i>ضيق تنفس عند المشي أو الاستلقاء<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic"><i class='bx bxs-info-circle'></i></span></div>
+                </div>
+              </div>
+
+              <!-- ═══ Category: Routine Symptoms (score=1) ═══ -->
+              <div class="sym-category">
+                <div class="sym-cat-label sym-cat-routine"><i class='bx bxs-check-circle'></i> أعراض عامة <span class="sym-cat-hint">قد تحتاج استشارة روتينية</span></div>
+                <div class="symptom-grid mb-3">
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-cloud'></i>سعال مستمر<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-cloud-rain'></i>احتقان أنف ورشح<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-face'></i>صداع خفيف إلى متوسط<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-tired'></i>إرهاق وتعب عام<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="Mayo Clinic" onclick="toggleSym(this)"><i class='bx bx-bone'></i>ألم خفيف في المفاصل أو العضلات<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: Mayo Clinic"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-cookie'></i>غثيان خفيف أو فقدان شهية<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-droplet-half'></i>جفاف الفم والعطش المستمر<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-band-aid'></i>حكّة جلدية أو طفح خفيف<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                  <div class="sym-chip sym-routine" data-score="1" data-source="MedlinePlus (NIH)" onclick="toggleSym(this)"><i class='bx bx-conversation'></i>التهاب أو ألم في الحلق<span class="sym-src-dot" data-bs-toggle="tooltip" title="المصدر: MedlinePlus — المعاهد الوطنية للصحة الأمريكية (NIH)"><i class='bx bxs-info-circle'></i></span></div>
+                </div>
+              </div>
+
+              <!-- ═══ Medical Disclaimer ═══ -->
+              <div class="medical-disclaimer">
+                <i class='bx bx-info-circle'></i>
+                <span>هذه القائمة للاسترشاد الأولي فقط ولا تُغني عن التشخيص الطبي المتخصص. في حال وجود حالة طارئة، توجّه فوراً إلى أقرب طوارئ أو اتصل بـ <strong>937</strong>.</span>
+              </div>
+
+              <label class="p-form-label mt-3">تفاصيل إضافية (اختياري)</label>
               <textarea class="p-form-control" id="p2Notes" rows="3" placeholder="اشرح تفاصيل أخرى بكلماتك..."></textarea>
             </div>
 
@@ -580,6 +625,6 @@ include __DIR__ . '/partials/patient-nav.php';
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/hagz-ui.js"></script>
-<script src="../assets/js/patient-booking.js?v=6.0"></script>
+<script src="../assets/js/patient-booking.js?v=7.0"></script>
 </body>
 </html>
