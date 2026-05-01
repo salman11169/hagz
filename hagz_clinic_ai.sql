@@ -471,20 +471,29 @@ CREATE TABLE `users` (
 
 --
 -- Dumping data for table `users`
+-- Default password for all seeded users: password
 --
 
 INSERT INTO `users` (`id`, `role_id`, `first_name`, `last_name`, `email`, `phone`, `password_hash`, `is_active`, `created_at`) VALUES
-(2, 2, 'عبدالعزيز', 'الصالح', 'abdulaziz@hagz.sa', '0501111111', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(3, 2, 'نورة', 'العتيبي', 'noura@hagz.sa', '0502222222', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(4, 2, 'فيصل', 'الحربي', 'faisal@hagz.sa', '0503333333', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(5, 2, 'منى', 'الزهراني', 'mona@hagz.sa', '0504444444', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(6, 2, 'خالد', 'العمر', 'khaled@hagz.sa', '0505555555', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(7, 2, 'سارة', 'البلوي', 'sara@hagz.sa', '0506666666', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(8, 2, 'محمد', 'الغامدي', 'mghamdi@hagz.sa', '0507777777', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(9, 2, 'ريم', 'السيف', 'reem@hagz.sa', '0508888888', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-04 00:49:33'),
-(10, 1, 'مدير', 'النظام', 'admin@hagz.com', '0500000001', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-09 01:17:00'),
-(11, 2, 'رهف', 'الغامدي', 'rahaf@gmail.com', '056783412', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-10 00:32:01'),
-(14, 2, 'رهف', 'الغامدية', 'rahaf1@gmail.com', '056783416', '$2y$10$GxsNo6YoC.Vi4fHcqd7l2u1GCrtVvffg4jJLxv5dkkG/ER74GyDVG', 1, '2026-03-10 01:24:39');
+(2, 2, 'عبدالعزيز', 'الصالح', 'abdulaziz@hagz.sa', '0501111111', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(3, 2, 'نورة', 'العتيبي', 'noura@hagz.sa', '0502222222', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(4, 2, 'فيصل', 'الحربي', 'faisal@hagz.sa', '0503333333', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(5, 2, 'منى', 'الزهراني', 'mona@hagz.sa', '0504444444', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(6, 2, 'خالد', 'العمر', 'khaled@hagz.sa', '0505555555', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(7, 2, 'سارة', 'البلوي', 'sara@hagz.sa', '0506666666', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(8, 2, 'محمد', 'الغامدي', 'mghamdi@hagz.sa', '0507777777', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(9, 2, 'ريم', 'السيف', 'reem@hagz.sa', '0508888888', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-04 00:49:33'),
+(10, 1, 'مدير', 'النظام', 'admin@hagz.com', '0500000001', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-09 01:17:00'),
+(11, 2, 'رهف', 'الغامدي', 'rahaf@gmail.com', '056783412', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-10 00:32:01'),
+(14, 2, 'رهف', 'الغامدية', 'rahaf1@gmail.com', '056783416', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-03-10 01:24:39'),
+(15, 3, 'عبدالمجيد', 'الحيدري', 'abdulmajeed.faisal.abdo@gmail.com', '0559871234', '$2y$10$KmkSpDp9I3RUUukFKv2NL.nAtLmpTKTs0UD4aILBYys1neYF1175G', 1, '2026-05-01 00:00:00');
+
+--
+-- Dumping data for table `patients`
+--
+
+INSERT INTO `patients` (`id`, `user_id`, `date_of_birth`, `gender`, `blood_type`) VALUES
+(1, 15, '2000-01-01', 'Male', 'O+');
 
 --
 -- Indexes for dumped tables
